@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Handset Sales Performance — TSM Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#F3F4F8;
+  --surface:#FFFFFF;
+  --ink:#0E1526;
+  --ink-soft:#4B5468;
+  --muted:#8890A0;
+  --navy:#101B3D;
+  --navy-2:#182752;
+  --line:#E4E7EF;
+  --accent:#E8483C;
+  --accent-soft:#FCE7E5;
+  --teal:#1E9E86;
+  --teal-soft:#DFF5EF;
+  --amber:#D98A2B;
+  --amber-soft:#FBEEDD;
+  --radius:14px;
+  --shadow:0 1px 2px rgba(16,27,61,0.04), 0 8px 24px -12px rgba(16,27,61,0.12);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.num{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;}
+
+/* ===== Header ===== */
+.topbar{
+  background:linear-gradient(135deg,var(--navy) 0%, var(--navy-2) 100%);
+  color:#fff;
+  padding:26px 36px 22px;
+}
+.topbar-inner{max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;}
+.brand-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:#F0A79E;margin:0 0 8px;
+}
+.brand-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:30px;font-weight:700;margin:0;letter-spacing:-0.01em;
+}
+.brand-sub{color:#AEB6D6;font-size:13px;margin-top:6px;}
+.scope-pill{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.14);
+  border-radius:999px;
+  padding:9px 18px;
+  font-size:13px;
+  color:#E8ECFB;
+  white-space:nowrap;
+}
+.scope-pill b{color:#fff;font-family:'IBM Plex Mono',monospace;}
+
+/* ===== Layout ===== */
+.wrap{max-width:1360px;margin:0 auto;padding:24px 36px 60px;}
+
+/* ===== Filter bar ===== */
+.filterbar{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:18px 22px;
+  margin-top:-34px;
+  position:relative;
+  z-index:5;
+  display:flex;
+  gap:28px;
+  flex-wrap:wrap;
+  align-items:flex-start;
+}
+.filter-group{display:flex;flex-direction:column;gap:8px;}
+.filter-label{
+  font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);
+}
+.chip-row{display:flex;gap:7px;flex-wrap:wrap;max-width:640px;}
+#areaChips{max-width:900px;}
+.chip{
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--ink-soft);
+  font-size:12.5px;
+  font-weight:500;
+  padding:7px 13px;
+  border-radius:8px;
+  cursor:pointer;
+  transition:all .12s ease;
+  white-space:nowrap;
+}
+.chip:hover{border-color:var(--accent);color:var(--accent);}
+.chip.active{
+  background:var(--navy);
+  border-color:var(--navy);
+  color:#fff;
+}
+.chip.active.date{background:var(--teal);border-color:var(--teal);}
+.reset-btn{
+  margin-left:auto;
+  align-self:center;
+  background:none;
+  border:1px solid var(--line);
+  color:var(--ink-soft);
+  font-size:12.5px;font-weight:600;
+  padding:9px 16px;
+  border-radius:8px;
+  cursor:pointer;
+}
+.reset-btn:hover{border-color:var(--ink);color:var(--ink);}
+
+/* ===== KPI cards ===== */
+.kpi-row{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin-top:22px;
+}
+.kpi-card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:18px 20px;
+  box-shadow:var(--shadow);
+  border-top:3px solid var(--navy);
+}
+.kpi-card.c2{border-top-color:var(--accent);}
+.kpi-card.c3{border-top-color:var(--teal);}
+.kpi-card.c4{border-top-color:var(--amber);}
+.kpi-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+.kpi-value{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:30px;font-weight:700;color:var(--ink);
+  margin-top:8px;
+}
+.kpi-unit{font-size:14px;color:var(--muted);font-weight:500;margin-left:4px;}
+
+/* ===== Section cards ===== */
+.grid-2{display:grid;grid-template-columns:1.35fr 1fr;gap:16px;margin-top:16px;}
+.grid-2b{display:grid;grid-template-columns:1fr 1.2fr;gap:16px;margin-top:16px;}
+.panel{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:20px 22px 22px;
+}
+.panel-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;flex-wrap:wrap;gap:6px;}
+.panel-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:15px;font-weight:600;color:var(--ink);
+}
+.panel-hint{font-size:11.5px;color:var(--muted);}
+.chart-box{position:relative;height:260px;}
+.chart-box.tall{height:340px;}
+
+/* ===== Area bars (custom horizontal chart) ===== */
+.area-list{display:flex;flex-direction:column;gap:9px;margin-top:4px;}
+.area-row{display:grid;grid-template-columns:150px 1fr 82px;align-items:center;gap:10px;cursor:pointer;padding:4px 6px;border-radius:8px;}
+.area-row:hover{background:#F7F8FC;}
+.area-row.active{background:var(--accent-soft);}
+.area-name{font-size:12.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.area-row.active .area-name{color:var(--accent);font-weight:600;}
+.area-track{background:#EEF0F6;border-radius:6px;height:10px;overflow:hidden;}
+.area-fill{background:linear-gradient(90deg,var(--navy),var(--accent));height:100%;border-radius:6px;transition:width .25s ease;}
+.area-val{font-size:12px;text-align:right;color:var(--ink-soft);}
+
+/* ===== Leaderboard table ===== */
+table.lb{width:100%;border-collapse:collapse;font-size:12.8px;}
+table.lb th{
+  text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);border-bottom:1px solid var(--line);padding:8px 10px;cursor:pointer;user-select:none;
+}
+table.lb th.num,table.lb td.num{text-align:right;}
+table.lb th:hover{color:var(--ink);}
+table.lb td{padding:9px 10px;border-bottom:1px solid #F0F1F6;color:var(--ink-soft);}
+table.lb tr:hover td{background:#F9FAFC;}
+.rank-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:6px;
+  font-size:11px;font-weight:700;color:#fff;background:var(--muted);
+}
+.rank-badge.r1{background:var(--accent);}
+.rank-badge.r2{background:var(--amber);}
+.rank-badge.r3{background:var(--teal);}
+.shop-name{color:var(--ink);font-weight:600;}
+.bar-cell{position:relative;}
+.bar-cell .track{position:absolute;left:10px;right:10px;bottom:2px;height:3px;background:#EEF0F6;border-radius:3px;}
+.bar-cell .fill{position:absolute;left:10px;bottom:2px;height:3px;background:var(--teal);border-radius:3px;}
+
+footer{max-width:1360px;margin:0 auto;padding:0 36px 40px;color:var(--muted);font-size:11.5px;}
+
+@media (max-width:1000px){
+  .kpi-row{grid-template-columns:repeat(2,1fr);}
+  .grid-2,.grid-2b{grid-template-columns:1fr;}
+  .topbar,.wrap{padding-left:20px;padding-right:20px;}
+}
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div>
+      <p class="brand-eyebrow">TSM · Retail Performance</p>
+      <h1 class="brand-title">Handset Sales Performance Dashboard</h1>
+      <p class="brand-sub">Hall &amp; COCO shops · Handset category · Refresh_TSM.xlsx</p>
+    </div>
+    <div class="scope-pill" id="scopePill">Loading scope…</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="filterbar">
+    <div class="filter-group">
+      <span class="filter-label">Region</span>
+      <div class="chip-row" id="regionChips"></div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Shop Type</span>
+      <div class="chip-row" id="typeChips"></div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Area</span>
+      <div class="chip-row" id="areaChips"></div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Date</span>
+      <div class="chip-row" id="dateChips"></div>
+    </div>
+    <button class="reset-btn" id="resetBtn">Reset filters</button>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-card c1">
+      <div class="kpi-label">Total Handset Volume</div>
+      <div class="kpi-value num" id="kpiQty">0<span class="kpi-unit">units</span></div>
+    </div>
+    <div class="kpi-card c2">
+      <div class="kpi-label">Total Handset Revenue</div>
+      <div class="kpi-value num" id="kpiRev">0<span class="kpi-unit">THB</span></div>
+    </div>
+    <div class="kpi-card c3">
+      <div class="kpi-label">Avg. Selling Price</div>
+      <div class="kpi-value num" id="kpiAvg">0<span class="kpi-unit">THB/unit</span></div>
+    </div>
+    <div class="kpi-card c4">
+      <div class="kpi-label">Active Shops</div>
+      <div class="kpi-value num" id="kpiShops">0<span class="kpi-unit">of 48</span></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Daily Sales Trend</span>
+        <span class="panel-hint">Volume (bars) &amp; Revenue (line)</span>
+      </div>
+      <div class="chart-box"><canvas id="trendChart"></canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Regional Performance</span>
+        <span class="panel-hint">Click a bar to drill in</span>
+      </div>
+      <div class="chart-box"><canvas id="regionChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid-2b">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Area Drill-down</span>
+        <span class="panel-hint" id="areaHint">All regions</span>
+      </div>
+      <div class="area-list" id="areaList"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Shop Leaderboard — Top 15</span>
+        <span class="panel-hint">Click a column to sort</span>
+      </div>
+      <table class="lb">
+        <thead>
+          <tr>
+            <th style="width:34px;">#</th>
+            <th>Shop</th>
+            <th>Region / Area</th>
+            <th class="num" data-sort="qty">Qty</th>
+            <th class="num" data-sort="rev">Revenue (THB)</th>
+          </tr>
+        </thead>
+        <tbody id="lbBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+<footer>Handset Sales Performance Dashboard · Source: Refresh_TSM.xlsx · Filters apply instantly across all views.</footer>
+
+<script>
+const RAW_DATA = [{"date": "2026-07-01", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central Plaza Chaengwattana (D)", "type": "Hall", "qty": 1, "rev": 6399}, {"date": "2026-07-01", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central Plaza Chaengwattana (D)", "type": "Hall", "qty": 1, "rev": 19600}, {"date": "2026-07-01", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central Plaza Chaengwattana (D)", "type": "Hall", "qty": 1, "rev": 21900}, {"date": "2026-07-01", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central Plaza Chaengwattana (D)", "type": "Hall", "qty": 1, "rev": 40700}, {"date": "2026-07-01", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central West Gate (D)", "type": "Hall", "qty": 1, "rev": 3299}, {"date": "2026-07-01", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central West Gate (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 3299}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 599}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 799}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 17100}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 18749}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 6799}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 10499}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 8490}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 18400}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 18400}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 3299}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 1399}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 1399}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 8299}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 2499}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 8999}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 37200}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 16399}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 16399}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 43700}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 16400}, {"date": "2026-07-01", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 17900}, {"date": "2026-07-01", "region": "BMA", "area": "BMA IV - South East", "shop": "True Shop Mega Bangna (D)", "type": "Hall", "qty": 1, "rev": 36200}, {"date": "2026-07-01", "region": "BMA", "area": "BMA V - Central", "shop": "True Shop Supreme Complex (D)", "type": "COCO", "qty": 1, "rev": 3099}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Central Northeast", "shop": "True Shop Central Plaza Ubon Ratchathani (D)", "type": "Hall", "qty": 1, "rev": 2949}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Central Northeast", "shop": "True Shop Central Plaza Ubon Ratchathani (D)", "type": "Hall", "qty": 1, "rev": 25900}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Lower North", "shop": "True Shop Central Plaza Phitsanulok (D)", "type": "Hall", "qty": 1, "rev": 4999}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Lower North", "shop": "True Shop Lotus's Pitsanulok (D)", "type": "COCO", "qty": 1, "rev": 3299}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Lower North", "shop": "True Shop Lotus's Pitsanulok (D)", "type": "COCO", "qty": 1, "rev": 299}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Lower North", "shop": "True Shop Lotus's Pitsanulok (D)", "type": "COCO", "qty": 1, "rev": 3699}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Lower Northeast", "shop": "True Shop Robinson Chaiyaphum (D)", "type": "COCO", "qty": 1, "rev": 25500}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Lower Northeast", "shop": "True Shop The Mall Korat (D)", "type": "Hall", "qty": 1, "rev": 25800}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Lower Northeast", "shop": "True Shop The Mall Korat (D)", "type": "Hall", "qty": 1, "rev": 23200}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Lower Northeast", "shop": "True Shop The Mall Korat (D)", "type": "Hall", "qty": 1, "rev": 25900}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Lower Northeast", "shop": "True Shop The Mall Korat (D)", "type": "Hall", "qty": 1, "rev": 3399}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Lower Northeast", "shop": "True Shop The Mall Korat (D)", "type": "Hall", "qty": 1, "rev": 43700}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Lower Northeast", "shop": "True Shop The Mall Korat (D)", "type": "Hall", "qty": 1, "rev": 2499}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Lower Northeast", "shop": "True Shop The Mall Korat (D)", "type": "Hall", "qty": 1, "rev": 35999}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper North", "shop": "True Shop Lotus's Fang Chiangmai (D)", "type": "COCO", "qty": 1, "rev": 3299}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper North", "shop": "True Shop Lotus's Fang Chiangmai (D)", "type": "COCO", "qty": 1, "rev": 7899}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Assawan Phonpisai (D)", "type": "COCO", "qty": 1, "rev": 2649}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Big C Loei (D)", "type": "COCO", "qty": 1, "rev": 599}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Big C Nong Khai (D)", "type": "COCO", "qty": 1, "rev": 299}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Big C Nong Khai (D)", "type": "COCO", "qty": 1, "rev": 1799}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Plaza Khon Kaen (D)", "type": "Hall", "qty": 1, "rev": 22200}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Plaza Khon Kaen (D)", "type": "Hall", "qty": 1, "rev": 26200}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Plaza Khon Kaen (D)", "type": "Hall", "qty": 1, "rev": 12900}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Plaza Khon Kaen (D)", "type": "Hall", "qty": 1, "rev": 3499}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Plaza Khon Kaen (D)", "type": "Hall", "qty": 1, "rev": 1699}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Plaza Khon Kaen (D)", "type": "Hall", "qty": 1, "rev": 4099}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Plaza Khon Kaen (D)", "type": "Hall", "qty": 1, "rev": 48900}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Plaza Khon Kaen (D)", "type": "Hall", "qty": 1, "rev": 43200}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Plaza Khon Kaen (D)", "type": "Hall", "qty": 1, "rev": 2499}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Udon Thani (D)", "type": "Hall", "qty": 1, "rev": 4799}, {"date": "2026-07-01", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Udon Thani (D)", "type": "Hall", "qty": 1, "rev": 40200}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 10999}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 13999}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 46900}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 33400}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 9490}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Festival Pattaya (D)", "type": "Hall", "qty": 1, "rev": 22700}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 24700}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 29900}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 4699}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 12900}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 7599}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 16499}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 11199}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 3699}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 11999}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 41700}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 45300}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Festival Hat Yai (D)", "type": "Hall", "qty": 1, "rev": 25800}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Festival Hat Yai (D)", "type": "Hall", "qty": 1, "rev": 41700}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Nakorn Sithammarat (D)", "type": "Hall", "qty": 1, "rev": 4299}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Nakorn Sithammarat (D)", "type": "Hall", "qty": 1, "rev": 11699}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Nakorn Sithammarat (D)", "type": "Hall", "qty": 1, "rev": 5299}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Nakorn Sithammarat (D)", "type": "Hall", "qty": 1, "rev": 33400}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Festival Samui (D)", "type": "Hall", "qty": 1, "rev": 25800}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Festival Samui (D)", "type": "Hall", "qty": 1, "rev": 17600}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 25800}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 23200}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 52800}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 39800}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 39800}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 599}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 599}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 5999}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Lotus's Chaiya (D)", "type": "COCO", "qty": 1, "rev": 21700}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Ocean Shopping Mall (D)", "type": "COCO", "qty": 1, "rev": 3349}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 3999}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Plaza Mahachai (D)", "type": "Hall", "qty": 1, "rev": 29900}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Salaya (D)", "type": "Hall", "qty": 1, "rev": 28500}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Salaya (D)", "type": "Hall", "qty": 1, "rev": 48200}, {"date": "2026-07-01", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Lotus's Sam Chuk (D)", "type": "COCO", "qty": 1, "rev": 3299}, {"date": "2026-07-02", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Big C Sukhaphiban 5 (D)", "type": "COCO", "qty": 1, "rev": 10999}, {"date": "2026-07-02", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central Plaza Chaengwattana (D)", "type": "Hall", "qty": 1, "rev": 40700}, {"date": "2026-07-02", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central Plaza Chaengwattana (D)", "type": "Hall", "qty": 1, "rev": 3499}, {"date": "2026-07-02", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central Plaza Chaengwattana (D)", "type": "Hall", "qty": 1, "rev": 5299}, {"date": "2026-07-02", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central Plaza Chaengwattana (D)", "type": "Hall", "qty": 1, "rev": 799}, {"date": "2026-07-02", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central Plaza Chaengwattana (D)", "type": "Hall", "qty": 1, "rev": 12900}, {"date": "2026-07-02", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central West Gate (D)", "type": "Hall", "qty": 1, "rev": 47600}, {"date": "2026-07-02", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central West Gate (D)", "type": "Hall", "qty": 1, "rev": 3349}, {"date": "2026-07-02", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central West Gate (D)", "type": "Hall", "qty": 1, "rev": 10999}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 1699}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 33900}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 2449}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 30900}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 3299}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 3299}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 3299}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 3299}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 7099}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 8999}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 7999}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 13999}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 5499}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 25999}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 9499}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 32800}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 11999}, {"date": "2026-07-02", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 18700}, {"date": "2026-07-02", "region": "BMA", "area": "BMA IV - South East", "shop": "True Shop Mega Bangna (D)", "type": "Hall", "qty": 1, "rev": 5299}, {"date": "2026-07-02", "region": "BMA", "area": "BMA IV - South East", "shop": "True Shop Mega Bangna (D)", "type": "Hall", "qty": 1, "rev": 17200}, {"date": "2026-07-02", "region": "BMA", "area": "BMA IV - South East", "shop": "True Shop Mega Bangna (D)", "type": "Hall", "qty": 1, "rev": 3299}, {"date": "2026-07-02", "region": "BMA", "area": "BMA V - Central", "shop": "True Shop Supreme Complex (D)", "type": "COCO", "qty": 1, "rev": 3099}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Central Northeast", "shop": "True Shop Central Plaza Ubon Ratchathani (D)", "type": "Hall", "qty": 1, "rev": 5099}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Central Northeast", "shop": "True Shop Central Plaza Ubon Ratchathani (D)", "type": "Hall", "qty": 1, "rev": 16399}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Central Northeast", "shop": "True Shop Central Plaza Ubon Ratchathani (D)", "type": "Hall", "qty": 1, "rev": 1399}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Central Northeast", "shop": "True Shop Central Plaza Ubon Ratchathani (D)", "type": "Hall", "qty": 1, "rev": 29900}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Central Northeast", "shop": "True Shop Lotus's Det Udom (D)", "type": "COCO", "qty": 1, "rev": 8399}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Central Northeast", "shop": "True Shop Lotus's Det Udom (D)", "type": "COCO", "qty": 1, "rev": 16749}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Lower North", "shop": "True Shop Central Plaza Phitsanulok (D)", "type": "Hall", "qty": 1, "rev": 2799}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Lower North", "shop": "True Shop Central Plaza Phitsanulok (D)", "type": "Hall", "qty": 1, "rev": 7099}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Lower North", "shop": "True Shop Central Plaza Phitsanulok (D)", "type": "Hall", "qty": 1, "rev": 12629}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Lower North", "shop": "True Shop Central Plaza Phitsanulok (D)", "type": "Hall", "qty": 1, "rev": 3490}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Lower North", "shop": "True Shop Central Plaza Phitsanulok (D)", "type": "Hall", "qty": 1, "rev": 30900}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Lower North", "shop": "True Shop Central Plaza Phitsanulok (D)", "type": "Hall", "qty": 1, "rev": 30900}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Lower North", "shop": "True Shop Salokbat Kamphaengphet (D)", "type": "COCO", "qty": 1, "rev": 3299}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Lower Northeast", "shop": "True Shop Lotus's Bua Yai (D)", "type": "COCO", "qty": 1, "rev": 4799}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Lower Northeast", "shop": "True Shop The Mall Korat (D)", "type": "Hall", "qty": 1, "rev": 23200}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Upper North", "shop": "True Shop Lotus's Chom Thong (D)", "type": "COCO", "qty": 1, "rev": 6499}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Upper North", "shop": "True Shop Lotus's Fang Chiangmai (D)", "type": "COCO", "qty": 1, "rev": 3099}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Upper North", "shop": "True Shop Lotus's Fang Chiangmai (D)", "type": "COCO", "qty": 1, "rev": 27900}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Assawan Phonpisai (D)", "type": "COCO", "qty": 1, "rev": 599}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Big C Kranuan (D)", "type": "COCO", "qty": 1, "rev": 299}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Big C Loei (D)", "type": "COCO", "qty": 1, "rev": 26900}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Big C Loei (D)", "type": "COCO", "qty": 1, "rev": 3499}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Big C Loei (D)", "type": "COCO", "qty": 1, "rev": 599}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Plaza Khon Kaen (D)", "type": "Hall", "qty": 1, "rev": 21900}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Udon Thani (D)", "type": "Hall", "qty": 1, "rev": 599}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Udon Thani (D)", "type": "Hall", "qty": 1, "rev": 23700}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Lotus's Banphue (D)", "type": "COCO", "qty": 1, "rev": 1799}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Lotus's Nakhon Phanom (D)", "type": "COCO", "qty": 1, "rev": 3299}, {"date": "2026-07-02", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Lotus's Sawandandin (D)", "type": "COCO", "qty": 1, "rev": 799}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 4499}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 25800}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 19400}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Festival Pattaya (D)", "type": "Hall", "qty": 1, "rev": 3349}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Festival Pattaya (D)", "type": "Hall", "qty": 1, "rev": 11299}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Festival Pattaya (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Festival Pattaya (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Festival Pattaya (D)", "type": "Hall", "qty": 1, "rev": 3299}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Festival Pattaya (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Festival Pattaya (D)", "type": "Hall", "qty": 1, "rev": 24700}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 31200}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 25200}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 5499}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 17999}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 18700}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 16629}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 24700}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 21700}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Ampur Ranot Songkhla (D)", "type": "COCO", "qty": 1, "rev": 4599}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Festival Hat Yai (D)", "type": "Hall", "qty": 1, "rev": 48900}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Festival Hat Yai (D)", "type": "Hall", "qty": 1, "rev": 46900}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Festival Hat Yai (D)", "type": "Hall", "qty": 1, "rev": 27900}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Nakorn Sithammarat (D)", "type": "Hall", "qty": 1, "rev": 5224}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Nakorn Sithammarat (D)", "type": "Hall", "qty": 1, "rev": 15299}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Nakorn Sithammarat (D)", "type": "Hall", "qty": 1, "rev": 21700}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Big C Ranong (D)", "type": "COCO", "qty": 1, "rev": 299}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Big C Ranong (D)", "type": "COCO", "qty": 1, "rev": 299}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Festival Samui (D)", "type": "Hall", "qty": 1, "rev": 52800}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 48700}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 13129}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 10799}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 21900}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Ocean Shopping Mall (D)", "type": "COCO", "qty": 1, "rev": 3499}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 21700}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 41900}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 25800}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 16999}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 7799}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 16749}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Plaza Mahachai (D)", "type": "Hall", "qty": 1, "rev": 23700}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Salaya (D)", "type": "Hall", "qty": 1, "rev": 37400}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Salaya (D)", "type": "Hall", "qty": 1, "rev": 29900}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Salaya (D)", "type": "Hall", "qty": 1, "rev": 799}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Salaya (D)", "type": "Hall", "qty": 1, "rev": 8099}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Lotus's Sam Chuk (D)", "type": "COCO", "qty": 1, "rev": 3099}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Lotus's Sam Chuk (D)", "type": "COCO", "qty": 1, "rev": 299}, {"date": "2026-07-02", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Lotus's Sam Chuk (D)", "type": "COCO", "qty": 1, "rev": 3099}, {"date": "2026-07-03", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Big C Sukhaphiban 5 (D)", "type": "COCO", "qty": 1, "rev": 12499}, {"date": "2026-07-03", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central Plaza Chaengwattana (D)", "type": "Hall", "qty": 1, "rev": 23900}, {"date": "2026-07-03", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central West Gate (D)", "type": "Hall", "qty": 1, "rev": 3599}, {"date": "2026-07-03", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central West Gate (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "BMA", "area": "BMA I - North West", "shop": "True Shop Central West Gate (D)", "type": "Hall", "qty": 1, "rev": 16749}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 6124}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 21999}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 12299}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 13299}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 2649}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 20600}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 40200}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 43800}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 24800}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 54700}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 20600}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 6799}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Fashion Island (D)", "type": "Hall", "qty": 1, "rev": 7190}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 1699}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 1699}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 43700}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 5099}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 39700}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 20700}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 25800}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 24800}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (2 nd.) (D) ", "type": "Hall", "qty": 1, "rev": 3299}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 2349}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 14999}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 7299}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 40200}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 36700}, {"date": "2026-07-03", "region": "BMA", "area": "BMA III - North East", "shop": "True Shop Future Park Rangsit (G Fl.) (D)", "type": "Hall", "qty": 1, "rev": 599}, {"date": "2026-07-03", "region": "BMA", "area": "BMA IV - South East", "shop": "True Shop Mega Bangna (D)", "type": "Hall", "qty": 1, "rev": 10749}, {"date": "2026-07-03", "region": "BMA", "area": "BMA IV - South East", "shop": "True Shop Mega Bangna (D)", "type": "Hall", "qty": 1, "rev": 42200}, {"date": "2026-07-03", "region": "BMA", "area": "BMA IV - South East", "shop": "True Shop Mega Bangna (D)", "type": "Hall", "qty": 1, "rev": 38700}, {"date": "2026-07-03", "region": "BMA", "area": "BMA V - Central", "shop": "True Shop Supreme Complex (D)", "type": "COCO", "qty": 1, "rev": 15499}, {"date": "2026-07-03", "region": "BMA", "area": "BMA V - Central", "shop": "True Shop Supreme Complex (D)", "type": "COCO", "qty": 1, "rev": 15499}, {"date": "2026-07-03", "region": "BMA", "area": "BMA V - Central", "shop": "True Shop Supreme Complex (D)", "type": "COCO", "qty": 1, "rev": 40200}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Central Northeast", "shop": "True Shop Big C Phibun Mangsahan (D)", "type": "COCO", "qty": 1, "rev": 3299}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Central Northeast", "shop": "True Shop Central Plaza Ubon Ratchathani (D)", "type": "Hall", "qty": 1, "rev": 799}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Lower North", "shop": "True Shop Central Plaza Phitsanulok (D)", "type": "Hall", "qty": 1, "rev": 15999}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Lower North", "shop": "True Shop Central Plaza Phitsanulok (D)", "type": "Hall", "qty": 1, "rev": 23200}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Lower North", "shop": "True Shop Central Plaza Phitsanulok (D)", "type": "Hall", "qty": 1, "rev": 35900}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Lower North", "shop": "True Shop Lotus's Pitsanulok (D)", "type": "COCO", "qty": 1, "rev": 4499}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Lower Northeast", "shop": "True Shop Lotus's Sangkha (D)", "type": "COCO", "qty": 1, "rev": 3299}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Lower Northeast", "shop": "True Shop Lotus's Sangkha (D)", "type": "COCO", "qty": 1, "rev": 3299}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Lower Northeast", "shop": "True Shop The Mall Korat (D)", "type": "Hall", "qty": 1, "rev": 11999}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Lower Northeast", "shop": "True Shop The Mall Korat (D)", "type": "Hall", "qty": 1, "rev": 48700}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Lower Northeast", "shop": "True Shop The Mall Korat (D)", "type": "Hall", "qty": 1, "rev": 26300}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Lower Northeast", "shop": "True Shop The Mall Korat (D)", "type": "Hall", "qty": 1, "rev": 34200}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper North", "shop": "True Shop Lotus's Chom Thong (D)", "type": "COCO", "qty": 1, "rev": 999}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper North", "shop": "True Shop Lotus's Chom Thong (D)", "type": "COCO", "qty": 1, "rev": 18749}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper North", "shop": "True Shop Lotus's Fang Chiangmai (D)", "type": "COCO", "qty": 1, "rev": 1399}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper North", "shop": "True Shop Lotus's Ruam Choke (D)", "type": "COCO", "qty": 1, "rev": 16999}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Assawan Phonpisai (D)", "type": "COCO", "qty": 1, "rev": 12299}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Big C Loei (D)", "type": "COCO", "qty": 1, "rev": 1699}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Big C Loei (D)", "type": "COCO", "qty": 1, "rev": 1399}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Big C Nong Khai (D)", "type": "COCO", "qty": 1, "rev": 13999}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Big C Nong Khai (D)", "type": "COCO", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Big C Nong Khai (D)", "type": "COCO", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Plaza Khon Kaen (D)", "type": "Hall", "qty": 1, "rev": 3499}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Plaza Khon Kaen (D)", "type": "Hall", "qty": 1, "rev": 36200}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Plaza Khon Kaen (D)", "type": "Hall", "qty": 1, "rev": 39800}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Plaza Khon Kaen (D)", "type": "Hall", "qty": 1, "rev": 22200}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Plaza Khon Kaen (D)", "type": "Hall", "qty": 1, "rev": 35900}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Plaza Khon Kaen (D)", "type": "Hall", "qty": 1, "rev": 4499}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Udon Thani (D)", "type": "Hall", "qty": 1, "rev": 2349}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Udon Thani (D)", "type": "Hall", "qty": 1, "rev": 11690}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Central Udon Thani (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Lotus's Nakhon Phanom (D)", "type": "COCO", "qty": 1, "rev": 17999}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Lotus's Nong Ruea (D)", "type": "COCO", "qty": 1, "rev": 799}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Lotus's Nong Ruea (D)", "type": "COCO", "qty": 1, "rev": 24700}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Lotus's Nong Ruea (D)", "type": "COCO", "qty": 1, "rev": 1549}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Lotus's Nong Ruea (D)", "type": "COCO", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Lotus's Nong Ruea (D)", "type": "COCO", "qty": 1, "rev": 3299}, {"date": "2026-07-03", "region": "UPC I", "area": "UPC - Upper Northeast", "shop": "True Shop Lotus's Nong Ruea (D)", "type": "COCO", "qty": 1, "rev": 3299}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 16999}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 6424}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 43700}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 46900}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 16749}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 23999}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 16999}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 16999}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 17999}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Central", "shop": "True Shop Ayutthaya (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Festival Pattaya (D)", "type": "Hall", "qty": 1, "rev": 15799}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Festival Pattaya (D)", "type": "Hall", "qty": 1, "rev": 40200}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Festival Pattaya (D)", "type": "Hall", "qty": 1, "rev": 49200}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Festival Pattaya (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 16399}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 14499}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 13999}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 19499}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 16499}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 43700}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 42200}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 48700}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 22200}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 22700}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 22700}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 13699}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 1399}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - East", "shop": "True Shop Central Rayong (D)", "type": "Hall", "qty": 1, "rev": 13999}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Festival Hat Yai (D)", "type": "Hall", "qty": 1, "rev": 19799}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Festival Hat Yai (D)", "type": "Hall", "qty": 1, "rev": 54900}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Festival Hat Yai (D)", "type": "Hall", "qty": 1, "rev": 43900}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Festival Hat Yai (D)", "type": "Hall", "qty": 1, "rev": 4599}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Festival Hat Yai (D)", "type": "Hall", "qty": 1, "rev": 46900}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Festival Hat Yai (D)", "type": "Hall", "qty": 1, "rev": 5499}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Lower South", "shop": "True Shop Central Nakorn Sithammarat (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Big C Ranong (D)", "type": "COCO", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 5299}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 5499}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 7999}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 19999}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 12999}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 14299}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 15499}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 599}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 1399}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 599}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 13098}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 6799}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 5199}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Central Plaza Suratthani (D)", "type": "Hall", "qty": 1, "rev": 599}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Lotus's Chaiya (D)", "type": "COCO", "qty": 1, "rev": 1299}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Lotus's Chaiya (D)", "type": "COCO", "qty": 1, "rev": 2049}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Ocean Shopping Mall (D)", "type": "COCO", "qty": 1, "rev": 19999}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 4099}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 11499}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - Upper South", "shop": "True Shop Phuket (D)", "type": "Hall", "qty": 1, "rev": 299}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Plaza Mahachai (D)", "type": "Hall", "qty": 1, "rev": 9999}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Plaza Mahachai (D)", "type": "Hall", "qty": 1, "rev": 14999}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Plaza Mahachai (D)", "type": "Hall", "qty": 1, "rev": 20999}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Plaza Mahachai (D)", "type": "Hall", "qty": 1, "rev": 21200}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Plaza Mahachai (D)", "type": "Hall", "qty": 1, "rev": 25700}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Plaza Mahachai (D)", "type": "Hall", "qty": 1, "rev": 11799}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Plaza Mahachai (D)", "type": "Hall", "qty": 1, "rev": 3099}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Salaya (D)", "type": "Hall", "qty": 1, "rev": 30900}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Salaya (D)", "type": "Hall", "qty": 1, "rev": 29000}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Salaya (D)", "type": "Hall", "qty": 1, "rev": 6099}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Salaya (D)", "type": "Hall", "qty": 1, "rev": 22700}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Salaya (D)", "type": "Hall", "qty": 1, "rev": 35700}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Central Salaya (D)", "type": "Hall", "qty": 1, "rev": 38700}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Lotus's Amphur U-Thong (D)", "type": "COCO", "qty": 1, "rev": 5499}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Lotus's Amphur U-Thong (D)", "type": "COCO", "qty": 1, "rev": 15499}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Lotus's Amphur U-Thong (D)", "type": "COCO", "qty": 1, "rev": 21700}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Lotus's Pran Buri (D)", "type": "COCO", "qty": 1, "rev": 17999}, {"date": "2026-07-03", "region": "UPC II", "area": "UPC - West", "shop": "True Shop Lotus's Sam Chuk (D)", "type": "COCO", "qty": 1, "rev": 25300}];
+// ---------- Setup ----------
+const REGIONS = [...new Set(RAW_DATA.map(d=>d.region))].sort();
+const AREA_TO_REGION = {};
+RAW_DATA.forEach(d=>{AREA_TO_REGION[d.area]=d.region;});
+const ALL_AREAS = REGIONS.flatMap(r =>
+  Object.keys(AREA_TO_REGION).filter(a=>AREA_TO_REGION[a]===r).sort()
+);
+const DATES = [...new Set(RAW_DATA.map(d=>d.date))].sort();
+const TYPES = [...new Set(RAW_DATA.map(d=>d.type))].sort();
+const TOTAL_SHOPS = new Set(RAW_DATA.map(d=>d.shop)).size;
+
+const fmtInt = n => Math.round(n).toLocaleString('en-US');
+const fmtDate = s => {
+  const d = new Date(s+'T00:00:00');
+  return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+};
+
+const state = {
+  region: 'All',
+  type: 'All',
+  area: 'All',
+  dates: new Set(DATES),
+  sortKey: 'rev',
+  sortDir: 'desc'
+};
+
+// ---------- Chip rendering ----------
+function renderRegionChips(){
+  const el = document.getElementById('regionChips');
+  el.innerHTML = '';
+  ['All', ...REGIONS].forEach(r=>{
+    const chip = document.createElement('button');
+    chip.className = 'chip' + (state.region===r ? ' active':'');
+    chip.textContent = r;
+    chip.onclick = ()=>{
+      state.region = (state.region===r && r!=='All') ? 'All' : r;
+      if(state.area!=='All' && AREA_TO_REGION[state.area]!==state.region && state.region!=='All'){
+        state.area='All';
+      }
+      renderAll();
+    };
+    el.appendChild(chip);
+  });
+}
+
+function renderTypeChips(){
+  const el = document.getElementById('typeChips');
+  el.innerHTML = '';
+  ['All', ...TYPES].forEach(t=>{
+    const chip = document.createElement('button');
+    chip.className = 'chip' + (state.type===t ? ' active':'');
+    chip.textContent = t;
+    chip.onclick = ()=>{
+      state.type = (state.type===t && t!=='All') ? 'All' : t;
+      renderAll();
+    };
+    el.appendChild(chip);
+  });
+}
+
+function renderAreaChips(){
+  const el = document.getElementById('areaChips');
+  el.innerHTML = '';
+  const areas = state.region==='All' ? ALL_AREAS : ALL_AREAS.filter(a=>AREA_TO_REGION[a]===state.region);
+  const chip = document.createElement('button');
+  chip.className='chip'+(state.area==='All'?' active':'');
+  chip.textContent='All';
+  chip.onclick=()=>{state.area='All'; renderAll();};
+  el.appendChild(chip);
+  areas.forEach(a=>{
+    const c = document.createElement('button');
+    c.className='chip'+(state.area===a?' active':'');
+    c.textContent = a;
+    c.title = a;
+    c.onclick=()=>{state.area=(state.area===a?'All':a); renderAll();};
+    el.appendChild(c);
+  });
+}
+
+function renderDateChips(){
+  const el = document.getElementById('dateChips');
+  el.innerHTML='';
+  DATES.forEach(d=>{
+    const c = document.createElement('button');
+    c.className='chip date'+(state.dates.has(d)?' active':'');
+    c.textContent = fmtDate(d);
+    c.onclick=()=>{
+      if(state.dates.has(d)){ if(state.dates.size>1) state.dates.delete(d); }
+      else state.dates.add(d);
+      renderAll();
+    };
+    el.appendChild(c);
+  });
+}
+
+// ---------- Filtering ----------
+function getFiltered({useRegion=true, useArea=true, useDate=true, useType=true}={}){
+  return RAW_DATA.filter(d=>
+    (!useRegion || state.region==='All' || d.region===state.region) &&
+    (!useType || state.type==='All' || d.type===state.type) &&
+    (!useArea || state.area==='All' || d.area===state.area) &&
+    (!useDate || state.dates.has(d.date))
+  );
+}
+
+// ---------- KPIs ----------
+function renderKPIs(){
+  const f = getFiltered();
+  const qty = f.reduce((s,d)=>s+d.qty,0);
+  const rev = f.reduce((s,d)=>s+d.rev,0);
+  const avg = qty ? rev/qty : 0;
+  const shops = new Set(f.filter(d=>d.qty>0).map(d=>d.shop)).size;
+  document.getElementById('kpiQty').innerHTML = fmtInt(qty)+'<span class="kpi-unit">units</span>';
+  document.getElementById('kpiRev').innerHTML = fmtInt(rev)+'<span class="kpi-unit">THB</span>';
+  document.getElementById('kpiAvg').innerHTML = fmtInt(avg)+'<span class="kpi-unit">THB/unit</span>';
+  document.getElementById('kpiShops').innerHTML = shops+'<span class="kpi-unit">of '+TOTAL_SHOPS+'</span>';
+
+  const scopeBits = [];
+  scopeBits.push(state.region==='All'?'All regions':state.region);
+  scopeBits.push(state.type==='All'?'Hall & COCO':state.type+' only');
+  scopeBits.push(state.area==='All'?'all areas':state.area);
+  const dArr = [...state.dates].sort();
+  scopeBits.push(dArr.length===DATES.length ? 'full period' : dArr.map(fmtDate).join(', '));
+  document.getElementById('scopePill').innerHTML =
+    'Showing <b>'+fmtInt(qty)+'</b> units · <b>฿'+fmtInt(rev)+'</b> — '+scopeBits.join(' · ');
+}
+
+// ---------- Daily Trend chart ----------
+let trendChart, regionChart;
+function renderTrend(){
+  const f = getFiltered();
+  const qtyByDate = {}, revByDate = {};
+  DATES.forEach(d=>{qtyByDate[d]=0; revByDate[d]=0;});
+  f.forEach(d=>{qtyByDate[d.date]+=d.qty; revByDate[d.date]+=d.rev;});
+  const labels = DATES.map(fmtDate);
+  const qtyData = DATES.map(d=>qtyByDate[d]);
+  const revData = DATES.map(d=>revByDate[d]);
+
+  const ctx = document.getElementById('trendChart');
+  if(trendChart) trendChart.destroy();
+  trendChart = new Chart(ctx, {
+    data:{
+      labels,
+      datasets:[
+        {type:'bar', label:'Volume (units)', data:qtyData, backgroundColor:'#101B3D', borderRadius:6, yAxisID:'y', maxBarThickness:46},
+        {type:'line', label:'Revenue (THB)', data:revData, borderColor:'#E8483C', backgroundColor:'#E8483C', tension:.35, yAxisID:'y1', pointRadius:5, pointBackgroundColor:'#E8483C', borderWidth:2.5}
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index', intersect:false},
+      plugins:{legend:{position:'bottom', labels:{boxWidth:10,font:{size:11,family:'Inter'}}}},
+      scales:{
+        y:{position:'left', title:{display:true,text:'Units',font:{size:10}}, grid:{color:'#EEF0F6'}},
+        y1:{position:'right', title:{display:true,text:'Revenue (THB)',font:{size:10}}, grid:{display:false}}
+      }
+    }
+  });
+}
+
+// ---------- Regional chart (click to drill) ----------
+function renderRegionChart(){
+  const f = getFiltered({useRegion:false});
+  const qtyByReg={}, revByReg={};
+  REGIONS.forEach(r=>{qtyByReg[r]=0; revByReg[r]=0;});
+  f.forEach(d=>{qtyByReg[d.region]+=d.qty; revByReg[d.region]+=d.rev;});
+
+  const ctx = document.getElementById('regionChart');
+  if(regionChart) regionChart.destroy();
+  regionChart = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels:REGIONS,
+      datasets:[
+        {label:'Revenue (THB)', data:REGIONS.map(r=>revByReg[r]), backgroundColor:REGIONS.map(r=> r===state.region?'#E8483C':'#D9DEEB'), borderRadius:6, yAxisID:'y'},
+        {label:'Volume (units)', data:REGIONS.map(r=>qtyByReg[r]), type:'line', borderColor:'#1E9E86', backgroundColor:'#1E9E86', yAxisID:'y1', pointRadius:5, borderWidth:2.5}
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      onClick:(evt,elements)=>{
+        if(elements.length){
+          const idx = elements[0].index;
+          const r = REGIONS[idx];
+          state.region = state.region===r ? 'All' : r;
+          if(state.area!=='All' && AREA_TO_REGION[state.area]!==state.region && state.region!=='All') state.area='All';
+          renderAll();
+        }
+      },
+      plugins:{legend:{position:'bottom', labels:{boxWidth:10,font:{size:11,family:'Inter'}}}},
+      scales:{
+        y:{position:'left', title:{display:true,text:'Revenue (THB)',font:{size:10}}, grid:{color:'#EEF0F6'}},
+        y1:{position:'right', title:{display:true,text:'Units',font:{size:10}}, grid:{display:false}}
+      }
+    }
+  });
+}
+
+// ---------- Area drill-down (custom bars) ----------
+function renderAreaList(){
+  const f = getFiltered({useArea:false});
+  const areas = state.region==='All' ? ALL_AREAS : ALL_AREAS.filter(a=>AREA_TO_REGION[a]===state.region);
+  const rows = areas.map(a=>{
+    const rows_f = f.filter(d=>d.area===a);
+    return {area:a, qty:rows_f.reduce((s,d)=>s+d.qty,0), rev:rows_f.reduce((s,d)=>s+d.rev,0)};
+  }).sort((a,b)=>b.rev-a.rev);
+  const maxRev = Math.max(1, ...rows.map(r=>r.rev));
+
+  document.getElementById('areaHint').textContent = state.region==='All' ? 'All regions' : state.region+' region';
+  const el = document.getElementById('areaList');
+  el.innerHTML = '';
+  rows.forEach(r=>{
+    const div = document.createElement('div');
+    div.className = 'area-row'+(state.area===r.area?' active':'');
+    div.innerHTML = `
+      <span class="area-name" title="${r.area}">${r.area}</span>
+      <span class="area-track"><span class="area-fill" style="width:${(r.rev/maxRev*100).toFixed(1)}%"></span></span>
+      <span class="area-val num">฿${fmtInt(r.rev)}</span>`;
+    div.onclick = ()=>{ state.area = state.area===r.area ? 'All' : r.area; renderAll(); };
+    el.appendChild(div);
+  });
+}
+
+// ---------- Shop leaderboard ----------
+function renderLeaderboard(){
+  const f = getFiltered();
+  const byShop = {};
+  f.forEach(d=>{
+    if(!byShop[d.shop]) byShop[d.shop]={shop:d.shop, region:d.region, area:d.area, qty:0, rev:0};
+    byShop[d.shop].qty += d.qty;
+    byShop[d.shop].rev += d.rev;
+  });
+  let rows = Object.values(byShop).filter(r=>r.qty>0);
+  rows.sort((a,b)=> state.sortDir==='desc' ? b[state.sortKey]-a[state.sortKey] : a[state.sortKey]-b[state.sortKey]);
+  rows = rows.slice(0,15);
+  const maxRev = Math.max(1, ...rows.map(r=>r.rev));
+
+  const tbody = document.getElementById('lbBody');
+  tbody.innerHTML = '';
+  rows.forEach((r,i)=>{
+    const tr = document.createElement('tr');
+    const badgeClass = i===0?'r1':i===1?'r2':i===2?'r3':'';
+    tr.innerHTML = `
+      <td><span class="rank-badge ${badgeClass}">${i+1}</span></td>
+      <td class="shop-name">${r.shop}</td>
+      <td>${r.region} · ${r.area.replace(/^(BMA|UPC)\s*[IVX]*\s*-\s*/,'')}</td>
+      <td class="num">${fmtInt(r.qty)}</td>
+      <td class="num bar-cell">฿${fmtInt(r.rev)}
+        <span class="track" style="width:calc(100% - 20px)"></span>
+        <span class="fill" style="width:${(r.rev/maxRev*90).toFixed(1)}%"></span>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+document.querySelectorAll('th[data-sort]').forEach(th=>{
+  th.addEventListener('click', ()=>{
+    const key = th.dataset.sort;
+    if(state.sortKey===key) state.sortDir = state.sortDir==='desc'?'asc':'desc';
+    else { state.sortKey = key; state.sortDir='desc'; }
+    renderLeaderboard();
+  });
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  state.region='All'; state.type='All'; state.area='All'; state.dates=new Set(DATES);
+  renderAll();
+});
+
+function renderAll(){
+  renderRegionChips();
+  renderTypeChips();
+  renderAreaChips();
+  renderDateChips();
+  renderKPIs();
+  renderTrend();
+  renderRegionChart();
+  renderAreaList();
+  renderLeaderboard();
+}
+renderAll();
+
+</script>
+</body>
+</html>
