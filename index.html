@@ -1151,13 +1151,16 @@ function createDashboard(cfg){
       data:{
         labels,
         datasets:[
-          {type:'bar', label:'Volume (units)', data:qtyData, backgroundColor:'#101B3D', borderRadius:6, yAxisID:'y', maxBarThickness:46},
-          {type:'line', label:'Revenue (THB)', data:revData, borderColor:'#E8483C', backgroundColor:'#E8483C', tension:.35, yAxisID:'y1', pointRadius:5, pointBackgroundColor:'#E8483C', borderWidth:2.5}
+          {type:'bar', label:'Volume (units)', data:qtyData, backgroundColor:'#101B3D', borderRadius:6, yAxisID:'y', maxBarThickness:46,
+            datalabels:{ display:true, anchor:'end', align:'top', color:'#101B3D', font:{size:10, weight:'700', family:'Inter'}, formatter:(v)=>v.toLocaleString() }},
+          {type:'line', label:'Revenue (THB)', data:revData, borderColor:'#E8483C', backgroundColor:'#E8483C', tension:.35, yAxisID:'y1', pointRadius:5, pointBackgroundColor:'#E8483C', borderWidth:2.5,
+            datalabels:{ display:true, align:'top', offset:10, color:'#E8483C', font:{size:10, weight:'700', family:'Inter'}, formatter:(v)=>'฿'+(v/1000).toFixed(0)+'K' }}
         ]
       },
       options:{
         responsive:true, maintainAspectRatio:false,
         interaction:{mode:'index', intersect:false},
+        layout:{padding:{top:18}},
         plugins:{legend:{position:'bottom', labels:{boxWidth:10,font:{size:11,family:'Inter'}}}},
         scales:{
           y:{position:'left', title:{display:true,text:'Units',font:{size:10}}, grid:{color:'#EEF0F6'}},
@@ -1180,12 +1183,15 @@ function createDashboard(cfg){
       data:{
         labels:REGIONS,
         datasets:[
-          {label:'Revenue (THB)', data:REGIONS.map(r=>revByReg[r]), backgroundColor:REGIONS.map(r=> r===state.region?'#E8483C':'#D9DEEB'), borderRadius:6, yAxisID:'y'},
-          {label:'Volume (units)', data:REGIONS.map(r=>qtyByReg[r]), type:'line', borderColor:'#1E9E86', backgroundColor:'#1E9E86', yAxisID:'y1', pointRadius:5, borderWidth:2.5}
+          {label:'Revenue (THB)', data:REGIONS.map(r=>revByReg[r]), backgroundColor:REGIONS.map(r=> r===state.region?'#E8483C':'#D9DEEB'), borderRadius:6, yAxisID:'y',
+            datalabels:{ display:true, anchor:'end', align:'top', color:'#101B3D', font:{size:10, weight:'700', family:'Inter'}, formatter:(v)=>'฿'+(v/1000).toFixed(0)+'K' }},
+          {label:'Volume (units)', data:REGIONS.map(r=>qtyByReg[r]), type:'line', borderColor:'#1E9E86', backgroundColor:'#1E9E86', yAxisID:'y1', pointRadius:5, borderWidth:2.5,
+            datalabels:{ display:true, align:'bottom', offset:10, color:'#1E9E86', font:{size:10, weight:'700', family:'Inter'}, formatter:(v)=>v.toLocaleString() }}
         ]
       },
       options:{
         responsive:true, maintainAspectRatio:false,
+        layout:{padding:{top:18}},
         onClick:(evt,elements)=>{
           if(elements.length){
             const idx = elements[0].index;
