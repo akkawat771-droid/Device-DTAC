@@ -981,6 +981,11 @@ table.mom-table td.col-trend{padding:4px 10px;}
         <span class="filter-label">Date</span>
         <div class="chip-row" id="entrymodel-dateChips"></div>
       </div>
+      <div class="filter-group">
+        <span class="filter-label">Shop <span class="filter-label-hint">(type to search)</span></span>
+        <input class="shop-search" id="entrymodel-shopSelect" list="entrymodel-shopList" type="text" placeholder="All shops" autocomplete="off">
+        <datalist id="entrymodel-shopList"></datalist>
+      </div>
       <button class="reset-btn" id="entrymodel-resetBtn">Reset filters</button>
       <button class="export-btn" id="entrymodel-exportBtn">⬇ Export CSV</button>
     </div>
@@ -1127,17 +1132,32 @@ function createDashboard(cfg){
   }
 
   // ---------- Shop search (type-ahead filter, single shop) ----------
+  // The candidate list narrows to shops matching the current Region /
+  // Shop Type / Area selections, so picking an Area (etc.) first means
+  // the Shop Name dropdown only ever suggests shops that actually exist
+  // there.
+  function getFilteredShopNames(){
+    return Object.values(SHOP_LOOKUP)
+      .filter(s =>
+        (state.region==='All' || s.region===state.region) &&
+        (state.type==='All' || s.type===state.type) &&
+        (state.areas.size===0 || state.areas.has(s.area))
+      )
+      .map(s=>s.name)
+      .sort();
+  }
   function renderShopSearch(){
     const datalistEl = $('shopList');
-    if(datalistEl.childElementCount===0){
-      ALL_SHOP_NAMES.forEach(name=>{
-        const opt = document.createElement('option');
-        opt.value = name;
-        datalistEl.appendChild(opt);
-      });
-    }
+    const names = getFilteredShopNames();
+    datalistEl.innerHTML = '';
+    names.forEach(name=>{
+      const opt = document.createElement('option');
+      opt.value = name;
+      datalistEl.appendChild(opt);
+    });
     const input = $('shopSelect');
     input.value = state.shop==='All' ? '' : (SHOP_LOOKUP[state.shop] ? SHOP_LOOKUP[state.shop].name : '');
+    input.placeholder = names.length===ALL_SHOP_NAMES.length ? 'All shops' : `${names.length} shop${names.length===1?'':'s'} in current filter`;
   }
 
   const shopInput = $('shopSelect');
@@ -1731,17 +1751,31 @@ function createAttachRatePage(cfg){
   }
 
   // ---------- Shop search (type-ahead filter, single shop) ----------
+  // Same faceted behaviour as the Handset/Accessories/Sheep pages: the
+  // suggested shop list narrows to whatever Region/Shop Type/Area is
+  // currently selected.
+  function getFilteredShopNames(){
+    return Object.values(SHOP_LOOKUP)
+      .filter(s =>
+        (state.region==='All' || s.region===state.region) &&
+        (state.type==='All' || s.type===state.type) &&
+        (state.areas.size===0 || state.areas.has(s.area))
+      )
+      .map(s=>s.name)
+      .sort();
+  }
   function renderShopSearch(){
     const datalistEl = $('shopList');
-    if(datalistEl.childElementCount===0){
-      ALL_SHOP_NAMES.forEach(name=>{
-        const opt = document.createElement('option');
-        opt.value = name;
-        datalistEl.appendChild(opt);
-      });
-    }
+    const names = getFilteredShopNames();
+    datalistEl.innerHTML = '';
+    names.forEach(name=>{
+      const opt = document.createElement('option');
+      opt.value = name;
+      datalistEl.appendChild(opt);
+    });
     const input = $('shopSelect');
     input.value = state.shop==='All' ? '' : (SHOP_LOOKUP[state.shop] ? SHOP_LOOKUP[state.shop].name : '');
+    input.placeholder = names.length===ALL_SHOP_NAMES.length ? 'All shops' : `${names.length} shop${names.length===1?'':'s'} in current filter`;
   }
   const shopInput = $('shopSelect');
   function applyShopInput(){
@@ -2150,7 +2184,20 @@ function createEntryModelPage(cfg){
 
   const RAW_DATA = cfg.handsetData.filter(d => TARGET_SET.has(d.brand+'|'+d.model));
   const ALL_DATES = [...new Set(cfg.handsetData.map(d=>d.date))].sort();
-  const state = { dates: new Set(ALL_DATES) };
+  const state = { dates: new Set(ALL_DATES), shop: 'All' };
+
+  // Full shop universe (all shops, not just ones that sold an entry
+  // model) so you can pick any shop and see 0 if they haven't sold any.
+  const SHOP_LOOKUP = {};
+  (cfg.shopsMaster||[]).forEach(s=>{
+    SHOP_LOOKUP[s.code] = {code:s.code, name:s.name};
+  });
+  cfg.handsetData.forEach(d=>{
+    if(!SHOP_LOOKUP[d.code]) SHOP_LOOKUP[d.code] = {code:d.code, name:d.shop};
+  });
+  const SHOP_NAME_TO_CODE = {};
+  Object.values(SHOP_LOOKUP).forEach(s=>{ SHOP_NAME_TO_CODE[s.name] = s.code; });
+  const ALL_SHOP_NAMES = Object.values(SHOP_LOOKUP).map(s=>s.name).sort();
 
   const fmtInt = n => Math.round(n).toLocaleString('en-US');
   const fmtPct = n => n.toFixed(1)+'%';
@@ -2165,8 +2212,41 @@ function createEntryModelPage(cfg){
   }
 
   function getFiltered(){
-    return RAW_DATA.filter(d => state.dates.has(d.date));
+    return RAW_DATA.filter(d => state.dates.has(d.date) && (state.shop==='All' || d.code===state.shop));
   }
+
+  // ---------- Shop search (type-ahead filter, single shop) ----------
+  function renderShopSearch(){
+    const datalistEl = $('shopList');
+    if(datalistEl.childElementCount===0){
+      ALL_SHOP_NAMES.forEach(name=>{
+        const opt = document.createElement('option');
+        opt.value = name;
+        datalistEl.appendChild(opt);
+      });
+    }
+    const input = $('shopSelect');
+    input.value = state.shop==='All' ? '' : (SHOP_LOOKUP[state.shop] ? SHOP_LOOKUP[state.shop].name : '');
+  }
+  const shopInput = $('shopSelect');
+  function applyShopInput(){
+    const typed = shopInput.value.trim();
+    if(typed===''){ if(state.shop!=='All'){ state.shop='All'; renderAll(); } return; }
+    const code = SHOP_NAME_TO_CODE[typed];
+    if(code && code!==state.shop){
+      state.shop = code;
+      renderAll();
+      shopInput.blur();
+    }
+  }
+  shopInput.addEventListener('input', applyShopInput);
+  shopInput.addEventListener('change', applyShopInput);
+  shopInput.addEventListener('blur', ()=>{
+    if(shopInput.value.trim()==='' && state.shop!=='All'){ state.shop='All'; renderAll(); }
+    else if(shopInput.value.trim()!=='' && !SHOP_NAME_TO_CODE[shopInput.value.trim()]){
+      shopInput.value = state.shop==='All' ? '' : (SHOP_LOOKUP[state.shop] ? SHOP_LOOKUP[state.shop].name : '');
+    }
+  });
 
   function computeRows(){
     const f = getFiltered();
@@ -2218,7 +2298,8 @@ function createEntryModelPage(cfg){
 
     const dArr = [...state.dates].sort();
     const scopeTxt = dArr.length===ALL_DATES.length ? 'full period to date' : dArr.length+' date(s) selected';
-    $('scopePill').innerHTML = 'Entry Model tracking for '+MONTH_LABEL+' — <b>'+fmtPct(overallPct)+'</b> of target ('+fmtInt(totalActual)+' / '+fmtInt(totalTarget)+' units) — '+scopeTxt;
+    const shopTxt = state.shop!=='All' && SHOP_LOOKUP[state.shop] ? ' — Shop: '+SHOP_LOOKUP[state.shop].name : '';
+    $('scopePill').innerHTML = 'Entry Model tracking for '+MONTH_LABEL+' — <b>'+fmtPct(overallPct)+'</b> of target ('+fmtInt(totalActual)+' / '+fmtInt(totalTarget)+' units) — '+scopeTxt+shopTxt;
   }
 
   // ---------- Chart ----------
@@ -2301,11 +2382,14 @@ function createEntryModelPage(cfg){
 
   $('resetBtn').addEventListener('click', ()=>{
     state.dates = new Set(ALL_DATES);
+    state.shop = 'All';
+    shopInput.value = '';
     renderAll();
   });
 
   function renderAll(){
     renderDateChips();
+    renderShopSearch();
     renderKPIs();
     renderChart();
     renderTable();
@@ -2367,7 +2451,8 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
         handsetData: HANDSET_DATA,
         targets: ENTRY_MODEL_TARGETS,
         monthDays: ENTRY_MODEL_MONTH_DAYS,
-        monthLabel: ENTRY_MODEL_MONTH_LABEL
+        monthLabel: ENTRY_MODEL_MONTH_LABEL,
+        shopsMaster: SHOPS_MASTER
       });
       entryModelPage.renderAll();
     }
