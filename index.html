@@ -982,6 +982,10 @@ table.mom-table td.col-trend{padding:4px 10px;}
         <div class="chip-row" id="entrymodel-dateChips"></div>
       </div>
       <div class="filter-group">
+        <span class="filter-label">Area <span class="filter-label-hint">(select multiple)</span></span>
+        <div class="chip-row" id="entrymodel-areaChips"></div>
+      </div>
+      <div class="filter-group">
         <span class="filter-label">Shop <span class="filter-label-hint">(type to search)</span></span>
         <input class="shop-search" id="entrymodel-shopSelect" list="entrymodel-shopList" type="text" placeholder="All shops" autocomplete="off">
         <datalist id="entrymodel-shopList"></datalist>
@@ -1015,6 +1019,14 @@ table.mom-table td.col-trend{padding:4px 10px;}
         <span class="panel-hint">Units sold vs Aug 2026 target</span>
       </div>
       <div class="chart-box tall"><canvas id="entrymodel-chart"></canvas></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Daily Trend — All 6 Models</span>
+        <span class="panel-hint">Units sold per day, by model</span>
+      </div>
+      <div class="chart-box tall"><canvas id="entrymodel-dailyTrendChart"></canvas></div>
     </div>
 
     <div class="panel trend-table-panel">
@@ -2184,16 +2196,25 @@ function createEntryModelPage(cfg){
 
   const RAW_DATA = cfg.handsetData.filter(d => TARGET_SET.has(d.brand+'|'+d.model));
   const ALL_DATES = [...new Set(cfg.handsetData.map(d=>d.date))].sort();
-  const state = { dates: new Set(ALL_DATES), shop: 'All' };
+  const state = { dates: new Set(ALL_DATES), areas: new Set(), shop: 'All' };
+
+  // Area <-> Region lookup (Region itself isn't a filter on this page,
+  // but we still group areas by region for a sensible chip order).
+  const REGIONS = [...new Set(cfg.handsetData.map(d=>d.region))].sort();
+  const AREA_TO_REGION = {};
+  cfg.handsetData.forEach(d=>{ AREA_TO_REGION[d.area]=d.region; });
+  const ALL_AREAS = REGIONS.flatMap(r =>
+    Object.keys(AREA_TO_REGION).filter(a=>AREA_TO_REGION[a]===r).sort()
+  );
 
   // Full shop universe (all shops, not just ones that sold an entry
   // model) so you can pick any shop and see 0 if they haven't sold any.
   const SHOP_LOOKUP = {};
   (cfg.shopsMaster||[]).forEach(s=>{
-    SHOP_LOOKUP[s.code] = {code:s.code, name:s.name};
+    SHOP_LOOKUP[s.code] = {code:s.code, name:s.name, area:s.area};
   });
   cfg.handsetData.forEach(d=>{
-    if(!SHOP_LOOKUP[d.code]) SHOP_LOOKUP[d.code] = {code:d.code, name:d.shop};
+    if(!SHOP_LOOKUP[d.code]) SHOP_LOOKUP[d.code] = {code:d.code, name:d.shop, area:d.area};
   });
   const SHOP_NAME_TO_CODE = {};
   Object.values(SHOP_LOOKUP).forEach(s=>{ SHOP_NAME_TO_CODE[s.name] = s.code; });
@@ -2212,21 +2233,64 @@ function createEntryModelPage(cfg){
   }
 
   function getFiltered(){
-    return RAW_DATA.filter(d => state.dates.has(d.date) && (state.shop==='All' || d.code===state.shop));
+    return RAW_DATA.filter(d =>
+      state.dates.has(d.date) &&
+      (state.areas.size===0 || state.areas.has(d.area)) &&
+      (state.shop==='All' || d.code===state.shop)
+    );
+  }
+
+  function pruneShopForArea(){
+    if(state.shop==='All') return;
+    const s = SHOP_LOOKUP[state.shop];
+    if(!s) { state.shop='All'; return; }
+    if(state.areas.size>0 && !state.areas.has(s.area)) state.shop='All';
+  }
+
+  // ---------- Area chips (multi-select) ----------
+  function renderAreaChips(){
+    const el = $('areaChips');
+    el.innerHTML = '';
+    const chip = document.createElement('button');
+    chip.className = 'chip'+(state.areas.size===0?' active':'');
+    chip.textContent = 'All';
+    chip.onclick = ()=>{ state.areas.clear(); pruneShopForArea(); renderAll(); };
+    el.appendChild(chip);
+    ALL_AREAS.forEach(a=>{
+      const c = document.createElement('button');
+      c.className = 'chip'+(state.areas.has(a)?' active':'');
+      c.textContent = a;
+      c.title = a;
+      c.onclick = ()=>{
+        if(state.areas.has(a)) state.areas.delete(a);
+        else state.areas.add(a);
+        pruneShopForArea();
+        renderAll();
+      };
+      el.appendChild(c);
+    });
   }
 
   // ---------- Shop search (type-ahead filter, single shop) ----------
+  // Suggestions narrow to whatever Area is currently selected.
+  function getFilteredShopNames(){
+    return Object.values(SHOP_LOOKUP)
+      .filter(s => state.areas.size===0 || state.areas.has(s.area))
+      .map(s=>s.name)
+      .sort();
+  }
   function renderShopSearch(){
     const datalistEl = $('shopList');
-    if(datalistEl.childElementCount===0){
-      ALL_SHOP_NAMES.forEach(name=>{
-        const opt = document.createElement('option');
-        opt.value = name;
-        datalistEl.appendChild(opt);
-      });
-    }
+    const names = getFilteredShopNames();
+    datalistEl.innerHTML = '';
+    names.forEach(name=>{
+      const opt = document.createElement('option');
+      opt.value = name;
+      datalistEl.appendChild(opt);
+    });
     const input = $('shopSelect');
     input.value = state.shop==='All' ? '' : (SHOP_LOOKUP[state.shop] ? SHOP_LOOKUP[state.shop].name : '');
+    input.placeholder = names.length===ALL_SHOP_NAMES.length ? 'All shops' : `${names.length} shop${names.length===1?'':'s'} in current filter`;
   }
   const shopInput = $('shopSelect');
   function applyShopInput(){
@@ -2235,6 +2299,8 @@ function createEntryModelPage(cfg){
     const code = SHOP_NAME_TO_CODE[typed];
     if(code && code!==state.shop){
       state.shop = code;
+      const s = SHOP_LOOKUP[code];
+      if(state.areas.size>0 && s && !state.areas.has(s.area)) state.areas.clear();
       renderAll();
       shopInput.blur();
     }
@@ -2298,8 +2364,9 @@ function createEntryModelPage(cfg){
 
     const dArr = [...state.dates].sort();
     const scopeTxt = dArr.length===ALL_DATES.length ? 'full period to date' : dArr.length+' date(s) selected';
+    const areaTxt = state.areas.size===0 ? '' : (state.areas.size===1 ? ' — Area: '+[...state.areas][0] : ' — '+state.areas.size+' areas selected');
     const shopTxt = state.shop!=='All' && SHOP_LOOKUP[state.shop] ? ' — Shop: '+SHOP_LOOKUP[state.shop].name : '';
-    $('scopePill').innerHTML = 'Entry Model tracking for '+MONTH_LABEL+' — <b>'+fmtPct(overallPct)+'</b> of target ('+fmtInt(totalActual)+' / '+fmtInt(totalTarget)+' units) — '+scopeTxt+shopTxt;
+    $('scopePill').innerHTML = 'Entry Model tracking for '+MONTH_LABEL+' — <b>'+fmtPct(overallPct)+'</b> of target ('+fmtInt(totalActual)+' / '+fmtInt(totalTarget)+' units) — '+scopeTxt+areaTxt+shopTxt;
   }
 
   // ---------- Chart ----------
@@ -2327,6 +2394,44 @@ function createEntryModelPage(cfg){
           tooltip:{callbacks:{label:(c)=>c.dataset.label+': '+c.parsed.y.toLocaleString()+' units'}}},
         scales:{
           y:{beginAtZero:true, title:{display:true,text:'Units',font:{size:10}}, grid:{color:'#EEF0F6'}},
+          x:{grid:{display:false}}
+        }
+      }
+    });
+  }
+
+  // ---------- Daily Trend chart (all 6 models, one line each) ----------
+  const MODEL_PALETTE = ['#2a78d6','#eb6834','#199e70','#8e5ec9','#d9439c','#c9a227'];
+  let dailyTrendChart;
+  function renderDailyTrendChart(){
+    const f = getFiltered();
+    const ctx = $('dailyTrendChart');
+    if(dailyTrendChart) dailyTrendChart.destroy();
+    const datasets = TARGETS.map((t,i)=>{
+      const byDate = {};
+      ALL_DATES.forEach(d=>byDate[d]=0);
+      f.filter(d=>d.brand===t.brand && d.model===t.model).forEach(d=>{ byDate[d.date]+=d.qty; });
+      return {
+        label: t.label,
+        data: ALL_DATES.map(d=>byDate[d]),
+        borderColor: MODEL_PALETTE[i % MODEL_PALETTE.length],
+        backgroundColor: MODEL_PALETTE[i % MODEL_PALETTE.length],
+        tension: .35,
+        pointRadius: 3,
+        borderWidth: 2.5,
+        fill: false
+      };
+    });
+    dailyTrendChart = new Chart(ctx, {
+      type:'line',
+      data:{ labels: ALL_DATES.map(d=>d.slice(5)), datasets },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        interaction:{mode:'index', intersect:false},
+        plugins:{legend:{position:'bottom', labels:{boxWidth:10,font:{size:11,family:'Inter'}}},
+          tooltip:{callbacks:{label:(c)=>c.dataset.label+': '+c.parsed.y.toLocaleString()+' units'}}},
+        scales:{
+          y:{beginAtZero:true, title:{display:true,text:'Units sold',font:{size:10}}, grid:{color:'#EEF0F6'}},
           x:{grid:{display:false}}
         }
       }
@@ -2382,6 +2487,7 @@ function createEntryModelPage(cfg){
 
   $('resetBtn').addEventListener('click', ()=>{
     state.dates = new Set(ALL_DATES);
+    state.areas = new Set();
     state.shop = 'All';
     shopInput.value = '';
     renderAll();
@@ -2389,9 +2495,11 @@ function createEntryModelPage(cfg){
 
   function renderAll(){
     renderDateChips();
+    renderAreaChips();
     renderShopSearch();
     renderKPIs();
     renderChart();
+    renderDailyTrendChart();
     renderTable();
   }
 
