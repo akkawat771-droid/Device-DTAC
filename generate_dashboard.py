@@ -114,9 +114,9 @@ def load_shops_master(shop_list_path, df):
     ]
     return json.dumps(records, ensure_ascii=False)
 
-def export_group(df, prodgroup):
+def export_group(df, prodgroup, rev_col="NET_AMOUNT"):
     f = df[df["CUSTOM_PRODGROUP"] == prodgroup].copy()
-    f = f[["DATE", "REGION", "AREA", "SHOP_CODE", "SHOP NAME", "TYPE SHOP", "QTY", "NET_AMOUNT", "CUSTOM_BRAND", "CUSTOM_MODEL"]]
+    f = f[["DATE", "REGION", "AREA", "SHOP_CODE", "SHOP NAME", "TYPE SHOP", "QTY", rev_col, "CUSTOM_BRAND", "CUSTOM_MODEL"]]
     f["DATE"] = pd.to_datetime(f["DATE"])
     f = f.sort_values(["DATE", "REGION", "AREA", "SHOP NAME"])
     records = [
@@ -128,7 +128,7 @@ def export_group(df, prodgroup):
             "shop": r["SHOP NAME"],
             "type": r["TYPE SHOP"],
             "qty": int(r["QTY"]),
-            "rev": int(r["NET_AMOUNT"]),
+            "rev": int(r[rev_col]),
             "brand": r["CUSTOM_BRAND"],
             "model": r["CUSTOM_MODEL"],
         }
@@ -186,7 +186,7 @@ def export_sheep(sheep_xlsx_path, area_to_region=None):
 def build(xlsx_path: str, out_path: str, shop_list_path: str = None, sheep_xlsx_path: str = None):
     df = pd.read_excel(xlsx_path, sheet_name="TSM")
 
-    handset_records, handset_f = export_group(df, "HANDSET")
+    handset_records, handset_f = export_group(df, "HANDSET", rev_col="PRICE")
     accessories_records, accessories_f = export_group(df, "ACCESSORIES")
 
     area_to_region = df.drop_duplicates(subset=["AREA"]).set_index("AREA")["REGION"].to_dict()
@@ -228,7 +228,7 @@ def build(xlsx_path: str, out_path: str, shop_list_path: str = None, sheep_xlsx_
         entry_actuals.append((t["label"], int(qty), t["target"]))
 
     print(f"OK -> {out_path}")
-    print(f"    Handset:     {len(handset_records)} rows | {handset_f['QTY'].sum():,} units | {handset_f['NET_AMOUNT'].sum():,} THB")
+    print(f"    Handset:     {len(handset_records)} rows | {handset_f['QTY'].sum():,} units | {handset_f['PRICE'].sum():,} THB (Price)")
     print(f"    Accessories: {len(accessories_records)} rows | {accessories_f['QTY'].sum():,} units | {accessories_f['NET_AMOUNT'].sum():,} THB")
     if sheep_f is not None:
         print(f"    Sheep:       {len(sheep_records)} rows | {sheep_f['QTY'].sum():,.0f} units | {sheep_f['NET_AMOUNT'].sum():,.2f} THB  (from {sheep_xlsx_path})")
