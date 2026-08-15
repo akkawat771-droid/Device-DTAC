@@ -136,18 +136,35 @@ def export_group(df, prodgroup):
     ]
     return records, f
 
-def export_sheep(sheep_xlsx_path):
+def export_sheep(sheep_xlsx_path, area_to_region=None):
     """Reads Sheep_Report.xlsx ("Export" sheet) and normalises it to the
     same record shape used by Handset/Accessories. Returns ([], None) if
     the file can't be found/read, so the dashboard still builds (Sheep
-    page just shows 0s) instead of hard-failing."""
+    page just shows 0s) instead of hard-failing.
+
+    Some Sheep report exports omit the "Regional" column -- when that
+    happens, `area_to_region` (built from the TSM sheet's AREA->REGION
+    mapping) is used to derive it from AREA instead."""
     if not sheep_xlsx_path or not os.path.exists(sheep_xlsx_path):
         return [], None
     df = pd.read_excel(sheep_xlsx_path, sheet_name="Export")
     df = df.dropna(subset=["SHOP_CODE"]).copy()
+    if "ORDER_DATE" not in df.columns:
+        raise ValueError(
+            f"'{sheep_xlsx_path}' is missing an ORDER_DATE column -- this doesn't look like a "
+            "valid Sheep Report export (got columns: " + ", ".join(df.columns) + "). "
+            "Please re-export and try again."
+        )
     df["ORDER_DATE"] = pd.to_datetime(df["ORDER_DATE"], errors="coerce")
     df = df.dropna(subset=["ORDER_DATE"])
     df["SHOP_TYPE"] = df["SHOP_TYPE"].astype(str).str.replace("True Shop ", "", regex=False).str.strip()
+    if "Regional" not in df.columns:
+        if area_to_region is None:
+            raise ValueError(
+                f"'{sheep_xlsx_path}' has no Regional column and no TSM Area->Region "
+                "mapping was supplied to derive it from."
+            )
+        df["Regional"] = df["AREA"].map(area_to_region)
     df = df.sort_values(["ORDER_DATE", "Regional", "AREA", "SHOP_NAME"])
     records = [
         {
@@ -172,10 +189,12 @@ def build(xlsx_path: str, out_path: str, shop_list_path: str = None, sheep_xlsx_
     handset_records, handset_f = export_group(df, "HANDSET")
     accessories_records, accessories_f = export_group(df, "ACCESSORIES")
 
+    area_to_region = df.drop_duplicates(subset=["AREA"]).set_index("AREA")["REGION"].to_dict()
+
     if sheep_xlsx_path is None:
         default_sheep = os.path.join(os.path.dirname(os.path.abspath(xlsx_path)), "Sheep_Report.xlsx")
         sheep_xlsx_path = default_sheep if os.path.exists(default_sheep) else "Sheep_Report.xlsx"
-    sheep_records, sheep_f = export_sheep(sheep_xlsx_path)
+    sheep_records, sheep_f = export_sheep(sheep_xlsx_path, area_to_region)
 
     handset_json = json.dumps(handset_records, ensure_ascii=False)
     accessories_json = json.dumps(accessories_records, ensure_ascii=False)
