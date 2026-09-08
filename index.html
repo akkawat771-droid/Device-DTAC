@@ -126,6 +126,12 @@ body{
   white-space:nowrap;
 }
 .export-btn:hover{background:var(--navy-2);}
+.export-btn-mini{
+  background:transparent; border:1px solid var(--line); color:var(--ink-soft);
+  font-size:11px; font-weight:600; padding:4px 10px; border-radius:6px;
+  cursor:pointer; white-space:nowrap; margin-left:8px;
+}
+.export-btn-mini:hover{border-color:var(--navy); color:var(--navy); background:#F5F7FC;}
 
 .shop-search{
   border:1px solid var(--line);
@@ -1196,7 +1202,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
       <div class="panel top-shop-panel">
         <div class="panel-head">
           <span class="panel-title">By Shop</span>
-          <span class="panel-hint" id="retchpn1-avgShopHint"></span>
+          <span style="display:flex;align-items:center;"><span class="panel-hint" id="retchpn1-avgShopHint"></span><button class="export-btn-mini" id="retchpn1-exportShopBtn">⬇ CSV</button></span>
         </div>
         <table class="top-shop-table">
           <thead><tr><th>Shop</th><th class="num">Staff</th><th class="num">Total</th><th class="num">Avg</th></tr></thead>
@@ -1206,7 +1212,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
       <div class="panel top-shop-panel">
         <div class="panel-head">
           <span class="panel-title">By Area</span>
-          <span class="panel-hint" id="retchpn1-avgAreaHint"></span>
+          <span style="display:flex;align-items:center;"><span class="panel-hint" id="retchpn1-avgAreaHint"></span><button class="export-btn-mini" id="retchpn1-exportAreaBtn">⬇ CSV</button></span>
         </div>
         <table class="top-shop-table">
           <thead><tr><th>Area</th><th class="num">Staff</th><th class="num">Total</th><th class="num">Avg</th></tr></thead>
@@ -1216,7 +1222,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
       <div class="panel top-shop-panel">
         <div class="panel-head">
           <span class="panel-title">By Region</span>
-          <span class="panel-hint" id="retchpn1-avgRegionHint"></span>
+          <span style="display:flex;align-items:center;"><span class="panel-hint" id="retchpn1-avgRegionHint"></span><button class="export-btn-mini" id="retchpn1-exportRegionBtn">⬇ CSV</button></span>
         </div>
         <table class="top-shop-table">
           <thead><tr><th>Region</th><th class="num">Staff</th><th class="num">Total</th><th class="num">Avg</th></tr></thead>
@@ -1228,7 +1234,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
     <div class="panel trend-table-panel">
       <div class="panel-head">
         <span class="panel-title">Employee Detail — Entry Model Sales</span>
-        <span class="panel-hint" id="retchpn1-tableHint">Loading…</span>
+        <span style="display:flex;align-items:center;"><span class="panel-hint" id="retchpn1-tableHint">Loading…</span><button class="export-btn-mini" id="retchpn1-exportTableBtn">⬇ CSV</button></span>
       </div>
       <div class="mom-table-wrap">
         <table class="mom-table" id="retchpn1-table" style="width:100%;">
@@ -3142,19 +3148,23 @@ function createRetChpn1Page(cfg){
   }
 
   // ---------- Avg Entry Model Qty per Staff, by Shop / Area / Region ----------
-  function renderAvgByGroup(){
+  function computeGroupList(keyFn){
     const rows = computeRows(); // already respects current filters
+    const groups = {};
+    rows.forEach(r=>{
+      const e = EMP_LOOKUP[r.code];
+      const key = e ? keyFn(e) : 'Unknown';
+      if(!groups[key]) groups[key] = {staff:0, total:0};
+      groups[key].staff += 1;
+      groups[key].total += r.total;
+    });
+    const list = Object.entries(groups).map(([name,g])=>({name, staff:g.staff, total:g.total, avg: g.staff?g.total/g.staff:0}));
+    list.sort((a,b)=>b.avg-a.avg);
+    return list;
+  }
+  function renderAvgByGroup(){
     function groupBy(keyFn, elId, hintId){
-      const groups = {};
-      rows.forEach(r=>{
-        const e = EMP_LOOKUP[r.code];
-        const key = e ? keyFn(e) : 'Unknown';
-        if(!groups[key]) groups[key] = {staff:0, total:0};
-        groups[key].staff += 1;
-        groups[key].total += r.total;
-      });
-      const list = Object.entries(groups).map(([name,g])=>({name, staff:g.staff, total:g.total, avg: g.staff?g.total/g.staff:0}));
-      list.sort((a,b)=>b.avg-a.avg);
+      const list = computeGroupList(keyFn);
       const tbody = $(elId);
       tbody.innerHTML = '';
       list.forEach(g=>{
@@ -3254,6 +3264,31 @@ function createRetChpn1Page(cfg){
     URL.revokeObjectURL(url);
   }
   $('exportBtn').addEventListener('click', exportCsv);
+
+  // ---------- Per-panel exports (Avg by Shop / Area / Region) ----------
+  function exportGroupCsv(keyFn, filenamePrefix, colLabel){
+    const list = computeGroupList(keyFn);
+    const header = [colLabel, 'Staff', 'Total', 'Avg'];
+    const lines = [header.map(csvField).join(',')];
+    list.forEach(g=>{
+      lines.push([g.name, g.staff, g.total, g.avg.toFixed(1)].map(csvField).join(','));
+    });
+    const csv = '\uFEFF'+lines.join('\r\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0,10);
+    a.href = url;
+    a.download = `${filenamePrefix}_${stamp}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+  $('exportShopBtn').addEventListener('click', ()=>exportGroupCsv(e=>e.shop, 'Ret_chpn_1_Avg_By_Shop', 'Shop'));
+  $('exportAreaBtn').addEventListener('click', ()=>exportGroupCsv(e=>e.area, 'Ret_chpn_1_Avg_By_Area', 'Area'));
+  $('exportRegionBtn').addEventListener('click', ()=>exportGroupCsv(e=>e.region, 'Ret_chpn_1_Avg_By_Region', 'Region'));
+  $('exportTableBtn').addEventListener('click', exportCsv);
 
   $('resetBtn').addEventListener('click', ()=>{
     state.dates = new Set(ALL_DATES);
