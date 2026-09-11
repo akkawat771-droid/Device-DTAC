@@ -61,6 +61,20 @@ body{
 
 /* ===== Layout ===== */
 .main-content{flex:1; min-width:0;}
+.content-header{
+  background:linear-gradient(135deg,var(--navy) 0%, var(--navy-2) 100%);
+  color:#fff;
+  padding:22px 32px;
+}
+.content-header-eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:#F0A79E;margin:0 0 8px;
+}
+.content-header-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:22px;font-weight:700;margin:0;letter-spacing:-0.01em;line-height:1.25;
+}
 .wrap{max-width:1500px;padding:24px 32px 60px;}
 
 /* ===== Filter bar ===== */
@@ -329,6 +343,7 @@ footer{max-width:1500px;padding:0 32px 40px;color:var(--muted);font-size:11.5px;
   .sidebar-brand{margin-bottom:14px;}
   .tabbar{flex-direction:row; overflow-x:auto; gap:6px; padding-bottom:2px;}
   .tab-btn{width:auto; white-space:nowrap; flex-shrink:0;}
+  .content-header{display:none;}
 }
 
 /* ===== Trend Performance: Summary Banner ===== */
@@ -605,6 +620,10 @@ table.mom-table td.col-trend{padding:4px 10px;}
   </nav>
 
   <main class="main-content">
+  <div class="content-header">
+    <p class="content-header-eyebrow">TSM · Retail Performance</p>
+    <h1 class="content-header-title">Retail Sales<br>Performance<br>Dashboard</h1>
+  </div>
   <div class="wrap">
 
   <div class="page active" id="page-handset">
