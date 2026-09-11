@@ -29,6 +29,42 @@
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
+
+/* ===== Password gate ===== */
+#password-gate{
+  position:fixed; inset:0; z-index:9999;
+  background:linear-gradient(135deg,var(--navy) 0%, var(--navy-2) 100%);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+}
+#password-gate.hidden{display:none;}
+.pw-card{
+  background:#fff; border-radius:16px; padding:36px 34px;
+  width:340px; max-width:90vw;
+  box-shadow:0 20px 60px -12px rgba(0,0,0,0.4);
+  text-align:center;
+}
+.pw-eyebrow{
+  font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--accent); margin:0 0 8px;
+}
+.pw-title{
+  font-family:'Space Grotesk',sans-serif; font-size:19px; font-weight:700;
+  color:var(--navy); margin:0 0 20px; line-height:1.3;
+}
+.pw-input{
+  width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:9px;
+  font-size:14px; font-family:'Inter',sans-serif; text-align:center;
+  letter-spacing:.05em;
+}
+.pw-input:focus{outline:none; border-color:var(--navy);}
+.pw-btn{
+  width:100%; margin-top:12px; padding:12px 14px; background:var(--navy);
+  color:#fff; border:none; border-radius:9px; font-size:14px; font-weight:600;
+  font-family:'Inter',sans-serif; cursor:pointer;
+}
+.pw-btn:hover{background:var(--navy-2);}
+.pw-error{color:var(--accent); font-size:12.5px; margin-top:10px; min-height:16px;}
 body{
   background:var(--bg);
   color:var(--ink);
@@ -599,6 +635,57 @@ table.mom-table td.col-trend{padding:4px 10px;}
 </style>
 </head>
 <body>
+<div id="password-gate">
+  <div class="pw-card">
+    <p class="pw-eyebrow">TSM · Retail Performance</p>
+    <h2 class="pw-title">Enter password to view<br>the dashboard</h2>
+    <input type="password" id="pw-input" class="pw-input" placeholder="Password" autocomplete="off">
+    <button id="pw-submit" class="pw-btn">Unlock</button>
+    <p class="pw-error" id="pw-error"></p>
+  </div>
+</div>
+<script>
+(function(){
+  var PW_HASH = "7b3905e70e2e212d1a582656d83369f3223979d67685e2f07ae3ebb422af32bf";
+  var SESSION_KEY = "tsm_dashboard_unlocked";
+  var gate = document.getElementById('password-gate');
+  var input = document.getElementById('pw-input');
+  var errorEl = document.getElementById('pw-error');
+  var submitBtn = document.getElementById('pw-submit');
+
+  if(sessionStorage.getItem(SESSION_KEY) === PW_HASH){
+    gate.classList.add('hidden');
+  }
+
+  function sha256Hex(text){
+    var data = new TextEncoder().encode(text);
+    return crypto.subtle.digest('SHA-256', data).then(function(buf){
+      return Array.prototype.map.call(new Uint8Array(buf), function(b){
+        return b.toString(16).padStart(2,'0');
+      }).join('');
+    });
+  }
+
+  function tryUnlock(){
+    var val = input.value;
+    if(!val){ errorEl.textContent = 'Enter a password.'; return; }
+    sha256Hex(val).then(function(hash){
+      if(hash === PW_HASH){
+        sessionStorage.setItem(SESSION_KEY, PW_HASH);
+        gate.classList.add('hidden');
+        errorEl.textContent = '';
+      } else {
+        errorEl.textContent = 'Incorrect password. Try again.';
+        input.value = '';
+        input.focus();
+      }
+    });
+  }
+
+  submitBtn.addEventListener('click', tryUnlock);
+  input.addEventListener('keydown', function(e){ if(e.key==='Enter') tryUnlock(); });
+})();
+</script>
 <div class="app-shell">
   <nav class="sidebar">
     <div class="sidebar-brand">
