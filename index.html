@@ -121,6 +121,40 @@ body{
   color:#fff;
 }
 .chip.active.date{background:var(--teal);border-color:var(--teal);}
+
+/* ===== Dropdown multi-select filter ===== */
+.dd-filter{display:inline-block;}
+.dd-filter-btn{
+  background:#fff; border:1px solid var(--line); border-radius:8px;
+  padding:8px 12px; font-size:12.5px; font-weight:600; color:var(--ink);
+  cursor:pointer; display:flex; align-items:center; gap:7px; white-space:nowrap;
+  min-width:120px; justify-content:space-between; font-family:'Inter',sans-serif;
+}
+.dd-filter-btn:hover{border-color:var(--navy);}
+.dd-filter-btn.dd-active{border-color:var(--navy); background:#F7F8FC;}
+.dd-filter-btn .dd-count{
+  background:var(--navy); color:#fff; border-radius:999px; font-size:10px;
+  padding:1px 6px; font-weight:700; flex-shrink:0;
+}
+.dd-filter-btn .dd-summary{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:170px;}
+.dd-filter-btn .dd-chevron{font-size:9px; color:var(--muted); flex-shrink:0;}
+.dd-panel{
+  /* position:fixed + top/left are set inline by JS (createDropdownFilter),
+     since the panel is appended directly to document.body -- this makes
+     it immune to any ancestor's stacking context or overflow clipping. */
+  z-index:500;
+  background:#fff; border:1px solid var(--line); border-radius:10px;
+  box-shadow:var(--shadow); min-width:230px; max-width:340px; max-height:320px; overflow-y:auto;
+  padding:6px;
+}
+.dd-option{
+  display:flex; align-items:center; gap:9px; padding:7px 8px; border-radius:6px;
+  font-size:12.5px; color:var(--ink); cursor:pointer;
+}
+.dd-option:hover{background:#F3F4F8;}
+.dd-option input[type=checkbox]{accent-color:var(--navy); width:15px; height:15px; cursor:pointer; flex-shrink:0;}
+.dd-option span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.dd-option.dd-all{border-bottom:1px solid var(--line); margin-bottom:4px; padding-bottom:9px; font-weight:700;}
 .reset-btn{
   margin-left:auto;
   align-self:center;
@@ -640,19 +674,19 @@ table.mom-table td.col-trend{padding:4px 10px;}
     <div class="filterbar">
       <div class="filter-group">
         <span class="filter-label">Region</span>
-        <div class="chip-row" id="handset-regionChips"></div>
+        <div class="dd-filter" id="handset-regionChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Shop Type</span>
-        <div class="chip-row" id="handset-typeChips"></div>
+        <div class="dd-filter" id="handset-typeChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Area <span class="filter-label-hint">(select multiple)</span></span>
-        <div class="chip-row" id="handset-areaChips"></div>
+        <div class="dd-filter" id="handset-areaChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Date</span>
-        <div class="chip-row" id="handset-dateChips"></div>
+        <div class="dd-filter" id="handset-dateChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Shop <span class="filter-label-hint">(type to search)</span></span>
@@ -665,7 +699,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
     <div class="filterbar">
       <div class="filter-group">
         <span class="filter-label">Brand</span>
-        <div class="chip-row" id="handset-brandChips"></div>
+        <div class="dd-filter" id="handset-brandChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Sub Brand <span class="filter-label-hint">(type to search)</span></span>
@@ -804,19 +838,19 @@ table.mom-table td.col-trend{padding:4px 10px;}
     <div class="filterbar">
       <div class="filter-group">
         <span class="filter-label">Region</span>
-        <div class="chip-row" id="accessories-regionChips"></div>
+        <div class="dd-filter" id="accessories-regionChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Shop Type</span>
-        <div class="chip-row" id="accessories-typeChips"></div>
+        <div class="dd-filter" id="accessories-typeChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Area <span class="filter-label-hint">(select multiple)</span></span>
-        <div class="chip-row" id="accessories-areaChips"></div>
+        <div class="dd-filter" id="accessories-areaChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Date</span>
-        <div class="chip-row" id="accessories-dateChips"></div>
+        <div class="dd-filter" id="accessories-dateChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Shop <span class="filter-label-hint">(type to search)</span></span>
@@ -829,7 +863,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
     <div class="filterbar">
       <div class="filter-group">
         <span class="filter-label">Brand</span>
-        <div class="chip-row" id="accessories-brandChips"></div>
+        <div class="dd-filter" id="accessories-brandChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Sub Brand <span class="filter-label-hint">(type to search)</span></span>
@@ -968,19 +1002,19 @@ table.mom-table td.col-trend{padding:4px 10px;}
     <div class="filterbar">
       <div class="filter-group">
         <span class="filter-label">Region</span>
-        <div class="chip-row" id="sheep-regionChips"></div>
+        <div class="dd-filter" id="sheep-regionChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Shop Type</span>
-        <div class="chip-row" id="sheep-typeChips"></div>
+        <div class="dd-filter" id="sheep-typeChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Area <span class="filter-label-hint">(select multiple)</span></span>
-        <div class="chip-row" id="sheep-areaChips"></div>
+        <div class="dd-filter" id="sheep-areaChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Date</span>
-        <div class="chip-row" id="sheep-dateChips"></div>
+        <div class="dd-filter" id="sheep-dateChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Shop <span class="filter-label-hint">(type to search)</span></span>
@@ -1788,6 +1822,160 @@ if (typeof ChartDataLabels !== 'undefined') {
 }
 
 // =====================================================================
+// createDropdownFilter(containerEl, opts) renders a single-button
+// dropdown with checkboxes for multi-select filtering, replacing the
+// old always-visible chip rows. opts:
+//   getOptions: () => [{value, label}]   -- available choices, in order
+//   getSelected: () => Set               -- currently selected values (empty = "All")
+//   onToggle: (value) => void            -- called when a checkbox is clicked
+//   onClearAll: () => void               -- called when "All" is clicked
+//   allLabel: string (default 'All')
+// Returns { render } so callers can force a re-render (e.g. after a
+// sibling filter changes and the option list needs to refresh).
+// Only one dropdown panel is open at a time across the whole page.
+// =====================================================================
+window._openDropdownFilters = window._openDropdownFilters || [];
+function createDropdownFilter(containerEl, opts){
+  let open = false;
+  let btn = null;
+  let panel = null; // lives in document.body when open, never in containerEl
+  function closeThis(){
+    if(open){
+      open = false;
+      if(panel && panel.parentNode) panel.parentNode.removeChild(panel);
+      panel = null;
+      renderButton();
+    }
+  }
+  function positionPanel(){
+    if(!panel || !btn) return;
+    const r = btn.getBoundingClientRect();
+    panel.style.position = 'fixed';
+    panel.style.top = (r.bottom + 6) + 'px';
+    panel.style.left = r.left + 'px';
+    // keep the panel on-screen if it would overflow the right edge
+    const maxLeft = window.innerWidth - 250;
+    if(parseFloat(panel.style.left) > maxLeft) panel.style.left = Math.max(8, maxLeft) + 'px';
+  }
+  function buildPanel(){
+    const options = opts.getOptions();
+    const selected = opts.getSelected();
+    const allLabel = opts.allLabel || 'All';
+    const isFullSetAll = opts.fullSetIsAll && options.length > 0 && selected.size === options.length;
+
+    const p = document.createElement('div');
+    p.className = 'dd-panel dd-open';
+
+    const allOpt = document.createElement('div');
+    allOpt.className = 'dd-option dd-all';
+    const allCb = document.createElement('input');
+    allCb.type = 'checkbox';
+    allCb.checked = opts.fullSetIsAll ? isFullSetAll : selected.size === 0;
+    const allLabelSpan = document.createElement('span');
+    allLabelSpan.textContent = allLabel;
+    allOpt.appendChild(allCb);
+    allOpt.appendChild(allLabelSpan);
+    allOpt.onclick = (e) => { e.stopPropagation(); opts.onClearAll(); refreshOpenPanel(); };
+    p.appendChild(allOpt);
+
+    options.forEach(o => {
+      const el = document.createElement('div');
+      el.className = 'dd-option';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = selected.has(o.value);
+      const labelSpan = document.createElement('span');
+      labelSpan.textContent = o.label;
+      labelSpan.title = o.label;
+      el.appendChild(cb);
+      el.appendChild(labelSpan);
+      el.onclick = (e) => { e.stopPropagation(); opts.onToggle(o.value); refreshOpenPanel(); };
+      p.appendChild(el);
+    });
+    return p;
+  }
+  function refreshOpenPanel(){
+    // re-render both the button (summary/count may have changed) and,
+    // if still open, swap in a freshly-built panel with updated checkmarks.
+    renderButton();
+    if(open){
+      if(panel && panel.parentNode) panel.parentNode.removeChild(panel);
+      panel = buildPanel();
+      document.body.appendChild(panel);
+      positionPanel();
+    }
+  }
+  function renderButton(){
+    const options = opts.getOptions();
+    const selected = opts.getSelected();
+    const count = selected.size;
+    const allLabel = opts.allLabel || 'All';
+    const isFullSetAll = opts.fullSetIsAll && options.length > 0 && count === options.length;
+    let summary = allLabel;
+    if(isFullSetAll){
+      summary = allLabel;
+    } else if(count === 1){
+      const match = options.find(o => selected.has(o.value));
+      summary = match ? match.label : (count + ' selected');
+    } else if(count > 1){
+      summary = count + ' selected';
+    }
+    containerEl.innerHTML = '';
+    btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'dd-filter-btn' + ((count>0 && !isFullSetAll) ? ' dd-active' : '');
+    const summarySpan = document.createElement('span');
+    summarySpan.className = 'dd-summary';
+    summarySpan.textContent = summary;
+    btn.appendChild(summarySpan);
+    if(count > 0 && !isFullSetAll){
+      const countSpan = document.createElement('span');
+      countSpan.className = 'dd-count';
+      countSpan.textContent = String(count);
+      btn.appendChild(countSpan);
+    }
+    const chevron = document.createElement('span');
+    chevron.className = 'dd-chevron';
+    chevron.textContent = '▾';
+    btn.appendChild(chevron);
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const willOpen = !open;
+      window._openDropdownFilters.forEach(f => { if(f !== api) f.close(); });
+      if(willOpen){
+        open = true;
+        panel = buildPanel();
+        document.body.appendChild(panel);
+        positionPanel();
+        btn.classList.add('dd-open-btn');
+      } else {
+        closeThis();
+      }
+    };
+    containerEl.appendChild(btn);
+  }
+  function render(){
+    // Public entry point used by pages after external state changes
+    // (e.g. a sibling filter narrowed this one's option list). Rebuilds
+    // the button and, if open, the panel too.
+    refreshOpenPanel();
+  }
+  const api = { render, close: closeThis };
+  window._openDropdownFilters.push(api);
+  renderButton();
+  return api;
+}
+document.addEventListener('click', () => {
+  window._openDropdownFilters.forEach(f => f.close());
+});
+window.addEventListener('scroll', () => {
+  window._openDropdownFilters.forEach(f => f.close());
+}, true);
+window.addEventListener('resize', () => {
+  window._openDropdownFilters.forEach(f => f.close());
+});
+
+// =====================================================================
 // createDashboard(cfg) builds one fully independent dashboard page.
 // cfg: { prefix, data, shopsMaster, unitLabel }
 // Called once per product-group page (Handset, Accessories, ...).
@@ -1832,24 +2020,24 @@ function createDashboard(cfg){
   };
 
   const state = {
-    region: 'All',
-    type: 'All',
+    region: new Set(), // empty set = "All regions"
+    type: new Set(), // empty set = "All shop types"
     areas: new Set(), // empty set = "All areas"
     shop: 'All', // shop code, or 'All'
     dates: new Set(DATES),
     sortKey: 'rev',
     sortDir: 'desc',
     modelSortBy: 'rev',
-    brand: 'All',
+    brand: new Set(), // empty set = "All brands"
     subBrand: 'All',
     model: 'All',
     subModel: 'All'
   };
 
   function pruneAreasForRegion(){
-    if(state.region==='All') return;
+    if(state.region.size===0) return;
     [...state.areas].forEach(a=>{
-      if(AREA_TO_REGION[a]!==state.region) state.areas.delete(a);
+      if(!state.region.has(AREA_TO_REGION[a])) state.areas.delete(a);
     });
   }
 
@@ -1857,8 +2045,8 @@ function createDashboard(cfg){
     if(state.shop==='All') return;
     const s = SHOP_LOOKUP[state.shop];
     if(!s) { state.shop='All'; return; }
-    const ok = (state.region==='All' || s.region===state.region) &&
-               (state.type==='All' || s.type===state.type) &&
+    const ok = (state.region.size===0 || state.region.has(s.region)) &&
+               (state.type.size===0 || state.type.has(s.type)) &&
                (state.areas.size===0 || state.areas.has(s.area));
     if(!ok) state.shop='All';
   }
@@ -1871,8 +2059,8 @@ function createDashboard(cfg){
   function getFilteredShopNames(){
     return Object.values(SHOP_LOOKUP)
       .filter(s =>
-        (state.region==='All' || s.region===state.region) &&
-        (state.type==='All' || s.type===state.type) &&
+        (state.region.size===0 || state.region.has(s.region)) &&
+        (state.type.size===0 || state.type.has(s.type)) &&
         (state.areas.size===0 || state.areas.has(s.area))
       )
       .map(s=>s.name)
@@ -1901,8 +2089,8 @@ function createDashboard(cfg){
       state.shop = code;
       const s = SHOP_LOOKUP[code];
       // keep other filters consistent with the chosen shop
-      if(state.region!=='All' && s.region!==state.region) state.region='All';
-      if(state.type!=='All' && s.type!==state.type) state.type='All';
+      if(state.region.size>0 && !state.region.has(s.region)) state.region.clear();
+      if(state.type.size>0 && !state.type.has(s.type)) state.type.clear();
       state.areas.clear();
       renderAll();
       shopInput.blur(); // close the native datalist popup immediately once matched
@@ -1929,7 +2117,7 @@ function createDashboard(cfg){
   function productMatches(d, opts){
     opts = opts || {};
     const useBrand = opts.useBrand!==false, useSubBrand = opts.useSubBrand!==false, useModel = opts.useModel!==false;
-    return (!useBrand || state.brand==='All' || d.brand===state.brand) &&
+    return (!useBrand || state.brand.size===0 || state.brand.has(d.brand)) &&
            (!useSubBrand || state.subBrand==='All' || d.subBrand===state.subBrand) &&
            (!useModel || state.model==='All' || d.model===state.model);
   }
@@ -1941,18 +2129,20 @@ function createDashboard(cfg){
   let renderBrandChips, renderSubBrandSearch, renderModelSearch, renderSubModelSearch;
   if(cfg.enableProductFilters){
     renderBrandChips = function(){
-      const el = $('brandChips');
-      el.innerHTML = '';
-      ['All', ...ALL_BRANDS].forEach(b=>{
-        const chip = document.createElement('button');
-        chip.className = 'chip'+(state.brand===b?' active':'');
-        chip.textContent = b;
-        chip.onclick = ()=>{
-          state.brand = (state.brand===b && b!=='All') ? 'All' : b;
+      createDropdownFilter($('brandChips'), {
+        allLabel: 'All',
+        getOptions: () => ALL_BRANDS.map(b=>({value:b,label:b})),
+        getSelected: () => state.brand,
+        onToggle: (b) => {
+          if(state.brand.has(b)) state.brand.delete(b); else state.brand.add(b);
           state.subBrand='All'; state.model='All'; state.subModel='All';
           renderAll();
-        };
-        el.appendChild(chip);
+        },
+        onClearAll: () => {
+          state.brand.clear();
+          state.subBrand='All'; state.model='All'; state.subModel='All';
+          renderAll();
+        }
       });
     };
     const getFilteredSubBrands = ()=> [...new Set(RAW_DATA.filter(d=>productMatches(d,{useSubBrand:false,useModel:false})).map(d=>d.subBrand))].sort();
@@ -2043,87 +2233,89 @@ function createDashboard(cfg){
 
   // ---------- Chip rendering ----------
   function renderRegionChips(){
-    const el = $('regionChips');
-    el.innerHTML = '';
-    ['All', ...REGIONS].forEach(r=>{
-      const chip = document.createElement('button');
-      chip.className = 'chip' + (state.region===r ? ' active':'');
-      chip.textContent = r;
-      chip.onclick = ()=>{
-        state.region = (state.region===r && r!=='All') ? 'All' : r;
+    createDropdownFilter($('regionChips'), {
+      allLabel: 'All',
+      getOptions: () => REGIONS.map(r=>({value:r,label:r})),
+      getSelected: () => state.region,
+      onToggle: (r) => {
+        if(state.region.has(r)) state.region.delete(r); else state.region.add(r);
         pruneAreasForRegion();
         pruneShopForFilters();
         renderAll();
-      };
-      el.appendChild(chip);
+      },
+      onClearAll: () => {
+        state.region.clear();
+        pruneAreasForRegion();
+        pruneShopForFilters();
+        renderAll();
+      }
     });
   }
 
   function renderTypeChips(){
-    const el = $('typeChips');
-    el.innerHTML = '';
-    ['All', ...TYPES].forEach(t=>{
-      const chip = document.createElement('button');
-      chip.className = 'chip' + (state.type===t ? ' active':'');
-      chip.textContent = t;
-      chip.onclick = ()=>{
-        state.type = (state.type===t && t!=='All') ? 'All' : t;
+    createDropdownFilter($('typeChips'), {
+      allLabel: 'All',
+      getOptions: () => TYPES.map(t=>({value:t,label:t})),
+      getSelected: () => state.type,
+      onToggle: (t) => {
+        if(state.type.has(t)) state.type.delete(t); else state.type.add(t);
         pruneShopForFilters();
         renderAll();
-      };
-      el.appendChild(chip);
+      },
+      onClearAll: () => {
+        state.type.clear();
+        pruneShopForFilters();
+        renderAll();
+      }
     });
   }
 
   function renderAreaChips(){
-    const el = $('areaChips');
-    el.innerHTML = '';
-    const areas = state.region==='All' ? ALL_AREAS : ALL_AREAS.filter(a=>AREA_TO_REGION[a]===state.region);
-    const chip = document.createElement('button');
-    chip.className='chip'+(state.areas.size===0?' active':'');
-    chip.textContent='All';
-    chip.onclick=()=>{state.areas.clear(); pruneShopForFilters(); renderAll();};
-    el.appendChild(chip);
-    areas.forEach(a=>{
-      const c = document.createElement('button');
-      c.className='chip'+(state.areas.has(a)?' active':'');
-      c.textContent = a;
-      c.title = a;
-      c.onclick=()=>{
-        if(state.areas.has(a)) state.areas.delete(a);
-        else state.areas.add(a);
+    const areas = state.region.size===0 ? ALL_AREAS : ALL_AREAS.filter(a=>state.region.has(AREA_TO_REGION[a]));
+    createDropdownFilter($('areaChips'), {
+      allLabel: 'All',
+      getOptions: () => areas.map(a=>({value:a,label:a})),
+      getSelected: () => state.areas,
+      onToggle: (a) => {
+        if(state.areas.has(a)) state.areas.delete(a); else state.areas.add(a);
         pruneShopForFilters();
         renderAll();
-      };
-      el.appendChild(c);
+      },
+      onClearAll: () => {
+        state.areas.clear();
+        pruneShopForFilters();
+        renderAll();
+      }
     });
   }
 
   function renderDateChips(){
-    const el = $('dateChips');
-    el.innerHTML='';
-    DATES.forEach(d=>{
-      const c = document.createElement('button');
-      c.className='chip date'+(state.dates.has(d)?' active':'');
-      c.textContent = fmtDate(d);
-      c.onclick=()=>{
+    createDropdownFilter($('dateChips'), {
+      allLabel: 'Full period',
+      fullSetIsAll: true,
+      getOptions: () => DATES.map(d=>({value:d,label:fmtDate(d)})),
+      getSelected: () => state.dates,
+      onToggle: (d) => {
         if(state.dates.has(d)){ if(state.dates.size>1) state.dates.delete(d); }
         else state.dates.add(d);
         renderAll();
-      };
-      el.appendChild(c);
+      },
+      onClearAll: () => {
+        state.dates = new Set(DATES);
+        renderAll();
+      }
     });
   }
 
   // ---------- Filtering ----------
   function getFiltered({useRegion=true, useArea=true, useDate=true, useType=true, useShop=true}={}){
     return RAW_DATA.filter(d=>
-      (!useRegion || state.region==='All' || d.region===state.region) &&
-      (!useType || state.type==='All' || d.type===state.type) &&
+      (!useRegion || state.region.size===0 || state.region.has(d.region)) &&
+      (!useType || state.type.size===0 || state.type.has(d.type)) &&
       (!useArea || state.areas.size===0 || state.areas.has(d.area)) &&
       (!useShop || state.shop==='All' || d.code===state.shop) &&
       (!useDate || state.dates.has(d.date)) &&
-      (state.brand==='All' || d.brand===state.brand) &&
+      (state.brand.size===0 || state.brand.has(d.brand)) &&
       (state.subBrand==='All' || d.subBrand===state.subBrand) &&
       (state.model==='All' || d.model===state.model) &&
       (state.subModel==='All' || d.subModel===state.subModel)
@@ -2143,14 +2335,14 @@ function createDashboard(cfg){
     $('kpiShops').innerHTML = shops+'<span class="kpi-unit">of '+TOTAL_SHOPS+'</span>';
 
     const scopeBits = [];
-    scopeBits.push(state.region==='All'?'All regions':state.region);
-    scopeBits.push(state.type==='All'?'All shop types':state.type+' only');
+    scopeBits.push(state.region.size===0?'All regions':(state.region.size===1?[...state.region][0]:state.region.size+' regions'));
+    scopeBits.push(state.type.size===0?'All shop types':(state.type.size===1?[...state.type][0]+' only':state.type.size+' shop types'));
     if(state.areas.size===0) scopeBits.push('all areas');
     else if(state.areas.size===1) scopeBits.push([...state.areas][0]);
     else scopeBits.push(state.areas.size+' areas: '+[...state.areas].join(', '));
     if(state.shop!=='All' && SHOP_LOOKUP[state.shop]) scopeBits.push('Shop: '+SHOP_LOOKUP[state.shop].name);
     if(cfg.enableProductFilters){
-      if(state.brand!=='All') scopeBits.push('Brand: '+state.brand);
+      if(state.brand.size>0) scopeBits.push('Brand: '+[...state.brand].join(', '));
       if(state.subBrand!=='All') scopeBits.push('Sub Brand: '+state.subBrand);
       if(state.model!=='All') scopeBits.push('Model: '+state.model);
       if(state.subModel!=='All') scopeBits.push('Sub Model: '+state.subModel);
@@ -2211,7 +2403,7 @@ function createDashboard(cfg){
       data:{
         labels:REGIONS,
         datasets:[
-          {label:'Revenue (THB)', data:REGIONS.map(r=>revByReg[r]), backgroundColor:REGIONS.map(r=> r===state.region?'#E8483C':'#D9DEEB'), borderRadius:6, yAxisID:'y',
+          {label:'Revenue (THB)', data:REGIONS.map(r=>revByReg[r]), backgroundColor:REGIONS.map(r=> state.region.has(r)?'#E8483C':'#D9DEEB'), borderRadius:6, yAxisID:'y',
             datalabels:{ display:true, anchor:'end', align:'top', color:'#101B3D', font:{size:10, weight:'700', family:'Inter'}, formatter:(v)=>'฿'+(v/1000).toFixed(0)+'K' }},
           {label:'Volume (units)', data:REGIONS.map(r=>qtyByReg[r]), type:'line', borderColor:'#1E9E86', backgroundColor:'#1E9E86', yAxisID:'y1', pointRadius:5, borderWidth:2.5,
             datalabels:{ display:true, align:'bottom', offset:10, color:'#1E9E86', font:{size:10, weight:'700', family:'Inter'}, formatter:(v)=>v.toLocaleString() }}
@@ -2224,7 +2416,7 @@ function createDashboard(cfg){
           if(elements.length){
             const idx = elements[0].index;
             const r = REGIONS[idx];
-            state.region = state.region===r ? 'All' : r;
+            if(state.region.has(r)) state.region.delete(r); else state.region.add(r);
             pruneAreasForRegion();
             pruneShopForFilters();
             renderAll();
@@ -2412,14 +2604,14 @@ function createDashboard(cfg){
   // ---------- Area drill-down (custom bars) ----------
   function renderAreaList(){
     const f = getFiltered({useArea:false});
-    const areas = state.region==='All' ? ALL_AREAS : ALL_AREAS.filter(a=>AREA_TO_REGION[a]===state.region);
+    const areas = state.region.size===0 ? ALL_AREAS : ALL_AREAS.filter(a=>state.region.has(AREA_TO_REGION[a]));
     const rows = areas.map(a=>{
       const rows_f = f.filter(d=>d.area===a);
       return {area:a, qty:rows_f.reduce((s,d)=>s+d.qty,0), rev:rows_f.reduce((s,d)=>s+d.rev,0)};
     }).sort((a,b)=>b.rev-a.rev);
     const maxRev = Math.max(1, ...rows.map(r=>r.rev));
 
-    $('areaHint').textContent = state.region==='All' ? 'All regions' : state.region+' region';
+    $('areaHint').textContent = state.region.size===0 ? 'All regions' : (state.region.size===1?[...state.region][0]+' region':state.region.size+' regions');
     const el = $('areaList');
     el.innerHTML = '';
     rows.forEach(r=>{
@@ -2441,8 +2633,8 @@ function createDashboard(cfg){
 
   // ---------- Shop leaderboard (all shops, incl. zero-sale) ----------
   function shopMatchesFilters(s){
-    return (state.region==='All' || s.region===state.region) &&
-           (state.type==='All' || s.type===state.type) &&
+    return (state.region.size===0 || state.region.has(s.region)) &&
+           (state.type.size===0 || state.type.has(s.type)) &&
            (state.areas.size===0 || state.areas.has(s.area)) &&
            (state.shop==='All' || s.code===state.shop);
   }
@@ -2506,10 +2698,10 @@ function createDashboard(cfg){
   });
 
   $('resetBtn').addEventListener('click', ()=>{
-    state.region='All'; state.type='All'; state.areas=new Set(); state.shop='All'; state.dates=new Set(DATES);
+    state.region=new Set(); state.type=new Set(); state.areas=new Set(); state.shop='All'; state.dates=new Set(DATES);
     shopInput.value='';
     if(cfg.enableProductFilters){
-      state.brand='All'; state.subBrand='All'; state.model='All'; state.subModel='All';
+      state.brand=new Set(); state.subBrand='All'; state.model='All'; state.subModel='All';
     }
     renderAll();
   });
