@@ -821,6 +821,28 @@ table.mom-table td.col-trend{padding:4px 10px;}
       <button class="reset-btn" id="accessories-resetBtn">Reset filters</button>
     </div>
 
+    <div class="filterbar">
+      <div class="filter-group">
+        <span class="filter-label">Brand</span>
+        <div class="chip-row" id="accessories-brandChips"></div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Sub Brand <span class="filter-label-hint">(type to search)</span></span>
+        <input class="shop-search" id="accessories-subBrandSelect" list="accessories-subBrandList" type="text" placeholder="All sub brands" autocomplete="off">
+        <datalist id="accessories-subBrandList"></datalist>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Model <span class="filter-label-hint">(type to search)</span></span>
+        <input class="shop-search" id="accessories-modelSelect" list="accessories-modelList" type="text" placeholder="All models" autocomplete="off">
+        <datalist id="accessories-modelList"></datalist>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Sub Model <span class="filter-label-hint">(type to search)</span></span>
+        <input class="shop-search" id="accessories-subModelSelect" list="accessories-subModelList" type="text" placeholder="All submodels" autocomplete="off">
+        <datalist id="accessories-subModelList"></datalist>
+      </div>
+    </div>
+
     <div class="kpi-row">
       <div class="kpi-card c1">
         <div class="kpi-label">Total Accessory Volume</div>
@@ -4825,7 +4847,8 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
         prefix: 'accessories',
         data: ACCESSORIES_DATA,
         shopsMaster: SHOPS_MASTER,
-        unitLabel: 'unit'
+        unitLabel: 'unit',
+        enableProductFilters: true
       });
       accessoriesDashboard.renderAll();
     }
