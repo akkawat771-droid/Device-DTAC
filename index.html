@@ -663,8 +663,9 @@ table.mom-table td.col-trend{padding:4px 10px;}
         <div class="chip-row" id="handset-brandChips"></div>
       </div>
       <div class="filter-group">
-        <span class="filter-label">Sub Brand</span>
-        <div class="chip-row" id="handset-subBrandChips"></div>
+        <span class="filter-label">Sub Brand <span class="filter-label-hint">(type to search)</span></span>
+        <input class="shop-search" id="handset-subBrandSelect" list="handset-subBrandList" type="text" placeholder="All sub brands" autocomplete="off">
+        <datalist id="handset-subBrandList"></datalist>
       </div>
       <div class="filter-group">
         <span class="filter-label">Model <span class="filter-label-hint">(type to search)</span></span>
@@ -1909,7 +1910,7 @@ function createDashboard(cfg){
     if(state.model!=='All' && !RAW_DATA.some(d=>d.model===state.model && productMatches(d,{useModel:false}))) state.model='All';
     if(state.subModel!=='All' && !RAW_DATA.some(d=>d.subModel===state.subModel && productMatches(d))) state.subModel='All';
   }
-  let renderBrandChips, renderSubBrandChips, renderModelSearch, renderSubModelSearch;
+  let renderBrandChips, renderSubBrandSearch, renderModelSearch, renderSubModelSearch;
   if(cfg.enableProductFilters){
     renderBrandChips = function(){
       const el = $('brandChips');
@@ -1926,22 +1927,34 @@ function createDashboard(cfg){
         el.appendChild(chip);
       });
     };
-    renderSubBrandChips = function(){
-      const el = $('subBrandChips');
-      const options = [...new Set(RAW_DATA.filter(d=>productMatches(d,{useSubBrand:false,useModel:false})).map(d=>d.subBrand))].sort();
-      el.innerHTML = '';
-      ['All', ...options].forEach(sb=>{
-        const chip = document.createElement('button');
-        chip.className = 'chip'+(state.subBrand===sb?' active':'');
-        chip.textContent = sb;
-        chip.onclick = ()=>{
-          state.subBrand = (state.subBrand===sb && sb!=='All') ? 'All' : sb;
-          state.model='All'; state.subModel='All';
-          renderAll();
-        };
-        el.appendChild(chip);
-      });
+    const getFilteredSubBrands = ()=> [...new Set(RAW_DATA.filter(d=>productMatches(d,{useSubBrand:false,useModel:false})).map(d=>d.subBrand))].sort();
+    renderSubBrandSearch = function(){
+      const datalistEl = $('subBrandList');
+      const names = getFilteredSubBrands();
+      datalistEl.innerHTML = '';
+      names.forEach(name=>{ const opt=document.createElement('option'); opt.value=name; datalistEl.appendChild(opt); });
+      const input = $('subBrandSelect');
+      input.value = state.subBrand==='All' ? '' : state.subBrand;
+      input.placeholder = `All sub brands (${names.length})`;
     };
+    const subBrandInput = $('subBrandSelect');
+    function applySubBrandInput(){
+      const typed = subBrandInput.value.trim();
+      if(typed===''){ if(state.subBrand!=='All'){ state.subBrand='All'; state.model='All'; state.subModel='All'; renderAll(); } return; }
+      if(getFilteredSubBrands().includes(typed) && typed!==state.subBrand){
+        state.subBrand = typed; state.model='All'; state.subModel='All';
+        renderAll();
+        subBrandInput.blur();
+      }
+    }
+    subBrandInput.addEventListener('input', applySubBrandInput);
+    subBrandInput.addEventListener('change', applySubBrandInput);
+    subBrandInput.addEventListener('blur', ()=>{
+      if(subBrandInput.value.trim()==='' && state.subBrand!=='All'){ state.subBrand='All'; state.model='All'; state.subModel='All'; renderAll(); }
+      else if(subBrandInput.value.trim()!=='' && !getFilteredSubBrands().includes(subBrandInput.value.trim())){
+        subBrandInput.value = state.subBrand==='All' ? '' : state.subBrand;
+      }
+    });
     const getFilteredModels = ()=> [...new Set(RAW_DATA.filter(d=>productMatches(d,{useModel:false})).map(d=>d.model))].sort();
     renderModelSearch = function(){
       const datalistEl = $('modelList');
@@ -2482,7 +2495,7 @@ function createDashboard(cfg){
     if(cfg.enableProductFilters){
       pruneProductFilters();
       renderBrandChips();
-      renderSubBrandChips();
+      renderSubBrandSearch();
       renderModelSearch();
       renderSubModelSearch();
     }
