@@ -675,8 +675,8 @@ table.mom-table td.col-trend{padding:4px 10px;}
     </div>
     <div class="tabbar" id="tabbar">
       <button class="tab-btn active" data-page="salescore">🏆 Sale Score</button>
-      <button class="tab-btn" data-page="handset">📱 Handset</button>
-      <button class="tab-btn" data-page="accessories">🎧 Accessories</button>
+      <button class="tab-btn" data-page="handset">📱 Device</button>
+      <button class="tab-btn" data-page="accessories">🎧 GIA</button>
       <button class="tab-btn" data-page="attach">🔗 Attach Rate</button>
       <button class="tab-btn" data-page="entrymodel">🎯 Entry Model</button>
       <button class="tab-btn" data-page="sheep">🐑 Sheep</button>
@@ -733,7 +733,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
     <div class="filterbar">
       <div class="filter-group">
         <span class="filter-label">Brand</span>
-        <div class="dd-filter" id="handset-brandChips"></div>
+        <div class="chip-row" id="handset-brandChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Sub Brand <span class="filter-label-hint">(type to search)</span></span>
@@ -754,11 +754,11 @@ table.mom-table td.col-trend{padding:4px 10px;}
 
     <div class="kpi-row">
       <div class="kpi-card c1">
-        <div class="kpi-label">Total Handset Volume</div>
+        <div class="kpi-label">Total Device Volume</div>
         <div class="kpi-value num" id="handset-kpiQty">0<span class="kpi-unit">units</span></div>
       </div>
       <div class="kpi-card c2">
-        <div class="kpi-label">Total Handset Revenue</div>
+        <div class="kpi-label">Total Device Revenue</div>
         <div class="kpi-value num" id="handset-kpiRev">0<span class="kpi-unit">THB</span></div>
       </div>
       <div class="kpi-card c3">
@@ -897,7 +897,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
     <div class="filterbar">
       <div class="filter-group">
         <span class="filter-label">Brand</span>
-        <div class="dd-filter" id="accessories-brandChips"></div>
+        <div class="chip-row" id="accessories-brandChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Sub Brand <span class="filter-label-hint">(type to search)</span></span>
@@ -918,11 +918,11 @@ table.mom-table td.col-trend{padding:4px 10px;}
 
     <div class="kpi-row">
       <div class="kpi-card c1">
-        <div class="kpi-label">Total Accessory Volume</div>
+        <div class="kpi-label">Total GIA Volume</div>
         <div class="kpi-value num" id="accessories-kpiQty">0<span class="kpi-unit">units</span></div>
       </div>
       <div class="kpi-card c2">
-        <div class="kpi-label">Total Accessory Revenue</div>
+        <div class="kpi-label">Total GIA Revenue</div>
         <div class="kpi-value num" id="accessories-kpiRev">0<span class="kpi-unit">THB</span></div>
       </div>
       <div class="kpi-card c3">
@@ -2274,20 +2274,27 @@ function createDashboard(cfg){
   let renderBrandChips, renderSubBrandSearch, renderModelSearch, renderSubModelSearch;
   if(cfg.enableProductFilters){
     renderBrandChips = function(){
-      createDropdownFilter($('brandChips'), {
-        allLabel: 'All',
-        getOptions: () => ALL_BRANDS.map(b=>({value:b,label:b})),
-        getSelected: () => state.brand,
-        onToggle: (b) => {
+      const el = $('brandChips');
+      el.innerHTML = '';
+      const allChip = document.createElement('button');
+      allChip.className = 'chip'+(state.brand.size===0?' active':'');
+      allChip.textContent = 'All';
+      allChip.onclick = ()=>{
+        state.brand.clear();
+        state.subBrand='All'; state.model='All'; state.subModel='All';
+        renderAll();
+      };
+      el.appendChild(allChip);
+      ALL_BRANDS.forEach(b=>{
+        const chip = document.createElement('button');
+        chip.className = 'chip'+(state.brand.has(b)?' active':'');
+        chip.textContent = b;
+        chip.onclick = ()=>{
           if(state.brand.has(b)) state.brand.delete(b); else state.brand.add(b);
           state.subBrand='All'; state.model='All'; state.subModel='All';
           renderAll();
-        },
-        onClearAll: () => {
-          state.brand.clear();
-          state.subBrand='All'; state.model='All'; state.subModel='All';
-          renderAll();
-        }
+        };
+        el.appendChild(chip);
       });
     };
     const getFilteredSubBrands = ()=> [...new Set(RAW_DATA.filter(d=>productMatches(d,{useSubBrand:false,useModel:false})).map(d=>d.subBrand))].sort();
