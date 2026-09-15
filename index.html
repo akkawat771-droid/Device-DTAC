@@ -1295,7 +1295,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
       </div>
       <div class="filter-group">
         <span class="filter-label">Date</span>
-        <div class="chip-row" id="suplife-dateChips"></div>
+        <div class="dd-filter" id="suplife-dateChips"></div>
       </div>
       <div class="filter-group">
         <span class="filter-label">Shop <span class="filter-label-hint">(type to search)</span></span>
@@ -1334,7 +1334,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
       <div class="panel">
         <div class="panel-head">
           <span class="panel-title">Daily Attach Suplife Trend</span>
-          <span class="panel-hint">iPhone volume (bars) &amp; Attach Rate % (line)</span>
+          <span class="panel-hint">iPhone &amp; Suplife PLV volume (bars) &amp; Attach Rate % (line)</span>
         </div>
         <div class="chart-box"><canvas id="suplife-trendChart"></canvas></div>
       </div>
@@ -2522,8 +2522,10 @@ function createDashboard(cfg){
   }
 
   // ---------- Chip rendering ----------
+  let regionDropdown = null;
   function renderRegionChips(){
-    createDropdownFilter($('regionChips'), {
+    if(regionDropdown){ regionDropdown.render(); return; }
+    regionDropdown = createDropdownFilter($('regionChips'), {
       allLabel: 'All',
       getOptions: () => REGIONS.map(r=>({value:r,label:r})),
       getSelected: () => state.region,
@@ -2542,8 +2544,10 @@ function createDashboard(cfg){
     });
   }
 
+  let typeDropdown = null;
   function renderTypeChips(){
-    createDropdownFilter($('typeChips'), {
+    if(typeDropdown){ typeDropdown.render(); return; }
+    typeDropdown = createDropdownFilter($('typeChips'), {
       allLabel: 'All',
       getOptions: () => TYPES.map(t=>({value:t,label:t})),
       getSelected: () => state.type,
@@ -2560,11 +2564,15 @@ function createDashboard(cfg){
     });
   }
 
+  let areaDropdown = null;
   function renderAreaChips(){
-    const areas = state.region.size===0 ? ALL_AREAS : ALL_AREAS.filter(a=>state.region.has(AREA_TO_REGION[a]));
-    createDropdownFilter($('areaChips'), {
+    if(areaDropdown){ areaDropdown.render(); return; }
+    areaDropdown = createDropdownFilter($('areaChips'), {
       allLabel: 'All',
-      getOptions: () => areas.map(a=>({value:a,label:a})),
+      getOptions: () => {
+        const areas = state.region.size===0 ? ALL_AREAS : ALL_AREAS.filter(a=>state.region.has(AREA_TO_REGION[a]));
+        return areas.map(a=>({value:a,label:a}));
+      },
       getSelected: () => state.areas,
       onToggle: (a) => {
         if(state.areas.has(a)) state.areas.delete(a); else state.areas.add(a);
@@ -2579,8 +2587,10 @@ function createDashboard(cfg){
     });
   }
 
+  let dateDropdown = null;
   function renderDateChips(){
-    createDropdownFilter($('dateChips'), {
+    if(dateDropdown){ dateDropdown.render(); return; }
+    dateDropdown = createDropdownFilter($('dateChips'), {
       allLabel: 'Full period',
       fullSetIsAll: true,
       getOptions: () => DATES.map(d=>({value:d,label:fmtDate(d)})),
@@ -5842,19 +5852,23 @@ function createSuplifeAttachPage(cfg){
       el.appendChild(c);
     });
   }
+  let dateDropdown = null;
   function renderDateChips(){
-    const el = $('dateChips');
-    el.innerHTML='';
-    DATES.forEach(d=>{
-      const c = document.createElement('button');
-      c.className='chip date'+(state.dates.has(d)?' active':'');
-      c.textContent = d.slice(5);
-      c.onclick=()=>{
+    if(dateDropdown){ dateDropdown.render(); return; }
+    dateDropdown = createDropdownFilter($('dateChips'), {
+      allLabel: 'Full period',
+      fullSetIsAll: true,
+      getOptions: () => DATES.map(d=>({value:d,label:d.slice(5)})),
+      getSelected: () => state.dates,
+      onToggle: (d) => {
         if(state.dates.has(d)){ if(state.dates.size>1) state.dates.delete(d); }
         else state.dates.add(d);
         renderAll();
-      };
-      el.appendChild(c);
+      },
+      onClearAll: () => {
+        state.dates = new Set(DATES);
+        renderAll();
+      }
     });
   }
 
@@ -5917,6 +5931,7 @@ function createSuplifeAttachPage(cfg){
     f.forEach(d=>{iphoneByDate[d.date]+=d.iphone; suplifeByDate[d.date]+=d.suplife;});
     const labels = DATES.map(d=>d.slice(5));
     const iphoneData = DATES.map(d=>iphoneByDate[d]);
+    const suplifeData = DATES.map(d=>suplifeByDate[d]);
     const rateData = DATES.map(d=> {
       const r = rateOf(suplifeByDate[d], iphoneByDate[d]);
       return r==null ? null : +(r*100).toFixed(2);
@@ -5928,8 +5943,10 @@ function createSuplifeAttachPage(cfg){
       data:{
         labels,
         datasets:[
-          {type:'bar', label:'iPhone Qty', data:iphoneData, backgroundColor:'#101B3D', borderRadius:6, yAxisID:'y', maxBarThickness:36,
+          {type:'bar', label:'iPhone Qty', data:iphoneData, backgroundColor:'#101B3D', borderRadius:6, yAxisID:'y', maxBarThickness:30,
             datalabels:{ display:true, anchor:'end', align:'top', color:'#101B3D', font:{size:10, weight:'700', family:'Inter'}, formatter:(v)=>v.toLocaleString() }},
+          {type:'bar', label:'Suplife PLV Qty', data:suplifeData, backgroundColor:'#E8B84B', borderRadius:6, yAxisID:'y', maxBarThickness:30,
+            datalabels:{ display:true, anchor:'end', align:'top', color:'#B8860B', font:{size:10, weight:'700', family:'Inter'}, formatter:(v)=>v.toLocaleString() }},
           {type:'line', label:'Attach Rate %', data:rateData, borderColor:'#E8483C', backgroundColor:'#E8483C', tension:.35, yAxisID:'y1', pointRadius:4, pointBackgroundColor:'#E8483C', borderWidth:2.5, spanGaps:true,
             datalabels:{ display:true, align:'top', offset:8, color:'#E8483C', font:{size:10, weight:'700', family:'Inter'}, formatter:(v)=>v==null?'':v+'%' }}
         ]
@@ -5939,9 +5956,9 @@ function createSuplifeAttachPage(cfg){
         interaction:{mode:'index', intersect:false},
         layout:{padding:{top:16}},
         plugins:{legend:{position:'bottom', labels:{boxWidth:10,font:{size:11,family:'Inter'}}},
-          tooltip:{callbacks:{label:(c)=> c.dataset.label==='Attach Rate %' ? c.parsed.y+'%' : c.parsed.y}}},
+          tooltip:{callbacks:{label:(c)=> c.dataset.label==='Attach Rate %' ? c.parsed.y+'%' : c.dataset.label+': '+c.parsed.y}}},
         scales:{
-          y:{position:'left', title:{display:true,text:'iPhone Units',font:{size:10}}, grid:{color:'#EEF0F6'}},
+          y:{position:'left', beginAtZero:true, title:{display:true,text:'Units',font:{size:10}}, grid:{color:'#EEF0F6'}},
           y1:{position:'right', title:{display:true,text:'Attach Rate %',font:{size:10}}, grid:{display:false}}
         }
       }
