@@ -2244,7 +2244,8 @@ function createDropdownFilter(containerEl, opts){
 document.addEventListener('click', () => {
   window._openDropdownFilters.forEach(f => f.close());
 });
-window.addEventListener('scroll', () => {
+window.addEventListener('scroll', (e) => {
+  if(e.target && e.target.nodeType === 1 && e.target.closest('.dd-panel')) return;
   window._openDropdownFilters.forEach(f => f.close());
 }, true);
 window.addEventListener('resize', () => {
