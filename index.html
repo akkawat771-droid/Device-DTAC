@@ -1384,7 +1384,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
     <div class="panel trend-table-panel">
       <div class="panel-head">
         <span class="panel-title">Salesperson Leaderboard — Attach Suplife Rate</span>
-        <span class="panel-hint" id="suplife-saleLbHint">Click a column to sort</span>
+        <span style="display:flex;align-items:center;"><span class="panel-hint" id="suplife-saleLbHint">Click a column to sort</span><button class="export-btn-mini" id="suplife-exportSaleBtn">⬇ CSV</button></span>
       </div>
       <div class="lb-scroll">
         <table class="lb">
@@ -1392,6 +1392,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
             <tr>
               <th style="width:34px;">#</th>
               <th>Salesperson</th>
+              <th>Emp Code</th>
               <th>EMP Type</th>
               <th>Shop</th>
               <th>Region / Area</th>
@@ -5880,6 +5881,7 @@ function createSuplifeAttachPage(cfg){
       tr.innerHTML = `
         <td><span class="rank-badge ${badgeClass}">${i+1}</span></td>
         <td class="shop-name">${r.saleName}</td>
+        <td>${r.saleCode}</td>
         <td>${r.empType}</td>
         <td>${r.shop}</td>
         <td>${r.region} · ${r.area.replace(/^(BMA|UPC)\s*[IVX]*\s*-\s*/,'')}</td>
@@ -5890,6 +5892,32 @@ function createSuplifeAttachPage(cfg){
         <td class="num">฿${fmtInt(r.commission)}</td>`;
       tbody.appendChild(tr);
     });
+  }
+
+  function exportSaleCsv(){
+    const rows = computeSaleLeaderboardRows();
+    const header = ['Rank','Salesperson','Emp Code','EMP Type','Shop','Region','Area','iPhone Qty','Suplife Qty','Attach Rate %','Net Amount','Commission'];
+    const lines = [header.map(csvField).join(',')];
+    rows.forEach((r,i)=>{
+      const cells = [
+        i+1, r.saleName, r.saleCode, r.empType, r.shop, r.region, r.area,
+        r.iphoneQty, r.suplifeQty,
+        r.rate==null ? '' : (r.rate*100).toFixed(1)+'%',
+        r.netAmount.toFixed(2), r.commission.toFixed(2)
+      ];
+      lines.push(cells.map(csvField).join(','));
+    });
+    const csv = '\uFEFF' + lines.join('\r\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0,10);
+    a.href = url;
+    a.download = `Attach_Suplife_PLV_Salesperson_${stamp}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   // ---------- Export CSV (shop leaderboard, respects current filters + sort) ----------
@@ -5922,7 +5950,7 @@ function createSuplifeAttachPage(cfg){
     URL.revokeObjectURL(url);
   }
   $('exportBtn').addEventListener('click', exportCsv);
-
+  $('exportSaleBtn').addEventListener('click', exportSaleCsv);
   const shopTable = $('lbBody').closest('table');
   const saleTable = $('saleLbBody').closest('table');
   shopTable.querySelectorAll('th[data-sort]').forEach(th=>{
