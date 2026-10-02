@@ -440,17 +440,47 @@ def export_sale_score_html(html_path):
     with open(html_path, "r", encoding="utf-8") as fh:
         return fh.read()
 
-def build(xlsx_path: str, out_path: str, shop_list_path: str = None, sheep_xlsx_path: str = None, contest_xlsx_path: str = None, retention_roster_path: str = None, sale_score_html_path: str = None):
+def build(xlsx_path: str, out_path: str, shop_list_path: str = None, sheep_xlsx_path: str = None, contest_xlsx_path: str = None, retention_roster_path: str = None, sale_score_html_path: str = None, shop_reference_path: str = None):
     df = pd.read_excel(xlsx_path, sheet_name="TSM")
 
     handset_records, handset_f = export_group(df, "HANDSET", rev_col="PRICE")
     suplife_attach_records = export_suplife_attach(df)
     accessories_records, accessories_f = export_group(df, "ACCESSORIES", rev_col="PRICE")
 
-    area_to_region = df.drop_duplicates(subset=["AREA"]).set_index("AREA")["REGION"].to_dict()
+    area_to_region = df.dropna(subset=["AREA"]).drop_duplicates(subset=["AREA"]).set_index("AREA")["REGION"].to_dict()
+    # Some rows this month have a blank AREA/REGION (e.g. certain
+    # accessory line items not yet tagged) -- sorting so non-null AREA
+    # rows come first means drop_duplicates(keep="first") picks a row
+    # with real area/region data for every shop that has one anywhere
+    # in the sheet, instead of possibly locking in a blank.
+    def _clean_shop_code(series):
+        # A stray blank-SHOP_CODE row anywhere in a sheet forces the whole
+        # column to float64 (e.g. 80100476 -> 80100476.0); concatenating a
+        # float-typed column with an int-typed one from another file then
+        # upcasts BOTH to float, silently breaking any string-keyed
+        # lookup built from them. Route every SHOP_CODE through this
+        # before use so "80100476" is always the key, never "80100476.0".
+        return pd.to_numeric(series, errors="coerce").astype("Int64").astype(str)
+
+    shop_cols = ["SHOP_CODE", "SHOP NAME", "TYPE SHOP", "REGION", "AREA"]
+    shop_lookup_df = df[shop_cols].dropna(subset=["SHOP_CODE"]).copy()
+    shop_lookup_df["SHOP_CODE"] = _clean_shop_code(shop_lookup_df["SHOP_CODE"])
+    shop_lookup_df["_src_rank"] = 0  # current month's own rows take priority
+    # Early in a new month, many shops haven't logged a single
+    # transaction yet, so they're simply absent from this month's sheet
+    # (shop_lookup.get() would return nothing at all, not just a blank
+    # area/region). A shop's area/region/type doesn't change month to
+    # month, so a prior month's file is a safe source to fill the gap
+    # until the shop shows up in this month's own data.
+    if shop_reference_path and os.path.exists(shop_reference_path):
+        ref_df = pd.read_excel(shop_reference_path, sheet_name="TSM")[shop_cols].dropna(subset=["SHOP_CODE"]).copy()
+        ref_df["SHOP_CODE"] = _clean_shop_code(ref_df["SHOP_CODE"])
+        ref_df["_src_rank"] = 1
+        shop_lookup_df = pd.concat([shop_lookup_df, ref_df], ignore_index=True)
+    shop_lookup_df = shop_lookup_df.sort_values(by=["_src_rank", "AREA"], key=lambda s: s if s.name != "AREA" else s.isna())
     shop_lookup = {
-        str(r["SHOP_CODE"]): {"shop": str(r["SHOP NAME"]).strip(), "type": r["TYPE SHOP"], "region": r["REGION"], "area": r["AREA"]}
-        for _, r in df.drop_duplicates(subset=["SHOP_CODE"]).iterrows()
+        r["SHOP_CODE"]: {"shop": str(r["SHOP NAME"]).strip(), "type": r["TYPE SHOP"], "region": r["REGION"], "area": r["AREA"]}
+        for _, r in shop_lookup_df.drop_duplicates(subset=["SHOP_CODE"]).iterrows()
     }
 
     if sheep_xlsx_path is None:
@@ -576,4 +606,5 @@ if __name__ == "__main__":
     contest_xlsx_path = sys.argv[5] if len(sys.argv) > 5 and sys.argv[5] else None
     retention_roster_path = sys.argv[6] if len(sys.argv) > 6 and sys.argv[6] else None
     sale_score_html_path = sys.argv[7] if len(sys.argv) > 7 and sys.argv[7] else None
-    build(xlsx_path, out_path, shop_list_path, sheep_xlsx_path, contest_xlsx_path, retention_roster_path, sale_score_html_path)
+    shop_reference_path = sys.argv[8] if len(sys.argv) > 8 and sys.argv[8] else None
+    build(xlsx_path, out_path, shop_list_path, sheep_xlsx_path, contest_xlsx_path, retention_roster_path, sale_score_html_path, shop_reference_path)
