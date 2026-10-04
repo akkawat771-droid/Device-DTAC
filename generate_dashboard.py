@@ -337,8 +337,8 @@ def export_huawei_watch_gt7(target_xlsx_path, tsm_df, area_to_region=None):
     descriptions still contain the substring 'GT7'). Only 80 of 243
     shops have a target set this period; the rest are kept in the
     shop universe with target=0 rather than dropped, so Actual still
-    shows if one of them sells a unit anyway. Returns ([], []) if the
-    file isn't found."""
+    shows if one of them sells a unit anyway. Returns (shops, daily, variants);
+    all three are empty lists if the file isn't found."""
     if not target_xlsx_path or not os.path.exists(target_xlsx_path):
         return [], [], []
 
@@ -353,31 +353,15 @@ def export_huawei_watch_gt7(target_xlsx_path, tsm_df, area_to_region=None):
     h["SHOP_CODE"] = pd.to_numeric(h["SHOP_CODE"], errors="coerce").astype("Int64")
     h["DATE"] = pd.to_datetime(h["DATE"])
 
-    # DESCRIPTION looks like 'ACC,HUAWEI,WATCH,GT7 PRO 46MM,BLACK':
-    # model = GT7 / GT7 PRO, size = '46MM', colour = text after the last comma.
-    def _parse_variant(d):
-        d = str(d).upper()
-        model = "GT7 PRO" if re.search(r"GT7\s*PRO", d) else "GT7"
-        m_size = re.search(r"(\d+)\s*MM", d)
-        size = (m_size.group(1) + "MM") if m_size else "N/A"
-        last = d.split(",")[-1].strip()
-        color = last if (last and "GT7" not in last) else "N/A"
-        return model, size, color
-    parsed = h["DESCRIPTION"].map(_parse_variant)
-    h["_model"] = parsed.map(lambda t: t[0])
-    h["_size"] = parsed.map(lambda t: t[1])
-    h["_color"] = parsed.map(lambda t: t[2])
-
-    daily = h.groupby(h["DATE"].dt.strftime("%Y-%m-%d"))["QTY"].sum().reset_index()
-    daily_actual = [{"date": r["DATE"], "qty": int(r["QTY"])} for _, r in daily.iterrows()]
+    # One entry per calendar day from the 1st of the month through the last day in
+    # the TSM file -- INCLUDING days with zero GT7 sales. The tab's Run Rate uses
+    # len(daily) as "days elapsed", so a quiet day must not silently drop out.
+    last_day = pd.to_datetime(tsm_df["DATE"]).max().normalize()
+    all_days = pd.date_range(last_day.replace(day=1), last_day, freq="D")
+    by_day = h.groupby(h["DATE"].dt.normalize())["QTY"].sum().reindex(all_days, fill_value=0)
+    daily_actual = [{"date": d.strftime("%Y-%m-%d"), "qty": int(q)} for d, q in by_day.items()]
 
     per_shop = h.groupby("SHOP_CODE")["QTY"].sum().to_dict()
-
-    # per-shop variant sales, so the dashboard's Region/Type/Area/Shop filters
-    # also apply to the model-mix and colour/size breakdowns
-    variants_by_shop = {}
-    for (sc, mdl, sz, col), q in h.groupby(["SHOP_CODE", "_model", "_size", "_color"])["QTY"].sum().items():
-        variants_by_shop.setdefault(int(sc), []).append([mdl, sz, col, int(q)])
 
     shop_records = []
     for _, r in target_df.iterrows():
@@ -392,7 +376,6 @@ def export_huawei_watch_gt7(target_xlsx_path, tsm_df, area_to_region=None):
             "shop": str(r["SHOP_NAME"]).strip(),
             "target": float(r["TG Huawei GT7"]),
             "actual": int(per_shop.get(code, 0)),
-            "variants": variants_by_shop.get(code, []),
         })
     # Variant detail (model / size / colour per shop), so the tab can show the
     # GT7 vs GT7 PRO split and which size+colour sold how many -- and keep
