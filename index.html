@@ -1821,6 +1821,10 @@ table.mom-table td.col-trend{padding:4px 10px;}
         <div class="kpi-label">Active Shops</div>
         <div class="kpi-value num" id="gt7-kpiShops">0<span class="kpi-unit">with sales</span></div>
       </div>
+      <div class="kpi-card c1">
+        <div class="kpi-label">Runrate %Achieve</div>
+        <div class="kpi-value num" id="gt7-kpiRunrate">0%<span class="kpi-unit">of target</span></div>
+      </div>
     </div>
 
     <div class="panel">
@@ -1885,6 +1889,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
               <th class="num" data-sort="target">Target</th>
               <th class="num" data-sort="actual">Actual</th>
               <th class="num" data-sort="pct">%Achieve</th>
+              <th class="num" data-sort="rrPct">%Runrate Achieve</th>
             </tr>
           </thead>
           <tbody id="gt7-lbBody"></tbody>
@@ -5470,6 +5475,16 @@ function createHuaweiWatchGt7Page(cfg){
   const ALL_AREAS = REGIONS.flatMap(r => [...new Set(ALL_SHOPS.filter(s=>s.region===r).map(s=>s.area))].filter(Boolean).sort());
   const ALL_SHOP_NAMES = [...new Set(ALL_SHOPS.map(s=>s.shop))].sort();
 
+  // Run Rate: projects the current daily pace out to the full month, so
+  // "Runrate Achievement" answers "if we keep selling at today's average
+  // pace, will we hit target by month-end?" -- distinct from plain
+  // Achievement (actual-to-date / target), which always looks low early
+  // in the month.
+  const DAYS_IN_MONTH = 31;
+  const DAYS_ELAPSED = Math.max(1, cfg.dailyActual.length);
+  const RR_FACTOR = DAYS_IN_MONTH / DAYS_ELAPSED;
+  function runRate(actual){ return actual * RR_FACTOR; }
+
   function shopMatches(s){
     return (state.region==='All' || s.region===state.region) &&
            (state.type==='All' || s.type===state.type) &&
@@ -5565,12 +5580,15 @@ function createHuaweiWatchGt7Page(cfg){
     const target = rows.reduce((s,r)=>s+r.target,0);
     const actual = rows.reduce((s,r)=>s+r.actual,0);
     const pct = target ? actual/target*100 : 0;
+    const rr = runRate(actual);
+    const rrPct = target ? rr/target*100 : 0;
     const activeShops = rows.filter(r=>r.actual>0).length;
 
     $('kpiTarget').innerHTML = fmtInt(target)+'<span class="kpi-unit">units</span>';
     $('kpiActual').innerHTML = fmtInt(actual)+'<span class="kpi-unit">units</span>';
     $('kpiAchieve').innerHTML = (target ? fmtPct(pct) : '—')+'<span class="kpi-unit">of target</span>';
     $('kpiShops').innerHTML = activeShops+'<span class="kpi-unit">of '+rows.length+'</span>';
+    $('kpiRunrate').innerHTML = (target ? fmtPct(rrPct) : '—')+'<span class="kpi-unit">RR '+fmtInt(rr)+' units</span>';
 
     const bits = [];
     bits.push(state.region==='All'?'All regions':state.region);
@@ -5579,7 +5597,7 @@ function createHuaweiWatchGt7Page(cfg){
     else if(state.areas.size===1) bits.push([...state.areas][0]);
     else bits.push(state.areas.size+' areas selected');
     if(state.shop!=='All') bits.push('Shop: '+state.shop);
-    $('scopePill').innerHTML = 'Huawei Watch GT7 — '+fmtInt(actual)+' / '+fmtInt(target)+' units ('+(target?fmtPct(pct):'—')+') — '+bits.join(' · ');
+    $('scopePill').innerHTML = 'Huawei Watch GT7 — '+fmtInt(actual)+' / '+fmtInt(target)+' units ('+(target?fmtPct(pct):'—')+' Achieve · '+(target?fmtPct(rrPct):'—')+' Runrate) — '+bits.join(' · ');
   }
 
   // ---------- Daily trend chart ----------
@@ -5625,11 +5643,22 @@ function createHuaweiWatchGt7Page(cfg){
         labels:REGIONS,
         datasets:[
           {label:'Target', data:REGIONS.map(r=>byReg[r].target), backgroundColor:'#D9DEEB', borderRadius:6},
-          {label:'Actual', data:REGIONS.map(r=>byReg[r].actual), backgroundColor:REGIONS.map(r=>state.region===r?'#E8483C':'#1D1D1F'), borderRadius:6}
+          {label:'Actual', data:REGIONS.map(r=>byReg[r].actual), backgroundColor:REGIONS.map(r=>state.region===r?'#E8483C':'#1D1D1F'), borderRadius:6,
+            datalabels:{ display:true, anchor:'end', align:'top', color:'#1D1D1F', font:{size:10, weight:'700', family:'Inter'},
+              formatter:(v,ctx)=>{
+                const r = REGIONS[ctx.dataIndex];
+                const t = byReg[r].target;
+                if(!t) return '';
+                const ach = (v/t*100).toFixed(0)+'%';
+                const rr = (runRate(v)/t*100).toFixed(0)+'%';
+                return 'Achieve '+ach+' · RR '+rr;
+              }
+            }}
         ]
       },
       options:{
         responsive:true, maintainAspectRatio:false,
+        layout:{padding:{top:20}},
         onClick:(evt,elements)=>{
           if(elements.length){
             const r = REGIONS[elements[0].index];
@@ -5659,10 +5688,12 @@ function createHuaweiWatchGt7Page(cfg){
     rows.forEach(r=>{
       const div = document.createElement('div');
       div.className = 'area-row'+(state.areas.has(r.area)?' active':'');
+      const ach = r.target ? fmtPct(r.actual/r.target*100) : '—';
+      const rr = r.target ? fmtPct(runRate(r.actual)/r.target*100) : '—';
       div.innerHTML = `
         <span class="area-name" title="${r.area}">${r.area}</span>
         <span class="area-track"><span class="area-fill" style="width:${(r.actual/maxVal*100).toFixed(1)}%"></span></span>
-        <span class="area-val num">${fmtInt(r.actual)} / ${fmtInt(r.target)}</span>`;
+        <span class="area-val num">${fmtInt(r.actual)} / ${fmtInt(r.target)} <span style="color:var(--muted); font-weight:500;">(${ach} · RR ${rr})</span></span>`;
       div.onclick = ()=>{
         if(state.areas.has(r.area)) state.areas.delete(r.area);
         else state.areas.add(r.area);
@@ -5676,10 +5707,10 @@ function createHuaweiWatchGt7Page(cfg){
   // ---------- Shop leaderboard ----------
   let sortKey = 'actual', sortDir = 'desc';
   function computeLeaderboardRows(){
-    let rows = getFilteredShops().map(r=>({...r, pct: r.target ? r.actual/r.target*100 : null}));
+    let rows = getFilteredShops().map(r=>({...r, pct: r.target ? r.actual/r.target*100 : null, rrPct: r.target ? runRate(r.actual)/r.target*100 : null}));
     rows.sort((a,b)=>{
-      const av = sortKey==='pct' ? (a.pct??-1) : a[sortKey];
-      const bv = sortKey==='pct' ? (b.pct??-1) : b[sortKey];
+      const av = sortKey==='pct' ? (a.pct??-1) : sortKey==='rrPct' ? (a.rrPct??-1) : a[sortKey];
+      const bv = sortKey==='pct' ? (b.pct??-1) : sortKey==='rrPct' ? (b.rrPct??-1) : b[sortKey];
       return sortDir==='desc' ? bv-av : av-bv;
     });
     return rows;
@@ -5698,7 +5729,8 @@ function createHuaweiWatchGt7Page(cfg){
         <td>${r.region} · ${(r.area||'').replace(/^(BMA|UPC)\s*[IVX]*\s*-\s*/,'')}</td>
         <td class="num">${fmtInt(r.target)}</td>
         <td class="num">${fmtInt(r.actual)}</td>
-        <td class="num">${r.pct==null ? '—' : fmtPct(r.pct)}</td>`;
+        <td class="num">${r.pct==null ? '—' : fmtPct(r.pct)}</td>
+        <td class="num">${r.rrPct==null ? '—' : fmtPct(r.rrPct)}</td>`;
       tbody.appendChild(tr);
     });
   }
@@ -5719,10 +5751,10 @@ function createHuaweiWatchGt7Page(cfg){
   }
   function exportCsv(){
     const rows = computeLeaderboardRows();
-    const header = ['Rank','Shop','Region','Area','Shop Type','Target','Actual','%Achieve'];
+    const header = ['Rank','Shop','Region','Area','Shop Type','Target','Actual','%Achieve','Runrate Actual','%Runrate Achieve'];
     const lines = [header.map(csvField).join(',')];
     rows.forEach((r,i)=>{
-      lines.push([i+1, r.shop, r.region, r.area, r.type, r.target, r.actual, r.pct==null?'':r.pct.toFixed(1)+'%'].map(csvField).join(','));
+      lines.push([i+1, r.shop, r.region, r.area, r.type, r.target, r.actual, r.pct==null?'':r.pct.toFixed(1)+'%', runRate(r.actual).toFixed(1), r.rrPct==null?'':r.rrPct.toFixed(1)+'%'].map(csvField).join(','));
     });
     const csv = '\uFEFF'+lines.join('\r\n');
     const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
