@@ -267,7 +267,7 @@ table.top-shop-table .rank-num{color:var(--muted);font-weight:700;width:18px;dis
 .area-name{font-size:12.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .area-row.active .area-name{color:var(--accent);font-weight:600;}
 .area-track{background:#EEF0F6;border-radius:6px;height:10px;overflow:hidden;}
-.area-fill{background:linear-gradient(90deg,var(--navy),var(--accent));height:100%;border-radius:6px;transition:width .25s ease;}
+.area-fill{display:block;background:linear-gradient(90deg,var(--navy),var(--accent));height:100%;border-radius:6px;transition:width .25s ease;}
 .area-val{font-size:12px;text-align:right;color:var(--ink-soft);}
 
 /* ===== Leaderboard table ===== */
@@ -611,6 +611,48 @@ table.mom-table td.col-trend{padding:4px 10px;}
 .gt7-eyebrow{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; letter-spacing:.06em; text-transform:uppercase; color:#6E6E73;}
 .gt7-title{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:30px; color:#1D1D1F; margin:6px 0;}
 .gt7-sub{font-size:14px; color:var(--ink-soft);}
+
+/* --- GT7 layout polish: 5 KPI cards on one row, balanced Region/Area split --- */
+.kpi-row.five{grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px;}
+.kpi-row.five .kpi-card{padding:16px 16px; min-width:0;}
+.kpi-row.five .kpi-value{font-size:26px; white-space:nowrap;}
+.kpi-row.five .kpi-unit{font-size:12px; margin-left:3px;}
+.kpi-card.c5{border-top-color:#6366F1;}
+.kpi-row.five + .panel{margin-top:16px;}
+.grid-2.gt7-split + .filterbar{margin-top:16px;}
+@media (max-width:1200px){ .kpi-row.five{grid-template-columns:repeat(3,minmax(0,1fr));} }
+@media (max-width:700px){ .kpi-row.five{grid-template-columns:repeat(2,minmax(0,1fr));} }
+
+.grid-2.gt7-split{grid-template-columns:1fr 1.45fr;}
+@media (max-width:1280px){ .grid-2.gt7-split{grid-template-columns:1fr;} }
+.gt7-chart-box{position:relative; height:540px;}
+
+/* By Area: one clean line per area -- name | bar | actual/target | Achieve | Run Rate */
+.gt7-area-list{display:flex; flex-direction:column; gap:3px;}
+.gt7-area-head, .gt7-area-row{
+  display:grid; grid-template-columns:minmax(96px,136px) minmax(40px,1fr) 80px 58px 84px;
+  align-items:center; gap:10px; padding:6px 8px; border-radius:9px;
+}
+.gt7-area-head{
+  font-size:10.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted);
+  padding-bottom:8px; border-bottom:1px solid var(--line); border-radius:0; margin-bottom:4px;
+}
+.gt7-area-head span:nth-child(3){text-align:right;}
+.gt7-area-head span:nth-child(n+4){text-align:center;}
+.gt7-area-row{cursor:pointer; transition:background .12s ease;}
+.gt7-area-row:hover{background:#F5F6FD;}
+.gt7-area-row.active{background:#EEF0FB; box-shadow:inset 3px 0 0 #6366F1;}
+.gt7-area-name{font-size:12.5px; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.gt7-area-row.active .gt7-area-name{color:#3F4BB8; font-weight:600;}
+.gt7-area-track{background:#EEF0F6; border-radius:6px; height:10px; overflow:hidden;}
+.gt7-area-fill{display:block; height:100%; border-radius:6px; background:linear-gradient(90deg,#6366F1,#14B8A6); transition:width .25s ease; min-width:2px;}
+.gt7-area-val{font-family:'IBM Plex Mono',monospace; font-size:12px; text-align:right; color:var(--ink); white-space:nowrap;}
+.gt7-pill{display:block; border-radius:999px; padding:3px 0; font-size:11px; font-weight:700; text-align:center; white-space:nowrap; font-family:'IBM Plex Mono',monospace;}
+.gt7-pill.ach{background:#EEF0FB; color:#3F4BB8;}
+.gt7-pill.rr.good{background:#E4F3EC; color:#1E8449;}
+.gt7-pill.rr.mid{background:#FFF3D6; color:#A8700F;}
+.gt7-pill.rr.low{background:#FDE8E6; color:#C0392B;}
+.gt7-pill.na{background:#F4F5F7; color:var(--muted);}
 
 
 </style>
@@ -1804,7 +1846,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
       <span class="scope-pill" id="gt7-scopePill">Loading scope…</span>
     </div>
 
-    <div class="kpi-row">
+    <div class="kpi-row five">
       <div class="kpi-card c1">
         <div class="kpi-label">Total Target</div>
         <div class="kpi-value num" id="gt7-kpiTarget">0<span class="kpi-unit">units</span></div>
@@ -1821,7 +1863,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
         <div class="kpi-label">Active Shops</div>
         <div class="kpi-value num" id="gt7-kpiShops">0<span class="kpi-unit">with sales</span></div>
       </div>
-      <div class="kpi-card c1">
+      <div class="kpi-card c5">
         <div class="kpi-label">Runrate %Achieve</div>
         <div class="kpi-value num" id="gt7-kpiRunrate">0%<span class="kpi-unit">of target</span></div>
       </div>
@@ -1835,20 +1877,20 @@ table.mom-table td.col-trend{padding:4px 10px;}
       <div class="chart-box"><canvas id="gt7-trendChart"></canvas></div>
     </div>
 
-    <div class="grid-2">
+    <div class="grid-2 gt7-split">
       <div class="panel">
         <div class="panel-head">
           <span class="panel-title">By Region</span>
           <span class="panel-hint">Click a bar to drill in</span>
         </div>
-        <div class="chart-box tall"><canvas id="gt7-regionChart"></canvas></div>
+        <div class="gt7-chart-box"><canvas id="gt7-regionChart"></canvas></div>
       </div>
       <div class="panel">
         <div class="panel-head">
           <span class="panel-title">By Area</span>
           <span class="panel-hint" id="gt7-areaHint">All regions</span>
         </div>
-        <div class="area-list" id="gt7-areaList"></div>
+        <div class="gt7-area-list" id="gt7-areaList"></div>
       </div>
     </div>
 
@@ -5635,6 +5677,17 @@ function createHuaweiWatchGt7Page(cfg){
     const byReg = {};
     REGIONS.forEach(r=>{ byReg[r]={target:0,actual:0}; });
     f.forEach(s=>{ if(byReg[s.region]){ byReg[s.region].target+=s.target; byReg[s.region].actual+=s.actual; } });
+
+    // One colour family per region: a soft tint for Target, the solid shade for Actual.
+    const PALETTE = [
+      {solid:'#4F46E5', tint:'#DEDDFB'},  // indigo
+      {solid:'#0EA5A4', tint:'#CFEFEE'},  // teal
+      {solid:'#F59E0B', tint:'#FCE9C2'},  // amber
+      {solid:'#EC4899', tint:'#F9D7E8'},
+    ];
+    const pal = REGIONS.map((r,i)=>PALETTE[i % PALETTE.length]);
+    const SELECTED = '#E8483C';
+
     const ctx = $('regionChart');
     if(regionChart) regionChart.destroy();
     regionChart = new Chart(ctx, {
@@ -5642,32 +5695,62 @@ function createHuaweiWatchGt7Page(cfg){
       data:{
         labels:REGIONS,
         datasets:[
-          {label:'Target', data:REGIONS.map(r=>byReg[r].target), backgroundColor:'#D9DEEB', borderRadius:6},
-          {label:'Actual', data:REGIONS.map(r=>byReg[r].actual), backgroundColor:REGIONS.map(r=>state.region===r?'#E8483C':'#1D1D1F'), borderRadius:6,
-            datalabels:{ display:true, anchor:'end', align:'top', color:'#1D1D1F', font:{size:10, weight:'700', family:'Inter'},
-              formatter:(v,ctx)=>{
-                const r = REGIONS[ctx.dataIndex];
-                const t = byReg[r].target;
-                if(!t) return '';
-                const ach = (v/t*100).toFixed(0)+'%';
-                const rr = (runRate(v)/t*100).toFixed(0)+'%';
-                return 'Achieve '+ach+' · RR '+rr;
-              }
-            }}
+          {label:'Target', data:REGIONS.map(r=>byReg[r].target),
+            backgroundColor:pal.map(p=>p.tint), borderRadius:8, borderSkipped:false,
+            barPercentage:0.92, categoryPercentage:0.78,
+            datalabels:{ display:true, anchor:'end', align:'top', clamp:true, color:'#6B7390',
+              font:{size:11, weight:'600', family:'Inter'}, formatter:(v)=>v ? v.toLocaleString() : '' }},
+          {label:'Actual', data:REGIONS.map(r=>byReg[r].actual),
+            backgroundColor:REGIONS.map((r,i)=> state.region===r ? SELECTED : pal[i].solid), borderRadius:8, borderSkipped:false,
+            barPercentage:0.92, categoryPercentage:0.78,
+            datalabels:{ display:true, anchor:'end', align:'top', clamp:true, offset:2, textAlign:'center',
+              color:(c)=> state.region===REGIONS[c.dataIndex] ? SELECTED : pal[c.dataIndex].solid,
+              font:{size:11, weight:'700', family:'Inter', lineHeight:1.25},
+              // two short lines (instead of one long one) so the label stays inside the chart edge
+              formatter:(v,c)=>{
+                const t = byReg[REGIONS[c.dataIndex]].target;
+                if(!t) return v ? v.toLocaleString() : '';
+                return ['Ach '+(v/t*100).toFixed(0)+'%', 'RR '+(runRate(v)/t*100).toFixed(0)+'%'];
+              }}}
         ]
       },
       options:{
         responsive:true, maintainAspectRatio:false,
-        layout:{padding:{top:20}},
+        layout:{padding:{top:34, right:14, left:4, bottom:0}},
         onClick:(evt,elements)=>{
           if(elements.length){
             const r = REGIONS[elements[0].index];
-            state.region = state.region===r ? 'All' : r;
-            pruneAreasForRegion(); pruneShopForFilters(); renderAll();
+            // Deferred on purpose: renderAll() destroys and recreates this very
+            // chart, which must not happen while Chart.js is still dispatching
+            // the click event (it throws 'handleEvent of undefined' otherwise).
+            setTimeout(()=>{
+              state.region = state.region===r ? 'All' : r;
+              pruneAreasForRegion(); pruneShopForFilters(); renderAll();
+            }, 0);
           }
         },
-        plugins:{legend:{position:'bottom', labels:{boxWidth:10,font:{size:11,family:'Inter'}}}},
-        scales:{ y:{beginAtZero:true, title:{display:true,text:'Units',font:{size:10}}, grid:{color:'#EEF0F6'}} }
+        plugins:{
+          legend:{position:'bottom', labels:{
+            boxWidth:12, boxHeight:12, usePointStyle:true, pointStyle:'rectRounded', padding:18,
+            font:{size:11.5, family:'Inter'},
+            generateLabels:()=>[
+              {text:'Target', fillStyle:'#DADFF2', strokeStyle:'#DADFF2', pointStyle:'rectRounded', hidden:false, index:0, datasetIndex:0},
+              {text:'Actual (Ach = Achieve · RR = Runrate)', fillStyle:'#4F46E5', strokeStyle:'#4F46E5', pointStyle:'rectRounded', hidden:false, index:1, datasetIndex:1}
+            ]
+          }},
+          tooltip:{callbacks:{
+            afterBody:(items)=>{
+              const r = REGIONS[items[0].dataIndex];
+              const t = byReg[r].target, a = byReg[r].actual;
+              if(!t) return '';
+              return ['Achieve: '+(a/t*100).toFixed(1)+'%', 'Runrate: '+(runRate(a)/t*100).toFixed(1)+'%'];
+            }
+          }}
+        },
+        scales:{
+          y:{beginAtZero:true, grace:'6%', title:{display:true,text:'Units',font:{size:10}}, grid:{color:'#EEF0F6'}, border:{display:false}},
+          x:{grid:{display:false}, ticks:{font:{size:12, weight:'600', family:'Inter'}}}
+        }
       }
     });
   }
@@ -5680,20 +5763,30 @@ function createHuaweiWatchGt7Page(cfg){
       const rows_f = f.filter(d=>d.area===a);
       return {area:a, target:rows_f.reduce((s,d)=>s+d.target,0), actual:rows_f.reduce((s,d)=>s+d.actual,0)};
     }).sort((a,b)=>b.actual-a.actual);
-    const maxVal = Math.max(1, ...rows.map(r=>Math.max(r.target,r.actual)));
+    const maxVal = Math.max(1, ...rows.map(r=>r.actual));
 
     $('areaHint').textContent = state.region==='All' ? 'All regions' : state.region+' region';
     const el = $('areaList');
-    el.innerHTML = '';
+    el.innerHTML = '<div class="gt7-area-head"><span>Area</span><span></span><span>Act / Tgt</span><span>Achieve</span><span>Runrate</span></div>';
     rows.forEach(r=>{
       const div = document.createElement('div');
-      div.className = 'area-row'+(state.areas.has(r.area)?' active':'');
-      const ach = r.target ? fmtPct(r.actual/r.target*100) : '—';
-      const rr = r.target ? fmtPct(runRate(r.actual)/r.target*100) : '—';
+      div.className = 'gt7-area-row'+(state.areas.has(r.area)?' active':'');
+      let achHtml, rrHtml;
+      if(r.target){
+        const ach = r.actual/r.target*100;
+        const rr = runRate(r.actual)/r.target*100;
+        const rrClass = rr>=100 ? 'good' : rr>=60 ? 'mid' : 'low';
+        achHtml = `<span class="gt7-pill ach">${fmtPct(ach)}</span>`;
+        rrHtml = `<span class="gt7-pill rr ${rrClass}">${fmtPct(rr)}</span>`;
+      } else {
+        achHtml = '<span class="gt7-pill na">—</span>';
+        rrHtml = '<span class="gt7-pill na">—</span>';
+      }
       div.innerHTML = `
-        <span class="area-name" title="${r.area}">${r.area}</span>
-        <span class="area-track"><span class="area-fill" style="width:${(r.actual/maxVal*100).toFixed(1)}%"></span></span>
-        <span class="area-val num">${fmtInt(r.actual)} / ${fmtInt(r.target)} <span style="color:var(--muted); font-weight:500;">(${ach} · RR ${rr})</span></span>`;
+        <span class="gt7-area-name" title="${r.area}">${r.area}</span>
+        <span class="gt7-area-track"><span class="gt7-area-fill" style="width:${(r.actual/maxVal*100).toFixed(1)}%"></span></span>
+        <span class="gt7-area-val">${fmtInt(r.actual)} / ${fmtInt(r.target)}</span>
+        ${achHtml}${rrHtml}`;
       div.onclick = ()=>{
         if(state.areas.has(r.area)) state.areas.delete(r.area);
         else state.areas.add(r.area);
