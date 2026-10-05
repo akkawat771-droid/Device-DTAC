@@ -316,6 +316,13 @@ def export_vivo_gameplan(target_xlsx_path, tsm_df, area_to_region=None):
 # ---------------------------------------------------------------------
 # Huawei Watch GT7 -- EDIT HERE if the target file changes.
 # ---------------------------------------------------------------------
+# Which column of the target sheet ("Sheet1") holds the Huawei Watch GT7 target.
+# The FIRST name found in the sheet is used, so a file that carries both a
+# newer "TG New" column and the older "TG Huawei GT7" column reads the newer one.
+# Reorder / edit this list if the target file's layout changes. Other sheets
+# in the workbook (e.g. a working "Sheet2") are ignored.
+GT7_TARGET_COLUMNS = ["TG New", "TG Huawei GT7"]
+
 def parse_gt7_variant(desc):
     """'ACC,HUAWEI,WATCH,GT7 PRO 46MM,GREEN' -> ('GT7 PRO', '46MM', 'Green').
     Model = GT7 or GT7 PRO; size = the NNMM token; colour = whatever follows
@@ -331,7 +338,7 @@ def parse_gt7_variant(desc):
 
 def export_huawei_watch_gt7(target_xlsx_path, tsm_df, area_to_region=None):
     """Reads Target_Watch_GT7.xlsx ('Sheet1': one row per shop with a
-    target for Huawei Watch GT7) and matches it against actual October
+    target for Huawei Watch GT7, in the column chosen by GT7_TARGET_COLUMNS) and matches it against actual October
     sales where DESCRIPTION contains HUAWEI, WATCH and GT7 (this covers
     both the base GT7 and the GT7 PRO line, since 'PRO' models'
     descriptions still contain the substring 'GT7'). Only 80 of 243
@@ -345,7 +352,22 @@ def export_huawei_watch_gt7(target_xlsx_path, tsm_df, area_to_region=None):
     target_df = pd.read_excel(target_xlsx_path, sheet_name="Sheet1")
     target_df = target_df.dropna(subset=["SHOP_CODE"]).copy()
     target_df["SHOP_CODE"] = pd.to_numeric(target_df["SHOP_CODE"], errors="coerce").astype("Int64")
-    target_df["TG Huawei GT7"] = pd.to_numeric(target_df["TG Huawei GT7"], errors="coerce").fillna(0)
+
+    target_col = next((c for c in GT7_TARGET_COLUMNS if c in target_df.columns), None)
+    if target_col is None:
+        raise ValueError(f"Huawei Watch GT7 target file has none of the expected target columns {GT7_TARGET_COLUMNS}; found {list(target_df.columns)}")
+    for c in GT7_TARGET_COLUMNS:
+        if c in target_df.columns:
+            target_df[c] = pd.to_numeric(target_df[c], errors="coerce").fillna(0)
+    print(f"    Huawei Watch GT7 target column used: '{target_col}' (total {target_df[target_col].sum():,.0f})")
+    # If the sheet carries other candidate columns, say how the choice differs so a
+    # stale/leftover column can't silently change which shops have a target.
+    for other in GT7_TARGET_COLUMNS:
+        if other != target_col and other in target_df.columns:
+            lost = int(((target_df[other] > 0) & (target_df[target_col] <= 0)).sum())
+            gained = int(((target_df[other] <= 0) & (target_df[target_col] > 0)).sum())
+            msg = f"vs '{other}' (total {target_df[other].sum():,.0f}): {gained} shops gain a target, {lost} lose one"
+            print(f"      {'WARNING ' if (lost or gained) else ''}{msg}")
 
     desc = tsm_df["DESCRIPTION"].astype(str).str.upper()
     mask = desc.str.contains("HUAWEI") & desc.str.contains("WATCH") & desc.str.contains("GT7")
@@ -374,7 +396,7 @@ def export_huawei_watch_gt7(target_xlsx_path, tsm_df, area_to_region=None):
             "type": r["SHOP_TYPE"],
             "code": code,
             "shop": str(r["SHOP_NAME"]).strip(),
-            "target": float(r["TG Huawei GT7"]),
+            "target": float(r[target_col]),
             "actual": int(per_shop.get(code, 0)),
         })
     # Variant detail (model / size / colour per shop), so the tab can show the
