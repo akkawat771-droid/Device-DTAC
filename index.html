@@ -2749,7 +2749,11 @@ function createDashboard(cfg){
       options:{
         responsive:true, maintainAspectRatio:false,
         plugins:{legend:{position:'bottom', labels:{boxWidth:10,font:{size:11,family:'Inter'}}},
-          tooltip:{callbacks:{label:(c)=>c.dataset.label+': '+c.parsed.y+'%'}}},
+          tooltip:{callbacks:{label:(c)=>c.dataset.label+': '+c.parsed.y+'%'}},
+          datalabels:{ display:true, anchor:'end', align:'top', offset:2, clamp:true,
+            color:(c)=>c.datasetIndex===0?'#2a78d6':'#eb6834',
+            font:{size:9, weight:'700', family:'Inter'}, formatter:(v)=>v<0.05?'':v.toFixed(1)+'%' }},
+        layout:{padding:{top:18}},
         scales:{
           y:{beginAtZero:true, max:100, ticks:{callback:(v)=>v+'%'}, grid:{color:'#EEF0F6'}},
           x:{grid:{display:false}}
@@ -2851,7 +2855,11 @@ function createDashboard(cfg){
         indexAxis:'y',
         responsive:true, maintainAspectRatio:false,
         plugins:{legend:{display:false},
-          tooltip:{callbacks:{label:(c)=> state.modelSortBy==='rev' ? '฿'+c.parsed.x.toLocaleString() : c.parsed.x.toLocaleString()+' units'}}},
+          tooltip:{callbacks:{label:(c)=> state.modelSortBy==='rev' ? '฿'+c.parsed.x.toLocaleString() : c.parsed.x.toLocaleString()+' units'}},
+          datalabels:{ display:true, anchor:'end', align:'right', clamp:true, color:'#101B3D',
+            font:{size:10.5, weight:'700', family:'Inter'},
+            formatter:(v)=> state.modelSortBy==='rev' ? '฿'+Math.round(v).toLocaleString('en-US') : Math.round(v).toLocaleString('en-US') }},
+        layout:{padding:{right:56}},
         scales:{
           x:{beginAtZero:true, ticks:{callback:(v)=> state.modelSortBy==='rev' ? (v/1000).toFixed(0)+'K' : v}, grid:{color:'#EEF0F6'}},
           y:{grid:{display:false}}
