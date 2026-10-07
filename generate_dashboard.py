@@ -65,6 +65,16 @@ import sys
 import json
 import pandas as pd
 
+def _sc(v):
+    """Normalise a shop code to a plain integer string ("80101350").
+    A blank SHOP_CODE anywhere in an export makes pandas read the whole
+    column as float64, so str(code) would give "80101350.0" and never
+    match the same shop's code coming from another file (e.g. Sheep)."""
+    try:
+        return str(int(float(v)))
+    except (TypeError, ValueError):
+        return str(v)
+
 def to_dict_encoded(records, fields, cat_fields):
     """Like to_compact, but additionally dictionary-encodes the
     categorical (highly repetitive string) fields: each distinct value is
@@ -134,7 +144,7 @@ def load_shops_master(shop_list_path, df):
         shops = pd.read_excel(shop_list_path)
         records = [
             {
-                "code": str(r["SHOP CODE"]),
+                "code": _sc(r["SHOP CODE"]),
                 "name": str(r["SHOP NAME"]).strip(),
                 "type": r["TYPE SHOP"],
                 "region": r["REGION"],
@@ -147,7 +157,7 @@ def load_shops_master(shop_list_path, df):
     shops = df[["SHOP_CODE", "SHOP NAME", "TYPE SHOP", "REGION", "AREA"]].dropna(subset=["SHOP_CODE"]).drop_duplicates(subset=["SHOP_CODE"])
     records = [
         {
-            "code": str(r["SHOP_CODE"]),
+            "code": _sc(r["SHOP_CODE"]),
             "name": str(r["SHOP NAME"]).strip(),
             "type": r["TYPE SHOP"],
             "region": r["REGION"],
@@ -167,7 +177,7 @@ def export_group(df, prodgroup, rev_col="NET_AMOUNT"):
             "date": r["DATE"].strftime("%Y-%m-%d"),
             "region": r["REGION"],
             "area": r["AREA"],
-            "code": str(r["SHOP_CODE"]),
+            "code": _sc(r["SHOP_CODE"]),
             "shop": str(r["SHOP NAME"]).strip(),
             "type": r["TYPE SHOP"],
             "qty": int(r["QTY"]),
@@ -235,7 +245,7 @@ def export_suplife_attach(df):
             "date": r["DATE"].strftime("%Y-%m-%d"),
             "region": r["REGION"],
             "area": r["AREA"],
-            "code": str(r["SHOP_CODE"]),
+            "code": _sc(r["SHOP_CODE"]),
             "shop": str(r["SHOP NAME"]).strip(),
             "type": r["TYPE SHOP"],
             "saleCode": r["SALE_CODE"],
@@ -520,7 +530,7 @@ def export_emp_type(df, emp_type, external_roster=None):
                 roster_by_code[code] = {
                     "code": code,
                     "name": str(r["SALE_NAME"]).strip(),
-                    "shopCode": str(r["SHOP_CODE"]),
+                    "shopCode": _sc(r["SHOP_CODE"]),
                     "shop": str(r["SHOP NAME"]).strip(),
                     "type": r["TYPE SHOP"],
                     "region": r["REGION"],
@@ -533,7 +543,7 @@ def export_emp_type(df, emp_type, external_roster=None):
             {
                 "code": str(r["SALE_CODE"]),
                 "name": str(r["SALE_NAME"]).strip(),
-                "shopCode": str(r["SHOP_CODE"]),
+                "shopCode": _sc(r["SHOP_CODE"]),
                 "shop": str(r["SHOP NAME"]).strip(),
                 "type": r["TYPE SHOP"],
                 "region": r["REGION"],
@@ -549,7 +559,7 @@ def export_emp_type(df, emp_type, external_roster=None):
     records = [
         {
             "date": r["DATE"].strftime("%Y-%m-%d"),
-            "code": str(r["SHOP_CODE"]),
+            "code": _sc(r["SHOP_CODE"]),
             "shop": str(r["SHOP NAME"]).strip(),
             "type": r["TYPE SHOP"],
             "region": r["REGION"],
