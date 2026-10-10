@@ -708,6 +708,9 @@ table.mom-table td.col-trend{padding:4px 10px;}
 .org-table tr.org-area:hover td{background:#F5F6FD;}
 .org-table tr.org-area.active td{background:#EEF0FB;}
 
+.mongkol-top-kpis{grid-template-columns:repeat(2,minmax(0,1fr)); margin-bottom:16px;}
+@media (max-width:700px){ .mongkol-top-kpis{grid-template-columns:1fr;} }
+
 </style>
 </head>
 <body>
@@ -1661,6 +1664,17 @@ table.mom-table td.col-trend{padding:4px 10px;}
   </div>
 
   <div class="page" id="page-mongkol">
+
+    <div class="kpi-row mongkol-top-kpis">
+      <div class="kpi-card c2">
+        <div class="kpi-label">Total QTY — Oct 69</div>
+        <div class="kpi-value num" id="mongkol-kpiQty">0<span class="kpi-unit">units</span></div>
+      </div>
+      <div class="kpi-card c4">
+        <div class="kpi-label">Runrate Total QTY</div>
+        <div class="kpi-value num" id="mongkol-kpiRR">0<span class="kpi-unit">units</span></div>
+      </div>
+    </div>
 
     <div class="mongkol-hero">
       <div class="mongkol-eyebrow">กิจกรรมศึกชิงเจ้าสังเวียน</div>
@@ -4550,6 +4564,10 @@ function createMongkolPage(cfg){
   const CUT_SCORE = TOP20.length===20 ? TOP20[19].octActual : null;
   const CUT_TIED = CUT_SCORE!==null ? GLOBAL_RANKED.filter(r=>r.octActual===CUT_SCORE) : [];
   const CUT_TIE_OPEN = CUT_TIED.length>0 && GLOBAL_RANKED.slice(20).some(r=>r.octActual===CUT_SCORE);
+  // Run rate = QTY so far projected to the full month (31 days) from the
+  // number of days covered by the file's "Data as of" date.
+  const DAYS_IN_MONTH = 31;
+  const DAYS_ELAPSED = cfg.dataAsOf ? Math.min(DAYS_IN_MONTH, parseInt(cfg.dataAsOf.slice(8,10),10)) : 0;
   const PAGE_LIMIT = 50;
   let showAll = false;
 
@@ -4659,6 +4677,13 @@ function createMongkolPage(cfg){
     const top = rows[0];
     const poolTotal = Object.values(PRIZE_BY_SALEID).reduce((s,v)=>s+v,0);
 
+    const totalQty = rows.reduce((s,r)=>s+r.octActual,0);
+    $('kpiQty').innerHTML = fmtInt(totalQty)+'<span class="kpi-unit">units · '+fmtInt(rows.length)+' employees</span>';
+    if(DAYS_ELAPSED){
+      $('kpiRR').innerHTML = fmtInt(totalQty*DAYS_IN_MONTH/DAYS_ELAPSED)+'<span class="kpi-unit">units · '+DAYS_ELAPSED+' of '+DAYS_IN_MONTH+' days elapsed</span>';
+    } else {
+      $('kpiRR').innerHTML = '—<span class="kpi-unit">no data-as-of date</span>';
+    }
     $('kpiTotal').innerHTML = fmtInt(rows.length)+'<span class="kpi-unit">employees</span>';
     $('kpiEligible').innerHTML = fmtInt(active.length)+'<span class="kpi-unit">of '+fmtInt(rows.length)+' มียอดขาย</span>';
     $('kpiTop').innerHTML = top ? (top.name+'<span class="kpi-unit" id="mongkol-kpiTopQty">'+fmtInt(top.octActual)+' units</span>') : '–<span class="kpi-unit" id="mongkol-kpiTopQty"></span>';
