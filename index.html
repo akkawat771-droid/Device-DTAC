@@ -1489,12 +1489,12 @@ table.mom-table td.col-trend{padding:4px 10px;}
         <div class="kpi-value num" id="entrymodel-kpiActual">0<span class="kpi-unit">units</span></div>
       </div>
       <div class="kpi-card c3">
-        <div class="kpi-label">Overall %Achieve</div>
-        <div class="kpi-value num" id="entrymodel-kpiAchieve">0%<span class="kpi-unit">of target</span></div>
+        <div class="kpi-label">Runrate Total Actual</div>
+        <div class="kpi-value num" id="entrymodel-kpiAchieve">0<span class="kpi-unit">units</span></div>
       </div>
       <div class="kpi-card c4">
-        <div class="kpi-label">Pace vs Time Elapsed</div>
-        <div class="kpi-value num" id="entrymodel-kpiPace">0%<span class="kpi-unit" id="entrymodel-paceUnit">days elapsed</span></div>
+        <div class="kpi-label">Runrate %Achievement</div>
+        <div class="kpi-value num" id="entrymodel-kpiPace">0%<span class="kpi-unit" id="entrymodel-paceUnit">of target</span></div>
       </div>
     </div>
 
@@ -3882,13 +3882,13 @@ function createEntryModelPage(cfg){
 
     $('kpiTarget').innerHTML = fmtInt(totalTarget)+'<span class="kpi-unit">units</span>';
     $('kpiActual').innerHTML = fmtInt(totalActual)+'<span class="kpi-unit">units</span>';
-    $('kpiAchieve').innerHTML = fmtPct(overallPct)+'<span class="kpi-unit">of target</span>';
-    const c = achieveColor(overallPct);
-    $('kpiAchieve').style.color = c.fg;
-
-    $('kpiPace').innerHTML = fmtPct(timeElapsedPct)+'<span class="kpi-unit" id="entrymodel-paceUnit">day '+dayOfMonth+' of '+MONTH_DAYS+'</span>';
-    const paceNote = paceDelta>=0 ? ' (ahead of pace)' : ' (behind pace)';
-    $('kpiPace').title = 'Achieve '+fmtPct(overallPct)+' vs time elapsed '+fmtPct(timeElapsedPct)+paceNote;
+    const rrActual = dayOfMonth ? totalActual*MONTH_DAYS/dayOfMonth : 0;
+    const rrPct = totalTarget ? rrActual/totalTarget*100 : 0;
+    $('kpiAchieve').innerHTML = fmtInt(rrActual)+'<span class="kpi-unit">units · day '+dayOfMonth+' of '+MONTH_DAYS+'</span>';
+    $('kpiAchieve').style.color = '';
+    $('kpiPace').innerHTML = fmtPct(rrPct)+'<span class="kpi-unit" id="entrymodel-paceUnit">of target</span>';
+    $('kpiPace').style.color = achieveColor(rrPct).fg;
+    $('kpiPace').title = 'Runrate '+fmtInt(rrActual)+' / Target '+fmtInt(totalTarget)+' (Achieve now '+fmtPct(overallPct)+')';
 
     const dArr = [...state.dates].sort();
     const scopeTxt = dArr.length===ALL_DATES.length ? 'full period to date' : dArr.length+' date(s) selected';
