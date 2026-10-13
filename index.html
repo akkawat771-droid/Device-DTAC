@@ -1373,8 +1373,8 @@ table.mom-table td.col-trend{padding:4px 10px;}
         <div class="kpi-value num" id="suplife-kpiRate">0%<span class="kpi-unit">SUPLIFE / IPHONE</span></div>
       </div>
       <div class="kpi-card c4">
-        <div class="kpi-label">Active Salespeople</div>
-        <div class="kpi-value num" id="suplife-kpiSales">0<span class="kpi-unit">with iPhone sales</span></div>
+        <div class="kpi-label">Runrate Suplife (PLV) Volume</div>
+        <div class="kpi-value num" id="suplife-kpiSales">0<span class="kpi-unit">units</span></div>
       </div>
     </div>
 
@@ -5069,7 +5069,9 @@ function createSuplifeAttachPage(cfg){
     $('kpiIphone').innerHTML = fmtInt(iphoneQty)+'<span class="kpi-unit">units</span>';
     $('kpiSuplife').innerHTML = fmtInt(suplifeQty)+'<span class="kpi-unit">units</span>';
     $('kpiRate').innerHTML = (rate==null?'0%':fmtPct(rate))+'<span class="kpi-unit">SUPLIFE / IPHONE</span>';
-    $('kpiSales').innerHTML = sales+'<span class="kpi-unit">with iPhone sales</span>';
+    const lastDay = DATES.length ? parseInt([...DATES].sort().slice(-1)[0].slice(8,10),10) : 0;
+    const rrDays = Math.max(1, lastDay), rrMonth = 31;
+    $('kpiSales').innerHTML = fmtInt(suplifeQty*rrMonth/rrDays)+'<span class="kpi-unit">units · '+rrDays+' of '+rrMonth+' days elapsed</span>';
 
     const scopeBits = [];
     scopeBits.push(state.region==='All'?'All regions':state.region);
