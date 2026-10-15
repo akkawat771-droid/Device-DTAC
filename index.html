@@ -2272,7 +2272,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
           <span class="panel-hint">Click a row to filter</span>
         </div>
         <div class="lb-scroll"><table class="lb org-table">
-          <thead><tr><th>Region</th><th class="num">Shops</th><th class="num">Target</th><th class="num">Actual</th><th class="num">%Achieve</th><th class="num">Runrate Actual</th><th class="num">%Runrate</th></tr></thead>
+          <thead><tr><th>Region</th><th class="num">Target</th><th class="num">Actual</th><th class="num">%Achieve</th><th class="num">Runrate Actual</th><th class="num">%Runrate</th></tr></thead>
           <tbody id="tmc-regionBody"></tbody>
         </table></div>
       </div>
@@ -2282,7 +2282,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
           <span class="panel-hint">Click a row to filter</span>
         </div>
         <div class="lb-scroll"><table class="lb org-table">
-          <thead><tr><th>Area</th><th class="num">Shops</th><th class="num">Target</th><th class="num">Actual</th><th class="num">%Achieve</th><th class="num">Runrate Actual</th><th class="num">%Runrate</th></tr></thead>
+          <thead><tr><th>Area</th><th class="num">Target</th><th class="num">Actual</th><th class="num">%Achieve</th><th class="num">Runrate Actual</th><th class="num">%Runrate</th></tr></thead>
           <tbody id="tmc-areaBody"></tbody>
         </table></div>
       </div>
@@ -6891,7 +6891,7 @@ function createTrueMobileCarePage(cfg){
     rows.sort(order||((a,b)=>b.actual-a.actual));
     const tb=$(bodyId); tb.innerHTML='';
     const add=(cls,label,r,click)=>{ const tr=document.createElement('tr'); tr.className=cls;
-      tr.innerHTML=`<td>${label}</td><td class="num">${r.shops}</td><td class="num">${fmtInt(r.target)}</td><td class="num" style="font-weight:700;">${fmtInt(r.actual)}</td>
+      tr.innerHTML=`<td>${label}</td><td class="num">${fmtInt(r.target)}</td><td class="num" style="font-weight:700;">${fmtInt(r.actual)}</td>
         <td class="num">${r.target?fmtPct(r.actual/r.target*100):'—'}</td><td class="num">${fmtInt(rr(r.actual))}</td><td class="num">${rrPill(r.actual,r.target)}</td>`;
       if(click){ tr.style.cursor='pointer'; tr.onclick=click; } tb.appendChild(tr); };
     rows.forEach(r=>add('org-area'+(isActive(r.k)?' active':''), labelFn(r.k), r, ()=>{ onClick(r.k); prune(); renderAll(); }));
