@@ -755,6 +755,30 @@ table.mom-table td.col-trend{padding:4px 10px;}
 #page-sp .mom-n{color:#E0392B;}
 @media (max-width:760px){#page-sp .sp-actions{margin-left:0;}#page-sp .sp-f-wide{min-width:100%;}}
 
+#page-sp .sp-infos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:16px;}
+#page-sp .sp-info{background:#fff;border:1px solid var(--line,#E4E7F0);border-radius:16px;padding:16px 18px 14px;box-shadow:0 1px 2px rgba(16,27,61,.04);}
+#page-sp #sp-info-n{border-top:4px solid #1F4E96;} #page-sp #sp-info-q{border-top:4px solid #EB6834;}
+#page-sp .sp-info-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+#page-sp .sp-info-ico{font-size:22px;width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:#EEF2FB;}
+#page-sp #sp-info-q .sp-info-ico{background:#FDEEE6;}
+#page-sp .sp-info-title{font-weight:800;font-size:15px;color:#1B2A5C;} #page-sp .sp-info-sub{font-size:11.5px;color:var(--muted,#7a8196);}
+#page-sp .sp-info-body{display:flex;align-items:center;gap:20px;}
+#page-sp .sp-ring{--p:0;--c:#E0392B;flex:0 0 132px;height:132px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p)*1%),#E9EAEE 0);display:grid;place-items:center;}
+#page-sp .sp-ring-in{width:100px;height:100px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+#page-sp .sp-ring-in b{font-size:24px;font-weight:800;line-height:1.1;color:var(--c);font-variant-numeric:tabular-nums;}
+#page-sp .sp-ring-in small{font-size:9.5px;color:var(--muted,#7a8196);margin-top:2px;line-height:1.2;padding:0 8px;}
+#page-sp .sp-bars{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
+#page-sp .sp-bar-row{display:grid;grid-template-columns:58px minmax(0,1fr) auto;align-items:center;gap:10px;font-size:12px;}
+#page-sp .sp-bar-row>span{color:var(--muted,#7a8196);font-weight:600;} #page-sp .sp-bar-row>b{font-variant-numeric:tabular-nums;font-size:14px;color:#111;text-align:right;min-width:92px;}
+#page-sp .sp-track{height:12px;border-radius:6px;background:#EEF0F6;overflow:hidden;} #page-sp .sp-track i{display:block;height:100%;border-radius:6px;width:0;transition:width .4s;}
+#page-sp .b-tg{background:#B8C2DA;} #page-sp .b-rr{background:#8B5CF6;} #page-sp .b-ac{background:#1F4E96;} #page-sp #sp-info-q .b-ac{background:#EB6834;}
+#page-sp .sp-info-foot{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;padding-top:12px;border-top:1px dashed #D9DCE6;}
+#page-sp .sp-info-foot span{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted,#7a8196);font-weight:600;}
+#page-sp .sp-info-foot b{font-size:17px;font-variant-numeric:tabular-nums;} 
+#page-sp .up{color:#16995F;} #page-sp .dn{color:#E0392B;}
+@media (max-width:1100px){#page-sp .sp-infos{grid-template-columns:1fr;}}
+@media (max-width:520px){#page-sp .sp-info-body{flex-direction:column;align-items:stretch;}#page-sp .sp-ring{align-self:center;}}
+
 </style>
 </head>
 <body>
@@ -814,6 +838,41 @@ table.mom-table td.col-trend{padding:4px 10px;}
       <div class="sp-actions">
         <button type="button" class="reset-btn" id="sp-resetBtn">Reset</button>
         <button type="button" class="export-btn-mini" id="sp-exportBtn">⬇ Export CSV</button>
+      </div>
+    </div>
+
+    <div class="sp-infos">
+      <div class="sp-info" id="sp-info-n">
+        <div class="sp-info-head"><span class="sp-info-ico">💰</span><div><div class="sp-info-title">Net Amount</div><div class="sp-info-sub">ยอดขาย (฿) เทียบเป้าหมาย</div></div></div>
+        <div class="sp-info-body">
+          <div class="sp-ring" id="sp-nRing"><div class="sp-ring-in"><b id="sp-nAch">—</b><small>%Ach (RR ÷ Target)</small></div></div>
+          <div class="sp-bars">
+            <div class="sp-bar-row"><span>Target</span><div class="sp-track"><i class="b-tg" id="sp-nBTg"></i></div><b id="sp-nTg">—</b></div>
+            <div class="sp-bar-row"><span>Runrate</span><div class="sp-track"><i class="b-rr" id="sp-nBRr"></i></div><b id="sp-nRr">—</b></div>
+            <div class="sp-bar-row"><span>Actual</span><div class="sp-track"><i class="b-ac" id="sp-nBAc"></i></div><b id="sp-nAc">—</b></div>
+          </div>
+        </div>
+        <div class="sp-info-foot">
+          <div><span>Actual ÷ Target</span><b id="sp-nPct">—</b></div>
+          <div><span>MOM</span><b id="sp-nMom">—</b></div>
+          <div><span>Gap to Target</span><b id="sp-nGap">—</b></div>
+        </div>
+      </div>
+      <div class="sp-info" id="sp-info-q">
+        <div class="sp-info-head"><span class="sp-info-ico">📦</span><div><div class="sp-info-title">Subs (QTY)</div><div class="sp-info-sub">จำนวน (หน่วย) เทียบเป้าหมาย</div></div></div>
+        <div class="sp-info-body">
+          <div class="sp-ring" id="sp-qRing"><div class="sp-ring-in"><b id="sp-qAch">—</b><small>%Ach (RR ÷ Target)</small></div></div>
+          <div class="sp-bars">
+            <div class="sp-bar-row"><span>Target</span><div class="sp-track"><i class="b-tg" id="sp-qBTg"></i></div><b id="sp-qTg">—</b></div>
+            <div class="sp-bar-row"><span>Runrate</span><div class="sp-track"><i class="b-rr" id="sp-qBRr"></i></div><b id="sp-qRr">—</b></div>
+            <div class="sp-bar-row"><span>Actual</span><div class="sp-track"><i class="b-ac" id="sp-qBAc"></i></div><b id="sp-qAc">—</b></div>
+          </div>
+        </div>
+        <div class="sp-info-foot">
+          <div><span>Actual ÷ Target</span><b id="sp-qPct">—</b></div>
+          <div><span>MOM</span><b id="sp-qMom">—</b></div>
+          <div><span>Gap to Target</span><b id="sp-qGap">—</b></div>
+        </div>
       </div>
     </div>
 
@@ -8922,6 +8981,19 @@ function createSalePerformancePage(cfg){
     const tg=s(7),net=s(8),rr=s(9),tgq=s(12),qty=s(13),rrq=s(14), pn=prev(8,11), pq=prev(13,16);
     return {tg,net,rr,ach:tg?rr/tg:null,mom:pn?net/pn-1:null,tgq,qty,rrq,achq:tgq?rrq/tgq:null,momq:pq?qty/pq-1:null};
   }
+  const fmtM=v=>v==null?'—':(Math.abs(v)>=1e6?(v/1e6).toLocaleString('en-US',{minimumFractionDigits:1,maximumFractionDigits:1})+'M':Math.round(v).toLocaleString('en-US'));
+  const ringCol=v=>v==null?'#9aa3b8':v<0.7?'#E0392B':v<0.9?'#F08A24':v<1?'#C99A06':'#16995F';
+  function card(k,tg,rr,ac,ach,mom,money){
+    const f=money?fmtM:fmtN, mx=Math.max(tg||0,rr||0,ac||0,1);
+    const ring=$(k+'Ring'); ring.style.setProperty('--p',Math.max(0,Math.min(100,(ach||0)*100)).toFixed(1)); ring.style.setProperty('--c',ringCol(ach));
+    $(k+'Ach').textContent=ach==null?'—':(ach*100).toFixed(1)+'%';
+    $(k+'Tg').textContent=f(tg); $(k+'Rr').textContent=f(rr); $(k+'Ac').textContent=f(ac);
+    $(k+'BTg').style.width=((tg||0)/mx*100)+'%'; $(k+'BRr').style.width=((rr||0)/mx*100)+'%'; $(k+'BAc').style.width=((ac||0)/mx*100)+'%';
+    $(k+'Pct').textContent=tg?(ac/tg*100).toFixed(1)+'%':'—';
+    const m=$(k+'Mom'); m.textContent=mom==null?'—':(mom>=0?'▲ +':'▼ ')+(mom*100).toFixed(1)+'%'; m.className=mom==null?'':mom>=0?'up':'dn';
+    const g=$(k+'Gap'); g.textContent=tg==null?'—':f(Math.max(0,tg-ac)); g.className=(tg!=null&&ac>=tg)?'up':'';
+  }
+  function renderCards(t){ card('n',t.tg,t.rr,t.net,t.ach,t.mom,true); card('q',t.tgq,t.rrq,t.qty,t.achq,t.momq,false); }
   function render(){
     renderFilters();
     const rows=R.filter(r=>ok(r)); const k=sortK;
@@ -8929,6 +9001,7 @@ function createSalePerformancePage(cfg){
     $('body').innerHTML=rows.map(rowHtml).join('');
     const t=totals(rows);
     $('foot').innerHTML=`<td class="t">Total</td><td></td><td></td><td></td><td></td><td></td><td></td><td>${fmtN(t.tg)}</td><td>${fmtN(t.net)}</td><td>${fmtN(t.rr)}</td><td class="${achCls(t.ach)}">${fmtP(t.ach)}</td><td class="${momCls(t.mom)}">${fmtP(t.mom)}</td><td>${fmtN(t.tgq)}</td><td>${fmtN(t.qty)}</td><td>${fmtN(t.rrq)}</td><td class="${achCls(t.achq)}">${fmtP(t.achq)}</td><td class="${momCls(t.momq)}">${fmtP(t.momq)}</td>`;
+    renderCards(t);
     $('hint').textContent=rows.length.toLocaleString('en-US')+' rows · คลิกหัวคอลัมน์เพื่อเรียง · Total = RR ÷ Target (%Ach) และ MOM รวมคำนวณจากรายการที่เลือก';
     document.querySelectorAll('#sp-table th').forEach(th=>{ const on=+th.dataset.k===sortK; th.classList.toggle('sorted',on); th.classList.toggle('asc',on&&sortAsc); });
   }
