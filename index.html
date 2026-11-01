@@ -6284,11 +6284,7 @@ function createSuplifeAttachPage(cfg){
     URL.revokeObjectURL(url);
   }
   $('exportBtn').addEventListener('click', exportCsv);
-  $('exportSaleBtn').addEventListener('click',()=>{
-    const {rows}=saleRows(); const lines=[['Rank','Sale Name','Sales ID','Emp Type','Shop','Region','Area','Target','Actual','%Achieve','Runrate Actual','%Runrate'].map(csvField).join(',')];
-    rows.forEach((r,i)=>lines.push([i+1,r.name,r.saleId,r.empType,r.shop,r.region,r.area,r.target.toFixed(2),r.qty,r.pct==null?'':r.pct.toFixed(1)+'%',r.rr.toFixed(1),r.rrPct==null?'':r.rrPct.toFixed(1)+'%'].map(csvField).join(',')));
-    download('True_Mobile_Care_Sales',lines);
-  });
+  $('exportSaleBtn').addEventListener('click', exportSaleCsv);
   $('resetBtn').addEventListener('click', ()=>{
     state.region='All'; state.type='All'; state.areas=new Set(); state.shop='All'; state.dates=new Set(DATES); state.saleName='All';
     shopInput.value=''; saleInput.value='';
