@@ -3707,18 +3707,21 @@ function createAttachRatePage(cfg){
   const pageEl = document.getElementById('page-' + PFX);
 
   // ---------- Merge Handset + Accessories + Sheep into one per (date, shop) series ----------
+  // Only the current month (the month of the latest handset date) is shown on this tab.
+  const CUR_MONTH = cfg.handsetData.reduce((m,d)=>d.date>m?d.date:m,'').slice(0,7);
+  const inMonth = d => d.date.slice(0,7)===CUR_MONTH;
   const mergedMap = {};
-  cfg.handsetData.forEach(d=>{
+  cfg.handsetData.filter(inMonth).forEach(d=>{
     const key = d.date+'|'+d.code;
     if(!mergedMap[key]) mergedMap[key] = {date:d.date, region:d.region, area:d.area, code:d.code, shop:d.shop, type:d.type, handsetQty:0, accQty:0, sheepQty:0};
     mergedMap[key].handsetQty += d.qty;
   });
-  cfg.accessoriesData.forEach(d=>{
+  cfg.accessoriesData.filter(inMonth).forEach(d=>{
     const key = d.date+'|'+d.code;
     if(!mergedMap[key]) mergedMap[key] = {date:d.date, region:d.region, area:d.area, code:d.code, shop:d.shop, type:d.type, handsetQty:0, accQty:0, sheepQty:0};
     mergedMap[key].accQty += d.qty;
   });
-  (cfg.sheepData||[]).forEach(d=>{
+  (cfg.sheepData||[]).filter(inMonth).forEach(d=>{
     const key = d.date+'|'+d.code;
     if(!mergedMap[key]) mergedMap[key] = {date:d.date, region:d.region, area:d.area, code:d.code, shop:d.shop, type:d.type, handsetQty:0, accQty:0, sheepQty:0};
     mergedMap[key].sheepQty += d.qty;
