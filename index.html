@@ -827,6 +827,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
     <div class="tabbar" id="tabbar">
       <button class="tab-btn active" data-page="salescore">🏆 Sale Score</button>
       <button class="tab-btn" data-page="sp">📊 Sale Performance</button>
+      <button class="tab-btn" data-page="tol">📶 TOL Regis &amp; Connect</button>
       <button class="tab-btn" data-page="handset">📱 Device</button>
       <button class="tab-btn" data-page="accessories">🎧 GIA</button>
       <button class="tab-btn" data-page="attach">🔗 Attach Rate</button>
@@ -841,7 +842,6 @@ table.mom-table td.col-trend{padding:4px 10px;}
       <button class="tab-btn" data-page="extw">🛡️ Extended W.</button>
       <button class="tab-btn" data-page="ret">🔁 Retention</button>
       <button class="tab-btn" data-page="sl">⏱️ Service Level</button>
-      <button class="tab-btn" data-page="tol">📶 TOL Regis &amp; Connect</button>
     </div>
   </nav>
 
@@ -2931,7 +2931,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
         </span>
       </div>
       <div class="panel-hint" style="padding:0 16px 6px;">MoM MTD = (เดือนนี้ MTD − เดือนก่อน MTD ช่วงวันที่เดียวกัน) ÷ เดือนก่อน MTD ช่วงวันที่เดียวกัน · คลิกหัวคอลัมน์เพื่อเรียง</div>
-      <div class="lb-scroll"><table class="lb" id="tol-momTable"><thead><tr><th id="tol-momKeyHead">Region WW</th><th class="num" data-sort="reg" id="tol-hReg">REGISTER</th><th class="num" data-sort="regP" id="tol-hRegP">REGISTER (เดือนก่อน)</th><th class="num" data-sort="regM">MoM REGISTER</th><th class="num" data-sort="con" id="tol-hCon">CONNECT</th><th class="num" data-sort="conP" id="tol-hConP">CONNECT (เดือนก่อน)</th><th class="num" data-sort="conM">MoM CONNECT</th><th class="num" data-sort="tgt">Target Connect</th><th class="num" data-sort="ach">%Ach Connect</th></tr></thead><tbody id="tol-momBody"></tbody></table></div>
+      <div class="lb-scroll"><table class="lb" id="tol-momTable"><thead><tr><th id="tol-momKeyHead">Region WW</th><th class="num" data-sort="reg" id="tol-hReg">REGISTER</th><th class="num" data-sort="regP" id="tol-hRegP">REGISTER (เดือนก่อน)</th><th class="num" data-sort="regM">MoM REGISTER</th><th class="num" data-sort="con" id="tol-hCon">CONNECT</th><th class="num" data-sort="conP" id="tol-hConP">CONNECT (เดือนก่อน)</th><th class="num" data-sort="conM">MoM CONNECT</th></tr></thead><tbody id="tol-momBody"></tbody></table></div>
       <div style="text-align:center;padding:10px;"><button class="reset-btn" id="tol-momMoreBtn" style="display:none;"></button></div>
     </div>
 
@@ -8323,8 +8323,8 @@ function createTolPage(cfg){
     $('momKeyHead').textContent={region:'Region WW',type:'Shop Type',shop:'Shop Name'}[state.momView];
     const rows=momRows(), show=state.momView==='shop'?rows.slice(0,momLimit):rows;
     const tot=rows.reduce((a,o)=>({reg:a.reg+o.reg,regP:a.regP+o.regP,con:a.con+o.con,conP:a.conP+o.conP,tgt:a.tgt+o.tgt}),{reg:0,regP:0,con:0,conP:0,tgt:0});
-    $('momBody').innerHTML=show.map(o=>`<tr><td>${o.k}</td><td class="num">${fmtInt(o.reg)}</td><td class="num">${fmtInt(o.regP)}</td>${momCell(o.regM)}<td class="num">${fmtInt(o.con)}</td><td class="num">${fmtInt(o.conP)}</td>${momCell(o.conM)}<td class="num">${o.tgt?fmtInt(o.tgt):'—'}</td><td class="num">${fmtPct(o.ach)}</td></tr>`).join('')
-      +(rows.length?`<tr style="font-weight:800;background:#F5F6FB;"><td>Total</td><td class="num">${fmtInt(tot.reg)}</td><td class="num">${fmtInt(tot.regP)}</td>${momCell(mom(tot.reg,tot.regP))}<td class="num">${fmtInt(tot.con)}</td><td class="num">${fmtInt(tot.conP)}</td>${momCell(mom(tot.con,tot.conP))}<td class="num">${tot.tgt?fmtInt(tot.tgt):'—'}</td><td class="num">${fmtPct(pct(tot.con,tot.tgt))}</td></tr>`:'');
+    $('momBody').innerHTML=show.map(o=>`<tr><td>${o.k}</td><td class="num">${fmtInt(o.reg)}</td><td class="num">${fmtInt(o.regP)}</td>${momCell(o.regM)}<td class="num">${fmtInt(o.con)}</td><td class="num">${fmtInt(o.conP)}</td>${momCell(o.conM)}</tr>`).join('')
+      +(rows.length?`<tr style="font-weight:800;background:#F5F6FB;"><td>Total</td><td class="num">${fmtInt(tot.reg)}</td><td class="num">${fmtInt(tot.regP)}</td>${momCell(mom(tot.reg,tot.regP))}<td class="num">${fmtInt(tot.con)}</td><td class="num">${fmtInt(tot.conP)}</td>${momCell(mom(tot.con,tot.conP))}</tr>`:'');
     $('momHint').textContent=`${show.length} of ${rows.length} · ${TH[prevM-1]} นับช่วงวันที่ ${ASOF===1?'1':'1–'+ASOF}`;
     const more=$('momMoreBtn'); if(state.momView==='shop'&&rows.length>momLimit){ more.style.display=''; more.textContent=`แสดงเพิ่ม (${rows.length-momLimit})`; } else more.style.display='none';
     return rows; }
@@ -8339,8 +8339,8 @@ function createTolPage(cfg){
     rows.forEach(r=>L.push([r.asset,r.appoint,r.wait,r.prio,r.shop,r.region,r.pkg,r.handler,r.sub].map(csvField).join(','))); download('TOL_Pending_ToDo',L); });
   $('exportAgeBtn').addEventListener('click',()=>{ const L=[['REGION WW','0-3 วัน','4-7 วัน','8-14 วัน','15-30 วัน','31+ วัน','Total Pending','อายุเฉลี่ย (วัน)'].join(',')];
     ageRows().forEach(([k,e])=>L.push([k,...e.b,e.n,(e.s/e.n).toFixed(1)].map(csvField).join(','))); download('TOL_Pending_Aging',L); });
-  $('exportMomBtn').addEventListener('click',()=>{ const L=[[{region:'Region WW',type:'Shop Type',shop:'Shop Name'}[state.momView],'REGISTER MTD','REGISTER prev MTD','MoM REGISTER %','CONNECT MTD','CONNECT prev MTD','MoM CONNECT %','Target Connect','%Ach Connect'].join(',')];
-    momRows().forEach(o=>L.push([o.k,o.reg,o.regP,o.regM==null?'':o.regM.toFixed(2),o.con,o.conP,o.conM==null?'':o.conM.toFixed(2),o.tgt||'',o.ach==null?'':o.ach.toFixed(2)].map(csvField).join(','))); download('TOL_MoM_'+state.momView,L); });
+  $('exportMomBtn').addEventListener('click',()=>{ const L=[[{region:'Region WW',type:'Shop Type',shop:'Shop Name'}[state.momView],'REGISTER MTD','REGISTER prev MTD','MoM REGISTER %','CONNECT MTD','CONNECT prev MTD','MoM CONNECT %'].join(',')];
+    momRows().forEach(o=>L.push([o.k,o.reg,o.regP,o.regM==null?'':o.regM.toFixed(2),o.con,o.conP,o.conM==null?'':o.conM.toFixed(2)].map(csvField).join(','))); download('TOL_MoM_'+state.momView,L); });
 
   function renderAll(){
     renderChips(); renderShopSearch();
