@@ -1120,6 +1120,45 @@ table.mom-table td.col-trend{padding:4px 10px;}
   #page-tol .rc-msf{width:100%;}
 }
 </style>
+<style>
+#page-sp .sp-grp-wrap{display:flex;flex-direction:column;gap:14px;margin:0 0 16px;}
+#page-sp .sp-grp-title{font-weight:800;font-size:14px;color:#1B2A5C;padding:4px 8px 10px;}
+#page-sp .sp-grp-title em{font-style:normal;font-weight:600;color:#7a8196;font-size:12px;}
+#page-sp .sp-grp-scroll{max-height:none;}
+#page-sp .sp-grp tbody tr{cursor:pointer;}
+#page-sp .sp-grp tbody tr.on td{background:#E3ECFF;font-weight:700;}
+#page-sp .sp-grp tbody tr.dim td{color:#9aa1b2;}
+#page-sp .sp-grp tfoot td{position:static;}
+#page-sp .sp-grp th.grp-sep, #page-sp .sp-grp td.grp-sep{border-left:2px solid #C9CEDB;}
+#page-sp .sp-grp-note{font-size:11.5px;color:var(--muted,#7a8196);padding:0 6px;}
+</style>
+<style>
+/* detail table: fit to page width (no horizontal scroll) */
+#page-sp #sp-table{table-layout:auto;width:100%;font-size:11px;}
+#page-sp #sp-table th{white-space:normal;padding:6px 4px;font-size:10.5px;line-height:1.2;}
+#page-sp #sp-table td{padding:3px 4px;}
+#page-sp #sp-table td.t{white-space:nowrap;line-height:1.25;}
+#page-sp #sp-table td.t:nth-child(1),#page-sp #sp-table td.t:nth-child(3),#page-sp #sp-table td.t:nth-child(4){white-space:normal;}
+#page-sp #sp-table td:nth-child(1){min-width:150px;}
+#page-sp #sp-table th:nth-child(5),#page-sp #sp-table td:nth-child(5){width:26px;}
+#page-sp #sp-table tfoot td{padding:6px 4px;}
+#page-sp .sp-card > .sp-scroll{overflow-x:hidden;}
+@media (max-width:1400px){
+  #page-sp #sp-table{font-size:10.5px;}
+  #page-sp #sp-table th{padding:6px 3px;font-size:10px;}
+  #page-sp #sp-table td{padding:3px 3px;}
+  #page-sp #sp-table td:nth-child(1){min-width:130px;}
+  #page-sp #sp-table tfoot td{padding:6px 3px;font-size:10px;}
+}
+@media (max-width:1320px){
+  #page-sp #sp-table{font-size:10px;}
+  #page-sp #sp-table td{padding:3px 2px;}
+  #page-sp #sp-table th{padding:6px 2px;}
+  #page-sp #sp-table td:nth-child(1){min-width:120px;}
+  #page-sp #sp-table tfoot td{padding:6px 2px;font-size:9.5px;}
+}
+@media (max-width:900px){ #page-sp .sp-card > .sp-scroll{overflow-x:auto;} }
+</style>
 </head>
 <body>
 <div class="app-shell">
@@ -1216,14 +1255,20 @@ table.mom-table td.col-trend{padding:4px 10px;}
       </div>
     </div>
 
+    <div class="sp-grp-wrap">
+      <div class="sp-card sp-grp"><div class="sp-grp-title">📍 สรุปตาม Type Shop <em>(Battlefield / Channel)</em></div><div class="sp-scroll sp-grp-scroll"><table class="sp-table" id="sp-gChan"></table></div></div>
+      <div class="sp-card sp-grp"><div class="sp-grp-title">🗺️ สรุปตาม Region</div><div class="sp-scroll sp-grp-scroll"><table class="sp-table" id="sp-gRegion"></table></div></div>
+      <div class="sp-card sp-grp"><div class="sp-grp-title">📌 สรุปตาม Area</div><div class="sp-scroll sp-grp-scroll"><table class="sp-table" id="sp-gArea"></table></div></div>
+      <div class="sp-grp-note">คลิกแถวเพื่อกรองทั้งหน้า (คลิกซ้ำเพื่อยกเลิก) · คลิกหัวคอลัมน์เพื่อเรียง · แต่ละตารางใช้ตัวกรองอื่นทั้งหมด ยกเว้นมิติของตัวเอง · %Ach = RR ÷ Target · MOM รวมคำนวณจาก RR ÷ (1+MOM) รายร้าน</div>
+    </div>
     <div class="sp-card">
       <div class="sp-hint" id="sp-hint"></div>
       <div class="sp-scroll">
         <table class="sp-table" id="sp-table">
           <thead><tr>
-            <th data-k="0" class="t">PRODUCT</th><th data-k="1" class="t">SHOP_CODE</th><th data-k="2" class="t">SHOP_NAME</th><th data-k="3" class="t">Regional</th><th data-k="4" class="t">AREA</th><th data-k="5" class="t">CHANNEL</th><th data-k="6">Day</th>
-            <th data-k="7">TG_Net<br>Amount</th><th data-k="8">NET_AMOUNT</th><th data-k="9">RR_Net<br>Amount</th><th data-k="10">%Ach Net<br>Amount</th><th data-k="11">MOM Net<br>Amount</th>
-            <th data-k="12">TG_QTY</th><th data-k="13">QTY</th><th data-k="14">RR_QTY</th><th data-k="15">%Ach QTY</th><th data-k="16">MOM QTY</th>
+            <th data-k="2" class="t">SHOP_<wbr>NAME</th><th data-k="3" class="t">Regional</th><th data-k="4" class="t">AREA</th><th data-k="5" class="t">CHANNEL</th><th data-k="6">Day</th>
+            <th data-k="7">TG_<wbr>Net<br>Amount</th><th data-k="8">NET_<wbr>AMOUNT</th><th data-k="9">RR_<wbr>Net<br>Amount</th><th data-k="10">%Ach Net<br>Amount</th><th data-k="11">MOM Net<br>Amount</th>
+            <th data-k="12">TG_<wbr>QTY</th><th data-k="13">QTY</th><th data-k="14">RR_<wbr>QTY</th><th data-k="15">%Ach QTY</th><th data-k="16">MOM QTY</th>
           </tr></thead>
           <tbody id="sp-body"></tbody>
           <tfoot><tr id="sp-foot"></tr></tfoot>
@@ -8361,7 +8406,7 @@ function createSalePerformancePage(cfg){
   }
   const achCls=v=>v==null?'':v<0.7?'ach-r':v<0.9?'ach-o':v<1?'ach-a':'ach-g';
   const momCls=v=>(v!=null&&v<0)?'mom-n':'';
-  const rowHtml=r=>`<tr><td class="t">${r[0]}</td><td class="t">${r[1]}</td><td class="t">${r[2]}</td><td class="t">${r[3]}</td><td class="t">${r[4]}</td><td class="t">${r[5]}</td><td>${r[6]==null?'':r[6]}</td>`+
+  const rowHtml=r=>`<tr><td class="t">${r[2]}</td><td class="t">${r[3]}</td><td class="t">${r[4]}</td><td class="t">${r[5]}</td><td>${r[6]==null?'':r[6]}</td>`+
     `<td>${fmtN(r[7])}</td><td>${fmtN(r[8])}</td><td>${fmtN(r[9])}</td><td class="${achCls(r[10])}">${fmtP(r[10])}</td><td class="${momCls(r[11])}">${fmtP(r[11])}</td>`+
     `<td>${fmtN(r[12])}</td><td>${fmtN(r[13])}</td><td>${fmtN(r[14])}</td><td class="${achCls(r[15])}">${fmtP(r[15])}</td><td class="${momCls(r[16])}">${fmtP(r[16])}</td></tr>`;
   function totals(rows){
@@ -8386,14 +8431,48 @@ function createSalePerformancePage(cfg){
     const g=$(k+'Gap'); g.textContent=tg==null?'—':f(Math.max(0,tg-ac)); g.className=(tg!=null&&ac>=tg)?'up':'';
   }
   function renderCards(t){ card('n',t.tg,t.rr,t.net,t.ach,t.mom,true); card('q',t.tgq,t.rrq,t.qty,t.achq,t.momq,false); }
+  // ---- group summary tables (Type Shop / Region / Area) ----
+  const GRP=[
+    {id:'gChan', col:5, skip:'chan', label:'TYPE SHOP', isOn:v=>st.chans.size===1&&st.chans.has(v), click:v=>{ st.chans = (st.chans.size===1&&st.chans.has(v)) ? new Set() : new Set([v]); }},
+    {id:'gRegion', col:3, skip:'region', label:'REGION', isOn:v=>st.region===v, click:v=>{ st.region = st.region===v ? 'All' : v; st.area='All'; }},
+    {id:'gArea', col:4, skip:'area', label:'AREA', isOn:v=>st.area===v, click:v=>{ st.area = st.area===v ? 'All' : v; }},
+  ];
+  const grpSort={gChan:{k:'tg',asc:false}, gRegion:{k:'tg',asc:false}, gArea:{k:'tg',asc:false}};
+  function aggRows(rows){
+    const s=i=>rows.reduce((a,r)=>a+(r[i]||0),0);
+    const prev=(c,m)=>rows.reduce((a,r)=>a+((r[c]!=null&&r[m]!=null&&r[m]>-1)?r[c]/(1+r[m]):0),0);
+    const tg=s(7),net=s(8),rr=s(9),tgq=s(12),qty=s(13),rrq=s(14),pn=prev(9,11),pq=prev(14,16);
+    return {tg,net,rr,ach:tg?rr/tg:null,mom:pn?rr/pn-1:null,tgq,qty,rrq,achq:tgq?rrq/tgq:null,momq:pq?rrq/pq-1:null,n:new Set(rows.map(r=>r[1])).size};
+  }
+  const GCOLS=[['label','',1],['n','Shops',0],['tg','TG_Net Amount',0],['net','NET_AMOUNT',0],['rr','RR_Net Amount',0],['ach','%Ach Net',0],['mom','MOM Net',0],['tgq','TG_QTY',2],['qty','QTY',0],['rrq','RR_QTY',0],['achq','%Ach QTY',0],['momq','MOM QTY',0]];
+  function grpRow(a){ return `<td class="t">${a.label}</td><td>${a.n}</td><td>${fmtN(a.tg)}</td><td>${fmtN(a.net)}</td><td>${fmtN(a.rr)}</td><td class="${achCls(a.ach)}">${fmtP(a.ach)}</td><td class="${momCls(a.mom)}">${fmtP(a.mom)}</td>`+
+    `<td class="grp-sep">${fmtN(a.tgq)}</td><td>${fmtN(a.qty)}</td><td>${fmtN(a.rrq)}</td><td class="${achCls(a.achq)}">${fmtP(a.achq)}</td><td class="${momCls(a.momq)}">${fmtP(a.momq)}</td>`; }
+  function renderGroups(){
+    GRP.forEach(g=>{
+      const base=R.filter(r=>ok(r,g.skip)); const by=new Map();
+      base.forEach(r=>{ const v=r[g.col]; if(v==null||v==='') return; (by.get(v)||by.set(v,[]).get(v)).push(r); });
+      const so=grpSort[g.id];
+      const list=[...by.entries()].map(([v,rows])=>({label:v,...aggRows(rows)}))
+        .sort((a,b)=>{ const x=a[so.k],y=b[so.k]; const c=so.k==='label'?String(x).localeCompare(String(y),'th'):((x??-1e18)-(y??-1e18)); return so.asc?c:-c; });
+      const anyOn=list.some(a=>g.isOn(a.label));
+      const tot={label:'Total',...aggRows(base)};
+      const el=$(g.id);
+      el.innerHTML='<thead><tr>'+GCOLS.map(([k,l,sep],i)=>`<th data-k="${k}" class="${i===0?'t ':''}${sep===2?'grp-sep ':''}${so.k===k?'sorted'+(so.asc?' asc':''):''}">${i===0?g.label:l}</th>`).join('')+'</tr></thead>'+
+        '<tbody>'+list.map(a=>`<tr data-v="${String(a.label).replace(/"/g,'&quot;')}" class="${g.isOn(a.label)?'on':anyOn?'dim':''}">${grpRow(a)}</tr>`).join('')+'</tbody>'+
+        `<tfoot><tr>${grpRow(tot)}</tr></tfoot>`;
+      el.querySelectorAll('tbody tr').forEach(tr=>tr.onclick=()=>{ g.click(tr.dataset.v); render(); });
+      el.querySelectorAll('thead th').forEach(th=>th.onclick=()=>{ const k=th.dataset.k; if(so.k===k) so.asc=!so.asc; else { so.k=k; so.asc=(k==='label'); } renderGroups(); });
+    });
+  }
   function render(){
     renderFilters();
     const rows=R.filter(r=>ok(r)); const k=sortK;
     rows.sort((a,b)=>{ const x=a[k],y=b[k]; const c=(typeof x==='string'||typeof y==='string')?String(x??'').localeCompare(String(y??''),'th'):((x??-1e18)-(y??-1e18)); return (sortAsc?c:-c)||String(a[2]).localeCompare(String(b[2]),'th'); });
     $('body').innerHTML=rows.map(rowHtml).join('');
     const t=totals(rows);
-    $('foot').innerHTML=`<td class="t">Total</td><td></td><td></td><td></td><td></td><td></td><td></td><td>${fmtN(t.tg)}</td><td>${fmtN(t.net)}</td><td>${fmtN(t.rr)}</td><td class="${achCls(t.ach)}">${fmtP(t.ach)}</td><td class="${momCls(t.mom)}">${fmtP(t.mom)}</td><td>${fmtN(t.tgq)}</td><td>${fmtN(t.qty)}</td><td>${fmtN(t.rrq)}</td><td class="${achCls(t.achq)}">${fmtP(t.achq)}</td><td class="${momCls(t.momq)}">${fmtP(t.momq)}</td>`;
+    $('foot').innerHTML=`<td class="t">Total</td><td></td><td></td><td></td><td></td><td>${fmtN(t.tg)}</td><td>${fmtN(t.net)}</td><td>${fmtN(t.rr)}</td><td class="${achCls(t.ach)}">${fmtP(t.ach)}</td><td class="${momCls(t.mom)}">${fmtP(t.mom)}</td><td>${fmtN(t.tgq)}</td><td>${fmtN(t.qty)}</td><td>${fmtN(t.rrq)}</td><td class="${achCls(t.achq)}">${fmtP(t.achq)}</td><td class="${momCls(t.momq)}">${fmtP(t.momq)}</td>`;
     renderCards(t);
+    renderGroups();
     $('hint').textContent=rows.length.toLocaleString('en-US')+' rows · คลิกหัวคอลัมน์เพื่อเรียง · Total = RR ÷ Target (%Ach) และ MOM รวมคำนวณจากรายการที่เลือก';
     document.querySelectorAll('#sp-table th').forEach(th=>{ const on=+th.dataset.k===sortK; th.classList.toggle('sorted',on); th.classList.toggle('asc',on&&sortAsc); });
   }
