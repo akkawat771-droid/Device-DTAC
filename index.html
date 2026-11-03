@@ -1330,6 +1330,11 @@ table.mom-table td.col-trend{padding:4px 10px;}
 #page-sheep .sht-table .sep{border-left:2px solid #EEE2E8;}
 #page-sheep .a-g{color:#0B8F55;font-weight:700;} #page-sheep .a-a{color:#E08A00;font-weight:700;} #page-sheep .a-r{color:#D9392B;font-weight:700;}
 </style>
+<style>
+#page-sheep .sht-card h4{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+#page-sheep .sht-csv{margin-left:auto;text-transform:none;letter-spacing:0;}
+#page-sheep .panel-head .sht-csv{margin-left:8px;}
+</style>
 </head>
 <body>
 <div class="app-shell">
@@ -1789,8 +1794,8 @@ table.mom-table td.col-trend{padding:4px 10px;}
       </div>
       <div class="sht-kpis" id="sht-kpis"></div>
       <div class="sht-two">
-        <div class="sht-card"><h4>Target vs Actual — by Area <span>(คลิกแถวเพื่อกรอง)</span></h4><div class="sht-scroll"><table class="sht-table" id="sht-areaTable"></table></div></div>
-        <div class="sht-card"><h4>Target vs Actual — by Shop <span>(คลิกหัวคอลัมน์เพื่อเรียง)</span></h4><div class="sht-scroll sht-scroll-y"><table class="sht-table" id="sht-shopTable"></table></div></div>
+        <div class="sht-card"><h4>Target vs Actual — by Area <span>(คลิกแถวเพื่อกรอง)</span><button type="button" class="export-btn-mini sht-csv" data-csv="sht-areaTable" data-name="Sheep_Target_by_Area">⬇ Export CSV</button></h4><div class="sht-scroll"><table class="sht-table" id="sht-areaTable"></table></div></div>
+        <div class="sht-card"><h4>Target vs Actual — by Shop <span>(คลิกหัวคอลัมน์เพื่อเรียง)</span><button type="button" class="export-btn-mini sht-csv" data-csv="sht-shopTable" data-name="Sheep_Target_by_Shop">⬇ Export CSV</button></h4><div class="sht-scroll sht-scroll-y"><table class="sht-table" id="sht-shopTable"></table></div></div>
       </div>
     </div>
 
@@ -1871,9 +1876,10 @@ table.mom-table td.col-trend{padding:4px 10px;}
         <div class="panel-head">
           <span class="panel-title">Shop Leaderboard</span>
           <span class="panel-hint" id="sheep-lbHint">Click a column to sort</span>
+          <button type="button" class="export-btn-mini sht-csv" data-csv="sheep-lbTable" data-name="Sheep_Shop_Leaderboard">⬇ Export CSV</button>
         </div>
         <div class="lb-scroll">
-          <table class="lb">
+          <table class="lb" id="sheep-lbTable">
             <thead>
               <tr>
                 <th style="width:34px;">#</th>
@@ -10189,6 +10195,23 @@ function createSheepTargetPanel(T, data){
   return { render };
 }
 
+
+// ---- generic "export the rendered table" CSV (Sheep page) ----
+function exportRenderedTableCsv(table, name){
+  const clean=t=>t.replace(/[▲▼]/g,'').replace(/\s+/g,' ').trim();
+  const head=[...table.querySelectorAll('thead tr')];
+  let cols=[];
+  if(head.length>1){ // grouped header: prefix each column with its group label
+    const grp=[]; [...head[0].children].forEach(th=>{ const n=+(th.getAttribute('colspan')||1); for(let i=0;i<n;i++) grp.push(clean(th.textContent)); });
+    cols=[...head[head.length-1].children].map((th,i)=>[grp[i],clean(th.textContent)].filter(Boolean).join(' - '));
+  } else if(head.length) cols=[...head[0].children].map(th=>clean(th.textContent));
+  const body=[...table.querySelectorAll('tbody tr, tfoot tr')].map(tr=>{ const out=[]; [...tr.children].forEach(td=>{ out.push(clean(td.textContent)); for(let i=1;i<(+td.getAttribute('colspan')||1);i++) out.push(''); }); return out; });
+  const q=v=>{ const t=String(v); const num=t.replace(/[,฿%]/g,''); const val=/^-?\d+(\.\d+)?$/.test(num)&&!/^0\d/.test(num)?(t.endsWith('%')?t:num):t; return /[",\n]/.test(val)?'"'+val.replace(/"/g,'""')+'"':val; };
+  const csv=[cols,...body].map(r=>r.map(q).join(',')).join('\r\n');
+  const url=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'}));
+  const a=document.createElement('a'); a.href=url; a.download=name+'_'+new Date().toISOString().slice(0,10)+'.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+document.querySelectorAll('#page-sheep .sht-csv').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); const t=document.getElementById(b.dataset.csv); if(t) exportRenderedTableCsv(t,b.dataset.name); }));
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     const page = btn.dataset.page;
