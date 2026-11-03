@@ -1159,6 +1159,108 @@ table.mom-table td.col-trend{padding:4px 10px;}
 }
 @media (max-width:900px){ #page-sp .sp-card > .sp-scroll{overflow-x:auto;} }
 </style>
+<style>
+/* ===================== Game Plan OPPO (scoped #page-oppogp) ===================== */
+#page-oppogp{--gp-green:#0B8F55;--gp-green2:#16B36E;--gp-ink:#13203F;--gp-muted:#7a8196;--gp-line:#E6E9F0;--gp-red:#D9392B;--gp-amber:#E08A00;}
+#page-oppogp td,#page-oppogp th{font-family:inherit;}
+#page-oppogp .gp-hero{display:flex;justify-content:space-between;align-items:stretch;gap:20px;flex-wrap:wrap;background:linear-gradient(120deg,#063D2A 0%,#0B8F55 60%,#16B36E 100%);color:#fff;border-radius:18px;padding:24px 28px;box-shadow:0 8px 24px rgba(11,143,85,.25);}
+#page-oppogp .gp-eyebrow{font-size:12px;letter-spacing:.14em;font-weight:700;opacity:.8;}
+#page-oppogp .gp-title{font-size:28px;font-weight:800;margin:6px 0 6px;line-height:1.15;}
+#page-oppogp .gp-sub{font-size:15px;opacity:.95;}
+#page-oppogp .gp-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+#page-oppogp .gp-tags span{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);padding:5px 11px;border-radius:999px;font-size:12.5px;font-weight:600;}
+#page-oppogp .gp-hero-r{display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
+#page-oppogp .gp-inc{background:#FFD447;color:#3B2A00;border-radius:16px;padding:12px 20px;text-align:center;box-shadow:0 4px 0 #C9A21A;min-width:150px;}
+#page-oppogp .gp-inc small{display:block;font-weight:800;letter-spacing:.12em;font-size:11px;}
+#page-oppogp .gp-inc b{display:block;font-size:46px;line-height:1;font-weight:900;}
+#page-oppogp .gp-inc span{font-weight:800;font-size:14px;}
+#page-oppogp .gp-period{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:14px;padding:12px 16px;font-size:12.5px;line-height:1.6;}
+#page-oppogp .gp-period b{font-size:17px;}
+#page-oppogp .gp-rules{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:14px;margin:16px 0 22px;}
+@media(max-width:980px){#page-oppogp .gp-rules{grid-template-columns:1fr;}}
+#page-oppogp .gp-rule{background:#fff;border-radius:14px;border:1px solid var(--gp-line);border-top:4px solid var(--gp-green);padding:14px 16px;}
+#page-oppogp .gp-rule.npc{border-top-color:#FFB800;} #page-oppogp .gp-rule.pay{border-top-color:#6C5CE7;}
+#page-oppogp .gp-rule-h{font-weight:800;color:var(--gp-ink);margin-bottom:6px;}
+#page-oppogp .gp-rule ul{margin:0;padding-left:18px;font-size:13px;line-height:1.7;color:#2c3550;}
+#page-oppogp .gp-rule b{color:var(--gp-green);}
+#page-oppogp .gp-select{border:1px solid #D9DDE8;border-radius:8px;padding:7px 10px;font-size:12.5px;font-family:inherit;min-width:200px;background:#fff;}
+#page-oppogp .gp-btn{background:#fff;border:1px solid #D9DDE8;border-radius:8px;padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;color:#3a4256;}
+#page-oppogp .gp-btn.primary{background:var(--gp-green);border-color:var(--gp-green);color:#fff;}
+#page-oppogp .gp-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:4px 0 22px;}
+@media(max-width:1100px){#page-oppogp .gp-kpis{grid-template-columns:repeat(2,1fr);}}
+#page-oppogp .gp-kpi{background:#fff;border:1px solid var(--gp-line);border-radius:14px;padding:14px 16px;position:relative;overflow:hidden;}
+#page-oppogp .gp-kpi::before{content:"";position:absolute;left:0;top:0;right:0;height:4px;background:var(--c,#0B8F55);}
+#page-oppogp .gp-kpi .l{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--gp-muted);text-transform:uppercase;}
+#page-oppogp .gp-kpi .v{font-size:28px;font-weight:800;color:var(--gp-ink);margin-top:6px;line-height:1.1;}
+#page-oppogp .gp-kpi .s{font-size:12px;color:var(--gp-muted);margin-top:6px;line-height:1.5;}
+#page-oppogp .gp-sec{margin-bottom:24px;}
+#page-oppogp .gp-sec-t{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px;letter-spacing:.04em;text-transform:uppercase;color:#3a4256;margin:0 0 10px 2px;}
+#page-oppogp .gp-sec-t .n{background:var(--gp-green);color:#fff;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;}
+#page-oppogp .gp-hint{font-size:11.5px;color:var(--gp-muted);font-style:italic;margin:-4px 0 10px 30px;}
+#page-oppogp .gp-series{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:900px){#page-oppogp .gp-series{grid-template-columns:1fr;}}
+#page-oppogp .gp-scard{background:#fff;border:1px solid var(--gp-line);border-radius:14px;padding:16px 18px;}
+#page-oppogp .gp-scard h3{margin:0 0 10px;font-size:16px;color:var(--gp-ink);display:flex;justify-content:space-between;align-items:baseline;}
+#page-oppogp .gp-scard h3 small{font-size:12px;color:var(--gp-muted);font-weight:600;}
+#page-oppogp .gp-prog{position:relative;height:16px;background:#EEF1F6;border-radius:999px;overflow:visible;margin:22px 0 8px;}
+#page-oppogp .gp-prog i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;}
+#page-oppogp .gp-prog .rr{background:rgba(11,143,85,.22);} #page-oppogp .gp-prog .ac{background:var(--gp-green);}
+#page-oppogp .gp-prog .mark{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--gp-red);}
+#page-oppogp .gp-prog .mark::after{content:"80%";position:absolute;top:-16px;left:-10px;font-size:10px;font-weight:800;color:var(--gp-red);}
+#page-oppogp .gp-snums{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px;}
+#page-oppogp .gp-snums div{background:#F6F8FB;border-radius:10px;padding:8px 10px;}
+#page-oppogp .gp-snums span{display:block;font-size:10.5px;color:var(--gp-muted);font-weight:700;text-transform:uppercase;}
+#page-oppogp .gp-snums b{font-size:18px;color:var(--gp-ink);}
+#page-oppogp .gp-two{display:grid;grid-template-columns:1.4fr 1fr;gap:14px;}
+@media(max-width:900px){#page-oppogp .gp-two{grid-template-columns:1fr;}}
+#page-oppogp .gp-card{position:relative;background:#fff;border:1px solid var(--gp-line);border-radius:14px;padding:14px 16px;min-width:0;}
+#page-oppogp .gp-card h4{margin:0 0 8px;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--gp-muted);}
+#page-oppogp .gp-svg{width:100%;overflow-x:auto;} #page-oppogp .gp-svg svg{display:block;}
+#page-oppogp .gp-svg text{font-size:10.5px;fill:#52596b;font-weight:600;}
+#page-oppogp .gp-tip{position:absolute;display:none;background:rgba(11,11,11,.9);color:#fff;font-size:11.5px;padding:7px 10px;border-radius:8px;pointer-events:none;z-index:50;}
+#page-oppogp .gp-mrow{display:grid;grid-template-columns:150px 1fr 54px;gap:8px;align-items:center;margin:7px 0;font-size:12.5px;}
+#page-oppogp .gp-mrow .tr{height:10px;background:#EEF1F6;border-radius:999px;overflow:hidden;} #page-oppogp .gp-mrow .tr i{display:block;height:100%;border-radius:999px;}
+#page-oppogp .gp-mrow b{text-align:right;}
+#page-oppogp .gp-tcard{padding:0;overflow:hidden;}
+#page-oppogp .gp-scroll{overflow-x:auto;} #page-oppogp .gp-scroll-y{max-height:620px;overflow:auto;}
+#page-oppogp table.gp-table{width:100%;border-collapse:collapse;font-size:12px;}
+#page-oppogp .gp-table th{position:sticky;top:0;background:#EAF6F0;color:#0A5A37;font-weight:800;font-size:11px;padding:8px 8px;text-align:right;white-space:nowrap;border-bottom:1px solid #CFE6DA;cursor:pointer;user-select:none;z-index:1;}
+#page-oppogp .gp-table th.t,#page-oppogp .gp-table td.t{text-align:left;}
+#page-oppogp .gp-table th.grp{text-align:center;background:#D8EFE3;cursor:default;}
+#page-oppogp .gp-table td{padding:6px 8px;text-align:right;border-bottom:1px solid #F0F2F6;white-space:nowrap;font-variant-numeric:tabular-nums;}
+#page-oppogp .gp-table tbody tr:hover td{background:#F4FBF7;}
+#page-oppogp .gp-table tbody tr.on td{background:#DDF3E7;font-weight:700;}
+#page-oppogp .gp-table tfoot td{font-weight:800;background:#F6F8FB;border-top:2px solid #0B8F55;}
+#page-oppogp .gp-table .sep{border-left:2px solid #E2E8F0;}
+#page-oppogp .gp-table th .sa{font-size:9px;margin-left:2px;color:#7a8196;}
+#page-oppogp .a-g{color:#0B8F55;font-weight:700;} #page-oppogp .a-a{color:#E08A00;font-weight:700;} #page-oppogp .a-r{color:#D9392B;font-weight:700;}
+#page-oppogp .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10.5px;font-weight:800;}
+#page-oppogp .b-pass{background:#DDF3E7;color:#0A5A37;} #page-oppogp .b-track{background:#FFF1D6;color:#8A5A00;} #page-oppogp .b-low{background:#FDE3E0;color:#A1281D;} #page-oppogp .b-npc{background:#EDE9FE;color:#4C3BB8;} #page-oppogp .b-none{background:#EEF1F6;color:#5b6377;}
+#page-oppogp .pc-tag{display:inline-block;font-size:10px;font-weight:800;padding:1px 6px;border-radius:6px;background:#E6F4EC;color:#0A5A37;}
+#page-oppogp .pc-tag.n{background:#EDE9FE;color:#4C3BB8;}
+#page-oppogp .gp-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--gp-line);}
+#page-oppogp .gp-toolbar-r{display:flex;gap:10px;align-items:center;}
+#page-oppogp .gp-count{font-size:12px;color:var(--gp-muted);}
+#page-oppogp .gp-statchips{display:flex;gap:6px;flex-wrap:wrap;}
+#page-oppogp .gp-statchips .badge{cursor:pointer;padding:5px 11px;font-size:11.5px;border:1px solid transparent;}
+#page-oppogp .gp-statchips .badge.on{border-color:currentColor;}
+@media(max-width:640px){#page-oppogp .gp-title{font-size:21px;} #page-oppogp .gp-select{min-width:0;width:100%;} #page-oppogp .gp-snums{grid-template-columns:repeat(2,1fr);} #page-oppogp .gp-mrow{grid-template-columns:110px 1fr 44px;}}
+
+#page-oppogp #gp-shopTable{font-size:11.5px;}
+#page-oppogp #gp-shopTable th{white-space:normal;padding:7px 5px;line-height:1.2;vertical-align:bottom;}
+#page-oppogp #gp-shopTable td{padding:5px 5px;}
+#page-oppogp #gp-shopTable td.t:first-child{white-space:normal;min-width:170px;}
+#page-oppogp #gp-shopTable td.t:nth-child(2){white-space:normal;}
+#page-oppogp #gp-shopTable .badge{white-space:normal;}
+
+#page-oppogp #gp-shopTable .badge{white-space:nowrap;}
+#page-oppogp #gp-shopTable td.t:nth-child(2){white-space:nowrap;}
+#page-oppogp #gp-areaTable{font-size:11.5px;}
+#page-oppogp #gp-areaTable th{white-space:normal;padding:7px 5px;line-height:1.2;vertical-align:bottom;}
+#page-oppogp #gp-areaTable td{padding:6px 5px;}
+#page-oppogp #gp-areaTable td.t:nth-child(2){white-space:normal;min-width:110px;}
+@media(max-width:1300px){ #page-oppogp #gp-areaTable td.t:nth-child(3){white-space:normal;} #page-oppogp #gp-shopTable td.t:nth-child(2){white-space:normal;min-width:90px;} }
+</style>
 </head>
 <body>
 <div class="app-shell">
@@ -1173,6 +1275,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
       <button class="tab-btn" data-page="attach">🔗 Attach Rate</button>
       <button class="tab-btn" data-page="suplife">🔋 Attach Suplife PLV</button>
       <button class="tab-btn" data-page="entrymodel">🎯 Entry Model</button>
+      <button class="tab-btn" data-page="oppogp">📲 Game Plan OPPO</button>
       <button class="tab-btn" data-page="sheep">🐑 Sheep</button>
       <button class="tab-btn" data-page="retchpn1">🧑‍💼 Ret_chpn_1</button>
       <button class="tab-btn" data-page="mongkol">🏆 เจ้าสังเวียน เบอร์มงคล</button>
@@ -2069,6 +2172,70 @@ table.mom-table td.col-trend{padding:4px 10px;}
     </div>
     <div class="grid-3" id="entrymodel-topShopsGrid"></div>
 
+  </div>
+
+  <div class="page" id="page-oppogp">
+
+    <div class="gp-hero">
+      <div class="gp-hero-l">
+        <div class="gp-eyebrow">GAME PLAN · OPPO</div>
+        <div class="gp-title">OPPO RENO 16 SERIES &amp; A7 PRO SERIES</div>
+        <div class="gp-sub">พฤศจิกายนนี้ ลุยยอดขายให้ถึงเป้า รับ Incentive กันไปเลย!</div>
+        <div class="gp-tags"><span>เจอลูกค้า = เสนอขาย</span><span>PC Shop = ทำยอดให้ถึง 80%</span><span>Non-PC Shop = ขายเครื่องแรกก็รับเลย!</span></div>
+      </div>
+      <div class="gp-hero-r">
+        <div class="gp-inc"><small>INCENTIVE</small><b>100</b><span>บาท/เครื่อง!!</span></div>
+        <div class="gp-period">ระยะเวลา Incentive<br><b>1 – 30 NOV 2026</b></div>
+      </div>
+    </div>
+
+    <div class="gp-rules">
+      <div class="gp-rule pc">
+        <div class="gp-rule-h">🏪 True Shop (PC Shop)</div>
+        <ul><li>ทำยอดขายได้ <b>ตั้งแต่ 80% ของ Target</b> รับ Incentive <b>100 บาท/เครื่อง</b></li><li>ทำยอดขายต่ำกว่า 80% <b>ไม่ได้รับ Incentive</b></li><li>คำนวณ % Achieve จาก <b>Target by Shop</b> ของแต่ละสาขา</li></ul>
+      </div>
+      <div class="gp-rule npc">
+        <div class="gp-rule-h">⭐ พิเศษ! สำหรับ Non-PC Shop</div>
+        <ul><li>รับ Incentive <b>100 บาท/เครื่อง ตั้งแต่เครื่องแรก!</b></li><li>ไม่มีขั้นต่ำยอดขาย</li></ul>
+      </div>
+      <div class="gp-rule pay">
+        <div class="gp-rule-h">🎟️ รูปแบบการจ่าย Incentive</div>
+        <ul><li>จ่ายในรูปแบบ <b>Voucher</b></li><li>ยิ่งขายเยอะ ยิ่งรับเยอะ!</li></ul>
+      </div>
+    </div>
+
+    <div class="scope-line"><span class="scope-pill" id="gp-scopePill">Loading scope…</span></div>
+
+    <div class="filterbar">
+      <div class="filter-group"><span class="filter-label">Series</span><div class="chip-row" id="gp-seriesChips"></div></div>
+      <div class="filter-group"><span class="filter-label">ประเภทสาขา</span><div class="chip-row" id="gp-pcChips"></div></div>
+      <div class="filter-group"><span class="filter-label">RRH</span><div class="chip-row" id="gp-rrhChips"></div></div>
+      <div class="filter-group"><span class="filter-label">Area WW</span><select class="gp-select" id="gp-areaSel"></select></div>
+      <div class="filter-group"><span class="filter-label">Shop <span class="filter-label-hint">(type to search)</span></span><input class="gp-select" id="gp-shopSearch" placeholder="ค้นหาสาขา..."></div>
+      <div class="filter-group" style="justify-content:flex-end"><button type="button" class="gp-btn" id="gp-reset">Reset filters</button></div>
+    </div>
+
+    <div class="gp-kpis" id="gp-kpis"></div>
+
+    <div class="gp-sec"><div class="gp-sec-t"><span class="n">1</span><span>Performance by Series</span></div>
+      <div class="gp-series" id="gp-series"></div></div>
+
+    <div class="gp-sec"><div class="gp-sec-t"><span class="n">2</span><span>Daily Sell-out &amp; Model Mix</span></div>
+      <div class="gp-two">
+        <div class="gp-card"><h4>ยอดขายรายวัน (เครื่อง)</h4><div class="gp-svg"><svg id="gp-daily" width="100%" height="240"></svg></div><div class="gp-tip" id="gp-dailyTip"></div></div>
+        <div class="gp-card"><h4>Model Mix</h4><div id="gp-models"></div></div>
+      </div></div>
+
+    <div class="gp-sec"><div class="gp-sec-t"><span class="n">3</span><span>Target vs Actual — by Area WW</span></div>
+      <div class="gp-hint">คลิกแถวเพื่อกรองทั้งหน้า (คลิกซ้ำเพื่อยกเลิก) · %Ach = Actual ÷ Target · RR = คาดการณ์สิ้นเดือนจากอัตราขายเฉลี่ยต่อวัน</div>
+      <div class="gp-card gp-tcard"><div class="gp-scroll"><table class="gp-table" id="gp-areaTable"></table></div></div></div>
+
+    <div class="gp-sec"><div class="gp-sec-t"><span class="n">4</span><span>Incentive Tracker — by Shop</span></div>
+      <div class="gp-hint">PC Shop: ได้ Incentive เมื่อ Actual ≥ 80% ของ Target รวมของสาขา (A7 Pro + Reno 16) · Non-PC Shop: ได้ตั้งแต่เครื่องแรก · คลิกหัวคอลัมน์เพื่อเรียง</div>
+      <div class="gp-card gp-tcard">
+        <div class="gp-toolbar"><div class="gp-statchips" id="gp-statChips"></div><div class="gp-toolbar-r"><span class="gp-count" id="gp-shopCount"></span><button type="button" class="gp-btn primary" id="gp-csv">⬇ Export CSV</button></div></div>
+        <div class="gp-scroll gp-scroll-y"><table class="gp-table" id="gp-shopTable"></table></div>
+      </div></div>
   </div>
 
   <div class="page" id="page-retchpn1">
@@ -9732,6 +9899,164 @@ function createTolRcPage(D){
   return { renderAll };
 }
 
+const OPPO_GP = {"start":"2026-11-01","end":"2026-11-30","days":30,"incentive":100,"threshold":0.8,"areas":[{"rrh":"P'Aun","am":"จิรวัฒน์ ทวีสุวรรณกุล","area":"BMA I - North West","tA7":103,"tReno":163},{"rrh":"P'Aun","am":"ษมาวีร์ เกษเกษม","area":"BMA II - South West","tA7":93,"tReno":110},{"rrh":"P'Aun","am":"สรทนิต หวังศรีประเสริฐ","area":"BMA III - North East","tA7":112,"tReno":121},{"rrh":"P'Aun","am":"สรทนิต หวังศรีประเสริฐ","area":"BMA IV - South East","tA7":109,"tReno":117},{"rrh":"P'Aun","am":"ปิยะวัลย์ เตชะบุญไพศาล","area":"BMA V - Central","tA7":85,"tReno":78},{"rrh":"P'Nid","am":"จิราภรณ์ เฉลิมสวัสดิ์วงศ์","area":"UPC - Central Northeast","tA7":126,"tReno":176},{"rrh":"P'Nid","am":"เกรียงศักดิ์ ชีวะประวัติ","area":"UPC - Upper North","tA7":40,"tReno":66},{"rrh":"P'Nid","am":"เกรียงศักดิ์ ชีวะประวัติ","area":"UPC - Lower North","tA7":19,"tReno":24},{"rrh":"P'Nid","am":"ปราณี ปรีวาสน์","area":"UPC - Upper Northeast","tA7":127,"tReno":132},{"rrh":"P'Nid","am":"สุนีรัตน์ ศิริมนตรี","area":"UPC - Lower Northeast","tA7":124,"tReno":160},{"rrh":"P'Lee","am":"วัชระ สัตยารมณ์","area":"UPC - Central","tA7":77,"tReno":77},{"rrh":"P'Lee","am":"อาชิรญาน์ จิรอัครพันธุ์","area":"UPC - East","tA7":98,"tReno":132},{"rrh":"P'Lee","am":"จำรัส อินเอี่ยม","area":"UPC - West","tA7":73,"tReno":95},{"rrh":"P'Lee","am":"สิรวีญ์  ปราการ","area":"UPC - Lower South","tA7":40,"tReno":56},{"rrh":"P'Lee","am":"สิรวีญ์  ปราการ","area":"UPC - Upper South","tA7":49,"tReno":93}],"shops":[["80101197",19025,"True Shop Big C Ubonratchathani","UPC - Central Northeast",0,0,0,1,6],["80101662",23437,"True Shop (dtac) Ocean Complex 2Fl.","UPC - Upper South",0,0,0,0,0],["80101669",21367,"True Shop (dtac) Lotuss Samchuk 1Fl.","UPC - West",0,0,0,0,0],["80100864",23738,"True Shop Buntharik Ubonratchathani","UPC - Central Northeast",0,0,0,1,4],["80101668",13379,"True Shop (dtac) Lotuss Nongruea 1Fl.","UPC - Upper Northeast",0,0,0,0,0],["80101681",7829,"True Shop (dtac) Lotuss Trakanphuetphon  1Fl.","UPC - Central Northeast",0,0,0,0,0],["80100794",21021,"True Shop Tesco Lotus Nonthai Nakhonratchasima","UPC - Lower Northeast",0,0,0,1,3],["80101664",15932,"True Shop (dtac) Big C Loei 1Fl.","UPC - Upper Northeast",0,0,0,0,0],["80101689",18134,"True Shop (dtac) Big C Sukhapibal 5 1Fl.","BMA I - North West",0,0,0,0,0],["80101651",21546,"True Shop (dtac) Lotuss Banphue 1Fl.","UPC - Upper Northeast",0,0,0,0,0],["80101670",13584,"True Shop (dtac) Lotuss Ruamchok 1Fl.","UPC - Upper North",0,0,0,0,0],["80101656",5836,"True Shop (dtac) Lotuss Phitsanulok 1Fl.","UPC - Lower North",0,0,0,0,0],["80101674",14496,"True Shop (dtac) Lotuss Nakhonphanom 1Fl.","UPC - Upper Northeast",0,0,0,0,0],["80100861",24145,"True Shop Kasetwisai Roiet","UPC - Central Northeast",0,0,0,0,2],["80100862",24248,"True Shop Pak Thong Chai Nakhonratchasima","UPC - Lower Northeast",0,0,0,0,2],["80100869",24383,"True Shop Khon Buri Nakhonratchasima","UPC - Lower Northeast",0,0,0,0,2],["80101264",17624,"True Shop Central Plaza Ramindra","BMA I - North West",0,0,0,0,2],["80101265",21399,"True Shop Chum Phuang Nakhon Ratchasima","UPC - Lower Northeast",0,0,0,0,3],["80101281",20730,"True Shop Big C Chiangmai","UPC - Upper North",0,0,0,0,2],["80101289",17355,"True Shop Big C Banphai Khonkaen","UPC - Upper Northeast",0,0,0,6,5],["80101350",22787,"True Shop iPlace Latkrabang","BMA III - North East",0,0,0,0,2],["80101630",1558,"True Shop Tesco Lotus Ramindra","BMA V - Central",0,0,0,0,2],["80101655",16919,"True Shop (dtac) Lotuss Fang 1Fl.","UPC - Upper North",0,0,0,0,0],["80101667",14087,"True Shop (dtac) Supreme Complex Samsen","BMA I - North West",0,0,0,0,0],["80101673",7905,"True Shop (dtac) Lotuss Prasat 2Fl.","UPC - Lower Northeast",0,0,0,0,0],["80101663",3596,"True Shop (dtac) Lotuss Muang Sam Sib 1Fl.","BMA I - North West",0,0,0,0,0],["80101657",20168,"True Shop (dtac) Asawann Phonphisai 1Fl.","UPC - Upper Northeast",0,0,0,0,0],["80101672",21287,"True Shop (dtac) Big C Korat 2 1Fl.","UPC - Lower Northeast",0,0,0,0,0],["80101661",24391,"True Shop (dtac) Lotuss Jomthong 1Fl.","BMA V - Central",0,0,0,0,0],["80101679",24428,"True Shop (dtac) Seacon Bangkae 2Fl.","BMA II - South West",0,0,0,0,0],["80100770",18531,"True Shop Lotus Buengkan","UPC - Upper Northeast",0,0,0,0,1],["80100802",23690,"True Shop Tesco Lotus Borabue Mahasarakham","UPC - Central Northeast",0,0,0,0,1],["80100860",21305,"True Shop Sikhoraphum Surin","UPC - Lower Northeast",0,0,0,0,1],["80100870",24463,"True Shop Soeng Sang Nakhonratchasima","UPC - Lower Northeast",0,0,0,1,1],["80101013",1896,"True Shop Mini Mueang Mae Hong Son","UPC - Upper North",0,0,0,0,2],["80101117",16445,"True Shop Central Plaza Lampang","UPC - Upper North",0,0,0,0,1],["80101269",1767,"True Shop Mahboonkrong fl.4","BMA V - Central",0,0,0,0,1],["80101308",21020,"True Shop Robinson Kamphaengphet","UPC - Lower North",0,0,0,0,1],["80101311",22488,"True Shop Robinson Chonburi","UPC - East",0,0,0,1,1],["80101363",21326,"True Shop at Chamchuri Square 1","BMA V - Central",0,0,0,0,1],["80101584",29448,"True Shop Robinson Ratchapruek","BMA I - North West",0,0,0,0,1],["80101627",30197,"True Shop Central West Ville","BMA I - North West",0,0,0,0,1],["80101632",21395,"True Shop Lotus's Bangna-Trad","BMA IV - South East",0,0,0,0,2],["80101654",8978,"True Shop (dtac) Lotuss Buayai 1Fl.","UPC - Lower Northeast",0,0,0,0,0],["80101666",9274,"True Shop (dtac) Lotuss Sangkha 2Fl.","UPC - Lower Northeast",0,0,0,0,0],["80101701",10388,"True Shop (dtac) Central Festival Samui 2Fl.","UPC - Upper South",0,0,0,0,0],["80101652",14348,"True Shop (dtac) Big C Kranuan 1Fl.","UPC - Upper Northeast",0,0,0,0,0],["80101680",14052,"True Shop (dtac) Lotuss Talad Khunhan 1Fl.","UPC - Central Northeast",0,0,0,0,0],["80101660",14409,"True Shop (dtac) Lotuss Phimai 1Fl.","UPC - Lower Northeast",0,0,0,0,0],["80101650",21403,"True Shop (dtac) Lotuss Pakthongchai 1Fl.","UPC - Lower Northeast",0,0,0,0,0],["80101677",23129,"True Shop (dtac) Lotuss Ubonratchathani 1Fl.","UPC - Central Northeast",0,0,0,0,0],["80101682",23675,"True Shop (dtac) Lotuss Pranburi 1Fl.","UPC - Upper South",0,0,0,0,0],["80101653",23537,"True Shop (dtac) Robinson Chaiyaphum 2Fl.","UPC - Lower Northeast",0,0,0,0,0],["80100478",1771,"True Shop Terminal 21","BMA V - Central",0,0,0,0,0],["80100627",7105,"True Shop Huahin","UPC - West",0,0,0,0,0],["80100628",21335,"True Shop Regional Office Khon Kaen","UPC - Upper Northeast",0,0,0,0,0],["80100715",18642,"True Move Shop Fortune Town","BMA V - Central",0,0,0,0,0],["80100721",18836,"True Shop Tesco Lotus Nakhonpathom","UPC - West",0,0,0,0,0],["80100726",21432,"True Shop Tesco Lotus Ban-Chang","UPC - East",0,0,0,0,0],["80100729",21340,"True Shop Station Tesco Lotus Rama 4","BMA V - Central",0,0,0,0,0],["80100732",21241,"True Shop Lotus's Sisaket","UPC - Central Northeast",0,0,0,0,0],["80100736",8878,"True Shop Tesco Lotus Bangpakok","BMA II - South West",0,0,0,0,0],["80100740",1562,"True Shop Lotus's Minburi","WW",0,0,0,0,0],["80100758",21017,"True Shop Tesco Lotus Buayai Nakhonratchasima","UPC - Lower Northeast",0,0,0,0,0],["80100769",20071,"True Shop Tesco Lotus Thatum Surin","UPC - Lower Northeast",0,0,0,0,0],["80100771",19749,"True Shop Tesco Lotus Chiangyuen Mahasarakham","UPC - Central Northeast",0,0,0,0,0],["80100776",19438,"True Shop Tesco Lotus Jorhor Nakhonratchasima","UPC - Lower Northeast",0,0,0,0,0],["80100785",22426,"True Shop Tesco Lotus Kumka Sattahip","UPC - East",0,0,0,0,0],["80100786",22685,"True Shop Tesco Lotus Somdet Kalasin","UPC - Upper Northeast",0,0,0,0,0],["80100795",23270,"True Shop Tesco Lotus U-tapao Chonburi","UPC - East",0,0,0,0,0],["80100801",21557,"True Shop Tesco Lotus Ban Phue Udonthani","UPC - Upper Northeast",0,0,0,0,0],["80100821",21257,"True Shop Station Tesco Lotus Pranburee","UPC - West",0,0,0,0,0],["80100842",15884,"True Shop Terminal 21 Korat","UPC - Lower Northeast",0,0,0,0,1],["80100847",21310,"True Shop Mini Senangkhanikhom Amnat Charoen","UPC - Central Northeast",0,0,0,0,0],["80100848",21248,"True Shop Wang Saphung Loei","UPC - Upper Northeast",0,0,0,0,1],["80100849",19004,"True Shop Mini Mueang Phayao","UPC - Upper North",0,0,0,0,0],["80100857",22703,"True Shop Lamphun","UPC - Upper North",0,0,0,0,0],["80100858",21278,"True Shop Mini Mae Sai Chiang Rai","UPC - Upper North",0,0,0,0,0],["80100859",17898,"True Shop Trad","UPC - East",0,0,0,0,0],["80100863",23841,"True Shop Huai Thalaeng Nakhonratchasima","UPC - Lower Northeast",0,0,0,0,0],["80100867",23416,"True Shop Dan Khun Thot Nakhonratchasima","UPC - Lower Northeast",0,0,0,0,0],["80100871",25850,"True Shop Loeng Nok Tha Yasothon","UPC - Central Northeast",0,0,0,0,0],["80100873",21251,"True Shop Mueang Loei","UPC - Upper Northeast",0,0,0,0,0],["80100875",22875,"True Center Makro Ladprao","BMA IV - South East",0,0,0,0,0],["80100877",23010,"True Center Makro Srinakarin","BMA IV - South East",0,0,0,0,0],["80100878",21409,"True Center Makro BangBon","BMA II - South West",0,0,0,0,0],["80100879",25872,"True Center Makro Chonburi","UPC - East",0,0,0,0,0],["80100880",23528,"True Center Makro Chiangmai","UPC - Upper North",0,0,0,0,0],["80100881",23524,"True Center Makro Nakhonratchasima","UPC - Lower Northeast",0,0,0,0,0],["80100882",23421,"True Center Makro Rangsit","BMA III - North East",0,0,0,0,0],["80100883",23509,"True Center Makro Songkhla","UPC - Lower South",0,0,0,0,0],["80100884",22968,"True Center Makro Udonthani","UPC - Upper Northeast",0,0,0,0,0],["80100885",23232,"True Center Makro Khonkaen","UPC - Upper Northeast",0,0,0,0,0],["80100886",23525,"True Center Makro Suratthani","UPC - Upper South",0,0,0,0,0],["80100887",23188,"True Center Makro Ubonratchathani","UPC - Central Northeast",0,0,0,0,0],["80100888",23552,"True Center Makro Phitsanulok","UPC - Lower North",0,0,0,0,0],["80100889",23532,"True Center Makro Rayong","UPC - East",0,0,0,0,0],["80100890",23504,"True Center Makro Nakhonsawan","UPC - Central",0,0,0,0,0],["80100893",23502,"True Center Makro Nakhonpathom","UPC - West",0,0,0,0,0],["80100894",22996,"True Center Makro Surin","UPC - Lower Northeast",0,0,0,0,0],["80100895",22938,"True Center Makro Samsen","BMA V - Central",0,0,0,0,0],["80100896",22973,"True Center Makro Sakonnakhon","UPC - Upper Northeast",0,0,0,0,0],["80100897",21280,"True Center Makro Roi-Et","UPC - Central Northeast",0,0,0,0,0],["80100898",23527,"True Center Makro Buriram","UPC - Lower Northeast",0,0,0,0,0],["80100899",23106,"True Center Makro Sisaket","UPC - Central Northeast",0,0,0,0,0],["80100900",23247,"True Center Makro Chaiyaphum","UPC - Lower Northeast",0,0,0,0,0],["80100901",29122,"True Center Makro Saraburi","UPC - Central",0,0,0,0,0],["80100902",23556,"True Center Makro Nongkhai","UPC - Upper Northeast",0,0,0,0,0],["80100903",26143,"True Center Makro Ratchaburi","UPC - West",0,0,0,0,0],["80100905",23417,"True Center Makro Khlong Luang","BMA III - North East",0,0,0,0,0],["80100906",23596,"True Center Makro Loei","UPC - Upper Northeast",0,0,0,0,0],["80100907",23720,"True Center Makro Bangplee","BMA IV - South East",0,0,0,0,0],["80100908",23251,"True Center Makro Mukdahan","UPC - Central Northeast",0,0,0,0,0],["80100909",23189,"True Center Makro Chumphae","UPC - Upper Northeast",0,0,0,0,0],["80100910",23499,"True Center Makro Nakhonphanom","UPC - Upper Northeast",0,0,0,0,0],["80100911",23557,"True Center Makro Buengkan","UPC - Upper Northeast",0,0,0,0,0],["80100912",23523,"True Center Makro Salaya","UPC - West",0,0,0,0,0],["80100913",26087,"True Center Makro Samutsakhon","UPC - West",0,0,0,0,0],["80100914",23183,"True Center Makro Pakchong","UPC - Lower Northeast",0,0,0,0,0],["80100915",26085,"True Center Makro Yasothon","UPC - Central Northeast",0,0,0,0,0],["80100916",23529,"True Center Makro Mahasarakham","UPC - Central Northeast",0,0,0,0,0],["80100918",23451,"True Center Makro Nongchok","BMA III - North East",0,0,0,0,0],["80100919",26083,"True Center Makro Warinchamrap","UPC - Central Northeast",0,0,0,0,0],["80100920",23179,"True Center Makro Nongbualampu","UPC - Upper Northeast",0,0,0,0,0],["80100922",23574,"True Center Makro Pathumthani","BMA III - North East",0,0,0,0,0],["80100923",24984,"True Center Makro Kalasin","UPC - Upper Northeast",0,0,0,0,0],["80100924",26086,"True Center Makro Phetkasem","BMA II - South West",0,0,0,0,0],["80101015",23539,"True Center Makro Ramintra","BMA III - North East",0,0,0,0,0],["80101184",18725,"True Shop Chonburi","UPC - East",0,0,0,0,0],["80101193",10060,"True Shop Central Rattanatibeth","BMA I - North West",0,0,0,0,0],["80101202",19752,"True Shop Big C Yasothon","UPC - Central Northeast",0,0,0,0,0],["80101216",24064,"True Shop Whizdom 101","BMA V - Central",0,0,0,0,0],["80101223",23551,"True Shop Gateway Bangsue","BMA I - North West",0,0,0,0,0],["80101227",19501,"True Shop Tesco Lotus Ubonratchathani","UPC - Central Northeast",0,0,0,0,0],["80101254",28968,"True Shop Lotus's Chiang Khong","UPC - Upper North",0,0,0,0,0],["80101257",28642,"True Shop Lotus's Loei","UPC - Upper Northeast",0,0,0,0,0],["80101263",19379,"True Shop Maya Chiangmai","UPC - Upper North",0,0,0,0,0],["80101293",25299,"True Shop Big C Khonkaen 2","UPC - Upper Northeast",0,0,0,0,0],["80101296",35,"True Shop Paradise Park Srinakarin","BMA IV - South East",0,0,0,0,0],["80101306",15120,"True Shop Robinson Maesot","UPC - Lower North",0,0,0,1,0],["80101327",22369,"True Shop Big C Phangkhon Sakonnakhon","UPC - Upper Northeast",0,0,0,0,0],["80101345",21337,"True Shop Down Town Nakhonratchasima","UPC - Lower Northeast",0,0,0,0,0],["80101346",23725,"True Shop Asawann Phonphisai Nong Khai","UPC - Upper Northeast",0,0,0,0,0],["80101347",21323,"True Shop U Chu Liang Building","BMA V - Central",0,0,0,0,0],["80101356",22882,"True Shop CK Pluakdaeng Rayong","UPC - East",0,0,0,0,0],["80101372",28163,"True Shop Lotus's Sriwaree","BMA IV - South East",0,0,0,0,0],["80101373",28725,"True Shop Lotus's Satun","UPC - Lower South",0,0,0,0,0],["80101377",21383,"True Shop Big C Chaiyaphumi","UPC - Lower Northeast",0,0,0,0,0],["80101378",21437,"True Shop South Pattaya","UPC - East",0,0,0,0,1],["80101381",28795,"True Shop by Partner Surin Plaza","UPC - Lower Northeast",0,0,0,0,0],["80101617",20041,"True Partner Plus Chiangmai SIAM T.V. (Chiangmai)","UPC - Upper North",0,0,0,0,0],["80101619",20318,"Chiang Mai Siam TV Company Limited (Lampang Branch) (True Partner)","UPC - Upper North",0,0,0,0,0],["80101623",0,"True Shop Chaeng Watthana Government Complex","BMA I - North West",0,0,0,0,0],["80101626",0,"True Kiosk Lotus’s Sena Ayutthaya","BMA I - North West",0,0,0,0,0],["80101636",20440,"True Shop Sikhio Nakhonratchasima","UPC - Lower Northeast",0,0,0,0,0],["80101648",31965,"True Shop UD Town Udon Thani","UPC - Upper Northeast",0,0,0,0,0],["80100856",21347,"True Shop Uthai Thani","UPC - Central",0,0,0,0,2],["80101671",9980,"True Shop (dtac) Lotuss Sawandandin 1Fl.","UPC - Upper Northeast",0,0,0,0,0],["80101683",13451,"True Shop (dtac) Big C Nong Khai 1Fl.","UPC - Upper Northeast",0,0,0,0,0],["80100566",468,"True Shop Central Rama 2(H)","BMA II - South West",0,0,0,1,0],["80100852",21234,"True Shop Khamcha-I Mukdahan","UPC - Central Northeast",0,0,0,0,0],["80101328",22808,"True Shop Big C Khamtakla Sakonnakhon","UPC - Upper Northeast",0,0,0,0,0],["80101307",15796,"True Shop Robinson Lopburi","UPC - Central",0,0,0,1,3],["80100865",24259,"True Shop  Taphan Hin Phichit","UPC - Lower North",0,0,0,0,1],["80101659",9224,"True Shop (dtac) Robinson Maesot 2Fl.","UPC - Lower North",0,0,0,0,0],["80100792",23262,"True Shop Tesco Lotus Phayao","UPC - Upper North",0,0,0,0,0],["80101217",26608,"True Shop Big C Sukhapibal 5","BMA I - North West",0,0,0,0,0],["80101647",31964,"True Shop Central Krabi","UPC - Lower South",0,0,0,1,1],["80100798",24245,"True Shop Tesco Lotus Chiangkham Phayao","UPC - Upper North",0,0,0,0,3],["80101221",1783,"True Shop Emquartier","BMA V - Central",0,0,0,0,2],["80101658",18486,"True Shop (dtac) Lotuss Lomsak 1Fl.","UPC - Lower North",0,0,0,0,0],["80100807",27843,"True Shop Lotus's Nakhon In","BMA I - North West",0,0,0,1,0],["80100853",16366,"True Shop Mini Mueang Satun","UPC - Lower South",0,0,0,0,0],["80100565",472,"True Shop Central Rama 2","BMA II - South West",1,22,25,11,9],["80100621",16814,"True Shop Central Chiangrai","UPC - Upper North",0,0,0,0,3],["80100854",21434,"True Shop Mini Lom Sak Petchabun","UPC - Lower North",0,0,0,0,3],["80100784",22289,"True Shop Tesco Lotus U-Thong Suphanburi","UPC - West",0,0,0,0,1],["80101684",7831,"True Shop (dtac) Lotuss Kantharalak 1Fl.","UPC - Central Northeast",0,0,0,0,0],["80100891",23533,"True Center Makro Charunsanitwong","BMA II - South West",0,0,0,0,0],["80100793",23261,"True Shop Tesco Lotus Satuek Burirum","UPC - Lower Northeast",0,0,0,2,4],["80101687",9912,"True Shop (dtac) Ampur Ranot","UPC - Lower South",0,0,0,0,0],["80100805",24445,"True Shop Tesco Lotus Phatthanakan","BMA IV - South East",0,0,0,1,0],["80100876",23538,"True Center Makro Chaengwattana","BMA I - North West",0,0,0,0,0],["80101292",21204,"True Shop Big C Bandung Udonthani","UPC - Upper Northeast",0,0,0,0,0],["80101688",7093,"True Shop (dtac) Lotuss Chaiya 1Fl.","UPC - Upper South",0,0,0,0,0],["80100782",21673,"True Shop Tesco Lotus Thaluang Phichit","UPC - Lower North",0,0,0,0,1],["80101391",28913,"True Shop Central Chanthaburi","UPC - East",0,0,0,1,1],["80100872",21385,"True Shop Chatturat Chaiyaphum","UPC - Lower Northeast",0,0,0,0,0],["80101665",21421,"True Shop (dtac) Salokbat","UPC - Lower North",0,0,0,0,0],["80100733",8623,"True Shop Tesco Lotus Sampran","UPC - West",0,0,0,3,1],["80101675",13744,"True Shop (dtac) Big C Ranong 1Fl.","UPC - Upper South",0,0,0,0,0],["80100804",24312,"True Shop Tesco Lotus Jomthong Chiangmai","UPC - Upper North",0,0,0,0,2],["80101313",23448,"True Shop Robinson Chaiyaphum","UPC - Lower Northeast",0,0,0,0,1],["80101418",29036,"True Shop Imperial World Samrong","BMA IV - South East",1,22,25,11,27],["80100772",19643,"True Shop Tesco Lotus Kaengkhro Chaiyaphum","UPC - Lower Northeast",0,0,0,4,4],["80101271",1576,"True Shop Big C Chaengwattana","BMA I - North West",0,0,0,0,0],["80100845",21387,"True Shop Kaset Sombun Chaiyaphum","UPC - Lower Northeast",0,0,0,2,3],["80100484",8559,"True Shop The Mall Bangkae","BMA II - South West",1,22,25,10,18],["80100625",15409,"True Shop Central Plaza Rayong","UPC - East",1,22,25,8,20],["80100626",8907,"True Shop Central Pinklao","BMA II - South West",2,22,25,10,13],["80100841",21206,"True Shop Thaweekit Complex Saraburi","UPC - Central",0,0,0,3,2],["80101686",14417,"True Shop (dtac) Lotuss Uthong 1Fl.","UPC - West",0,0,0,0,0],["80100481",29,"True Shop The Mall Bangkapi","BMA IV - South East",1,22,25,16,17],["80101340",1035,"True Shop Future Park Rangsit","BMA III - North East",1,22,25,14,19],["80101071",18996,"True Shop Seacon Square 2","BMA IV - South East",2,22,25,10,19],["80100725",21098,"True Shop Tesco Lotus Bangpain","UPC - Central",0,0,0,0,0],["80100925",1570,"True Shop Fashion Island","BMA III - North East",2,22,25,16,29],["80101185",1038,"True Shop Central Plaza Westgate","BMA I - North West",1,22,25,9,16],["80100904",23522,"True Center Makro Ayutthaya","UPC - Central",0,0,0,0,0],["80101070",778,"True Shop Mega Bangna","BMA IV - South East",2,22,25,14,18],["80100836",1765,"True Shop Central World 4Fl.","BMA V - Central",1,22,25,8,10],["80100774",21402,"True Shop Tesco Lotus Phimai Nakhonratchasima","UPC - Lower Northeast",0,0,5,2,1],["80100840",20798,"True Shop Central Plaza Mahachai","UPC - West",1,22,24,9,10],["80100483",1371,"True Shop The Mall Thapra","BMA II - South West",1,22,19,10,6],["80101695",15243,"True Shop (dtac) Central Plaza Rayong 2Fl.","UPC - East",1,22,16,22,16],["80101691",4232,"True Shop (dtac) Ayudhaya Park 1Fl.","UPC - Central",1,20,14,10,6],["80101196",8467,"True Shop Central Plaza Udonthani","UPC - Upper Northeast",1,20,25,7,13],["80101068",1381,"True Shop Central Rama 3","BMA V - Central",1,16,14,7,5],["80101341",1034,"True Shop Future Park Rangsit(H)","BMA III - North East",1,16,12,6,3],["80101066",776,"True Shop Central Bangna","BMA IV - South East",1,16,12,8,5],["80100781",21359,"True Shop Tesco Lotus Lamplaimat Buriram","UPC - Lower Northeast",1,17,18,7,7],["80101222",6514,"True Shop Central Festival Hadyai","UPC - Lower South",1,18,11,11,7],["80100622",38,"True Shop Central Rama 9 (4 FL.)","BMA V - Central",1,17,11,7,4],["80101706",1534,"True Shop (dtac) Fashion Island 3Fl.","BMA III - North East",2,19,25,6,17],["80100763",17587,"True Shop The Walk Nakhon Sawan","UPC - Central",1,14,6,7,2],["80100851",21400,"True Shop Nong Bun Mak Nakhon Ratchasima","UPC - Lower Northeast",1,13,9,6,3],["80100778",19830,"True Shop Tesco Lotus Yasothon","UPC - Central Northeast",1,13,8,7,3],["80101348",19579,"True Shop Asawann Shopping Complex Nongkhai","UPC - Upper Northeast",1,12,5,6,1],["80101283",21308,"True Shop Big C Amnat Charoen","UPC - Central Northeast",1,14,17,7,7],["80101225",21398,"True Shop Kao Yai Market Village","UPC - Lower Northeast",1,15,24,6,10],["80101214",15938,"True Shop Central Plaza Salaya","UPC - West",1,15,21,8,11],["80100832",24426,"True Shop Tesco Lotus Det Udom Ubonratchathani","UPC - Central Northeast",1,15,7,14,6],["80101703",8680,"True Shop (dtac) Central Khonkaen 3Fl.","UPC - Upper Northeast",1,12,6,6,2],["80100486",1929,"True Shop Central Festival Chiangmai","UPC - Upper North",1,15,25,5,13],["80100822",19332,"True Shop Tesco Lotus Ranong","UPC - Upper South",1,13,12,5,4],["80101211",16214,"True Shop Big C Roi-Et","UPC - Central Northeast",1,13,24,6,12],["80100800",23645,"True Shop Tesco Lotus Maptaphut Rayong","UPC - East",1,13,23,8,15],["80101698",956,"True Shop (dtac) Central Plaza Westgate 2Fl.","BMA I - North West",1,13,13,6,6],["80101186",11663,"True Shop Central Festival East Ville","BMA V - Central",1,13,11,7,6],["80101294",25658,"True Shop Big C Loei","UPC - Upper Northeast",1,12,5,4,1],["80100477",28,"True Shop Central Ladprao","BMA I - North West",1,13,25,2,11],["80101182",1575,"True Move Shop Central Chaengwattana","BMA I - North West",1,13,25,2,10],["80100487",4603,"True Shop The Mall Nakhonratchasima 3Fl","UPC - Lower Northeast",1,12,10,5,4],["80101290",21009,"True Shop Big C Korat2","UPC - Lower Northeast",1,11,8,4,2],["80101183",3813,"True Shop Central Khonkaen","UPC - Upper Northeast",1,11,23,5,11],["80101198",5844,"True Shop Central Phitsanulok","UPC - Lower North",1,11,19,4,7],["80100783",21905,"True Shop Tesco Lotus Phonthong Roi Et","UPC - Central Northeast",1,11,17,8,13],["80100727",8444,"True Shop Tesco Lotus Udonthani","UPC - Upper Northeast",1,11,9,6,5],["80101304",13742,"True Shop Robinson Buriram","UPC - Lower Northeast",1,11,7,11,7],["80101629",30432,"True Shop Centrel Nakhon Pathom","UPC - West",1,10,16,3,5],["80100797",24438,"True Shop Tesco Lotus Trakan Phuet Phon Ubonratchathani","UPC - Central Northeast",1,9,12,3,3],["80101303",16292,"True Shop Robinson Roi Et","UPC - Central Northeast",1,9,10,3,3],["80100837",2902,"True Shop Central Chonburi","UPC - East",1,10,22,7,11],["80101309",21754,"True Shop Robinson Mukdahan","UPC - Central Northeast",0,0,20,10,5],["80101123",17771,"True Shop Lotus's Sukhapiban 3","BMA III - North East",1,10,24,6,16],["80100760",21237,"True Shop Tesco Lotus Nakhon Phanom","UPC - Upper Northeast",1,9,15,3,5],["80100479",23163,"True Shop Terminal 21 Pattaya","UPC - East",1,10,10,5,5],["80101628",30385,"True Shop Central Nakhon Sawan","UPC - Central",1,10,9,6,6],["80101349",17349,"True Shop Silom Complex","BMA V - Central",1,10,5,3,1],["80100790",22828,"True Shop Tesco Lotus Phibun Mangsahan Ubonratchathani","UPC - Central Northeast",1,10,8,3,2],["80100839",12139,"True Shop Central Plaza Nakhonsithammarat","UPC - Lower South",1,9,23,4,11],["80100615",17829,"True Shop Central Festival Pattaya Beach","UPC - East",1,9,13,5,7],["80101115",7111,"True Shop Central Plaza Suratthani","UPC - Upper South",1,9,13,5,7],["80100806",25304,"True Shop Tesco Lotus Samchuk Suphanburi","UPC - West",1,9,12,3,4],["80100803",23855,"True Shop Tesco Lotus Nongruea Khonkaen","UPC - Upper Northeast",1,9,11,4,5],["80101067",1934,"True Shop Central Airport Plaza Chiangmai","UPC - Upper North",1,9,11,6,8],["80100796",23608,"True Shop Tesco Lotus Khoksamrong Lopburi","UPC - Central",1,9,6,6,4],["80100764",21302,"True Shop Tesco Lotus Sangkha Surin","UPC - Lower Northeast",1,8,21,3,9],["80101305",8776,"True Shop Robinson Srisaman","BMA I - North West",1,8,20,4,11],["80101180",8537,"True Shop Wongsawang Town Center","BMA I - North West",1,8,16,3,7],["80101358",28407,"True Shop Central Ayutthaya","UPC - Central",1,8,8,3,3],["80101713",32779,"True Shop North Ville","BMA I - North West",1,8,7,5,4],["80101119",20631,"True Shop Central Plaza Nakhonratchasima","UPC - Lower Northeast",1,8,20,2,6],["80100623",37,"True Shop Central Rama 9","BMA V - Central",1,7,12,2,3],["80101697",9078,"True Shop (dtac) Central Plaza Udonthani 2Fl.","UPC - Upper Northeast",1,10,5,0,0],["80101189",28313,"True Shop Central Sriracha","UPC - East",1,7,18,2,6],["80101699",6505,"True Shop (dtac) Central Festival Hatyai 3Fl.","UPC - Lower South",1,7,17,6,15],["80100756",11204,"True Shop Tesco Lotus Nongbualamphu","UPC - Upper Northeast",1,7,15,4,9],["80101705",7077,"True Shop (dtac) Central Plaza Suratthani 2Fl.","UPC - Upper South",1,7,9,4,5],["80101331",23100,"True Shop Big C Nongki Buriram","UPC - Lower Northeast",1,7,16,2,4],["80100765",20556,"True Shop Tesco Lotus Prasat Surin","UPC - Lower Northeast",1,6,5,2,1],["80100754",21202,"True Shop Tesco Lotus Ruamchok Chiangmai","UPC - Upper North",1,8,5,2,1],["80100749",16321,"True Shop Tesco Lotus Kalasin","UPC - Upper Northeast",1,9,8,1,2],["80101708",16411,"True Shop (dtac) Future Park Rangsit GFl.","BMA III - North East",1,10,5,0,0],["80101707",1012,"True Shop (dtac) Future Park Rangsit 2Fl.","BMA III - North East",1,13,5,0,0],["80100926",4244,"True Shop Ayudhaya Park","UPC - Central",1,6,23,3,13],["80100480",1021,"True Shop The Mall Ngamwongwan 6Fl.","BMA I - North West",1,6,19,3,10],["80101712",7827,"True Shop (dtac) Central Ubonratchathani 2Fl.","UPC - Central Northeast",1,6,16,2,4],["80101266",16131,"True Shop Central Ubonratchathani","UPC - Central Northeast",1,6,15,2,6],["80101312",22969,"True Shop Robinson Kanchanaburi","UPC - West",1,6,12,3,6],["80101322",19735,"True Shop Big C Srisakate","UPC - Central Northeast",1,6,12,2,5],["80100928",478,"True Shop Seacon Bangkae","BMA II - South West",1,5,16,3,8],["80100750",21075,"True Shop Tesco Lotus Fang","UPC - Upper North",1,8,25,0,10],["80100476",5452,"True Shop Central Festival Phuket","UPC - Upper South",1,5,23,0,14],["80100838",6986,"True Shop Central Festival Samui","UPC - Upper South",1,5,17,2,8],["80101122",23847,"True Shop Ocean Complex Chumphon","UPC - Upper South",1,5,14,1,4],["80100780",21350,"True Shop Tesco Lotus Prakhonchai Buriram","UPC - Lower Northeast",1,9,12,1,3],["80101218",25634,"True Shop Big C Sainoi Nonthaburi","BMA I - North West",1,7,8,1,2],["80101351",28230,"True Shop Lotus's Keangkoi Saraburi","UPC - Central",1,5,6,0,3],["80101709",17400,"True Shop (dtac) Mega Bangna 2Fl.","BMA IV - South East",1,5,5,0,0],["80101676",7836,"True Shop (dtac) Big C Phibun Mangsahan 1Fl.","UPC - Central Northeast",1,5,5,0,0],["80101329",22839,"True Shop Big C Nongbua Nakhonsawan","UPC - Central",1,5,5,3,1],["80101693",20801,"True Shop (dtac) Central Plaza Mahachai 2Fl.","UPC - West",1,5,5,0,0],["80101690",8265,"True Shop (dtac) Asawann Shopping 1Fl.","UPC - Upper Northeast",1,5,5,0,0],["80101702",1529,"True Shop (dtac) Central Chaengwattana 4Fl.","BMA I - North West",1,5,5,0,0],["80101700",9189,"True Shop (dtac) Central Festival Pattaya 3Fl.","UPC - East",1,5,5,0,0],["80101710",5441,"True Shop (dtac) Phuket Thalang","UPC - Upper South",1,5,5,0,0],["80101711",4581,"True Shop (dtac) The Mall Nakhonratchasima 3Fl.","UPC - Lower Northeast",1,7,5,0,0],["80101692",12138,"True Shop (dtac) Central Plaza Nakhonsithammarat 2Fl.","UPC - Lower South",1,6,5,0,0],["80101696",13548,"True Shop (dtac) Central Plaza Salaya 2Fl.","UPC - West",1,6,5,0,0],["80101704",5832,"True Shop (dtac) Central Phitsanulok 2Fl.","UPC - Lower North",1,8,5,0,0],["80101685",10183,"True Shop (dtac) Lotuss Det Udom 1Fl.","UPC - Central Northeast",1,9,5,1,0]],"source":"Game Plan Reno 16 & A7 Pro WW NOV (updated2).xlsx"};
+
+// =====================================================================
+// Game Plan OPPO — Reno 16 Series & A7 Pro Series incentive tracker.
+// Target: OPPO_GP (Game Plan workbook). Actual: HANDSET_DATA (Refresh TSM),
+// so every TSM refresh updates this page automatically.
+// =====================================================================
+function createOppoGamePlanPage(G, handset, shopsMaster){
+  const $ = id => document.getElementById('gp-'+id);
+  const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const fmt = n => Math.round(n).toLocaleString('en-US');
+  const pctTxt = v => v==null ? '—' : (v*100).toFixed(1)+'%';
+  const achCls = v => v==null ? '' : v>=G.threshold ? 'a-g' : v>=G.threshold*0.75 ? 'a-a' : 'a-r';
+  const INC = G.incentive, TH = G.threshold, DAYS = G.days;
+  const SERIES = { a7:{label:'A7 Pro Series', color:'#0B8F55', test:r=>String(r.model).startsWith('OPPO A7 PRO')},
+                   reno:{label:'Reno 16 Series', color:'#1E6FD9', test:r=>r.subBrand==='OPPO RENO 16 SERIES'} };
+  const M = {}; shopsMaster.forEach(m=>M[String(m.code)]=m);
+  const AREA = {}; G.areas.forEach(a=>AREA[a.area]=a);
+
+  // ---- actual from TSM handset rows ----
+  const rows = handset.filter(r=>r.date>=G.start && r.date<=G.end).map(r=>({...r, s: SERIES.a7.test(r)?'a7':SERIES.reno.test(r)?'reno':null})).filter(r=>r.s);
+  const lastDate = handset.reduce((m,r)=>r.date>m?r.date:m,'');
+  const ELAPSED = Math.max(1, Math.min(DAYS, lastDate>=G.start ? +lastDate.slice(8,10) : 1));
+  const rr = v => v/ELAPSED*DAYS;
+
+  // ---- shop universe ----
+  const SH = new Map();
+  const regionOf = (code, area) => (M[code]&&M[code].region) || (area.startsWith('BMA')?'BMA':'UPC');
+  G.shops.forEach(s=>{ const code=String(s[0]); let area=s[3]; if(!AREA[area] && M[code]) area=M[code].area;
+    SH.set(code,{code, name:s[2], area, region:regionOf(code,area), pc:s[4]>0, tA7:s[5], tReno:s[6], oA7:s[7], oReno:s[8], aA7:0, aReno:0, inTarget:true}); });
+  rows.forEach(r=>{ let s=SH.get(r.code); if(!s){ s={code:r.code, name:r.shop, area:r.area, region:r.region, pc:false, tA7:0, tReno:0, oA7:0, oReno:0, aA7:0, aReno:0, inTarget:false}; SH.set(r.code,s); }
+    if(r.s==='a7') s.aA7+=r.qty; else s.aReno+=r.qty; });
+  SH.forEach(s=>{ const a=AREA[s.area]||{}; s.rrh=a.rrh||'—'; s.am=a.am||'—';
+    s.t=s.tA7+s.tReno; s.a=s.aA7+s.aReno; s.ach=s.t>0?s.a/s.t:null; s.rrAch=s.t>0?rr(s.a)/s.t:null;
+    s.need80=s.t>0?Math.max(0,Math.ceil(s.t*TH)-s.a):0;
+    if(!s.pc){ s.status='npc'; s.inc=s.a*INC; s.incRR=Math.round(rr(s.a))*INC; }
+    else if(s.t===0){ s.status='none'; s.inc=0; s.incRR=0; }
+    else { s.status = s.ach>=TH?'pass':s.rrAch>=TH?'track':'low'; s.inc = s.ach>=TH ? s.a*INC : 0; s.incRR = s.rrAch>=TH ? Math.round(rr(s.a))*INC : 0; } });
+  const ALL = [...SH.values()];
+  const STATUS = { pass:{l:'ผ่าน 80% ✓',s:'ผ่าน ✓',c:'b-pass'}, track:{l:'On track (RR ≥ 80%)',s:'On track',c:'b-track'}, low:{l:'ต่ำกว่า 80%',s:'< 80%',c:'b-low'}, npc:{l:'Non-PC · ได้ตั้งแต่เครื่องแรก',s:'Non-PC',c:'b-npc'}, none:{l:'PC ไม่มี Target',s:'ไม่มี Target',c:'b-none'} };
+
+  // ---- state / filters ----
+  const st = { series:'all', pc:'all', rrh:'All', area:'All', q:'', status:null, sortK:'t', sortAsc:false };
+  const RRHS = [...new Set(G.areas.map(a=>a.rrh))];
+  const tg = s => st.series==='a7'?s.tA7 : st.series==='reno'?s.tReno : s.t;
+  const ac = s => st.series==='a7'?s.aA7 : st.series==='reno'?s.aReno : s.a;
+  const okShop = (s, skip={}) => (skip.pc||st.pc==='all'||(st.pc==='pc')===s.pc) && (skip.rrh||st.rrh==='All'||s.rrh===st.rrh) && (skip.area||st.area==='All'||s.area===st.area)
+     && (!st.q || (s.name+' '+s.code).toLowerCase().includes(st.q.toLowerCase()));
+  const okRow = r => { const s=SH.get(r.code); return okShop(s) && (st.series==='all'||r.s===st.series); };
+  function chips(id, opts, cur, set){ const el=$(id); el.innerHTML=opts.map(([v,l])=>`<button type="button" class="chip${v===cur?' active':''}" data-v="${esc(v)}">${esc(l)}</button>`).join('');
+    el.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{ set(b.dataset.v); renderAll(); }); }
+  function renderFilters(){
+    chips('seriesChips',[['all','ทั้งหมด'],['a7','A7 Pro Series'],['reno','Reno 16 Series']],st.series,v=>st.series=v);
+    chips('pcChips',[['all','ทั้งหมด'],['pc','PC Shop'],['npc','Non-PC Shop']],st.pc,v=>st.pc=v);
+    chips('rrhChips',[['All','All'],...RRHS.map(r=>[r,r])],st.rrh,v=>{ st.rrh=v; if(st.area!=='All'&&(AREA[st.area]||{}).rrh!==v&&v!=='All') st.area='All'; });
+    const areas=G.areas.filter(a=>st.rrh==='All'||a.rrh===st.rrh).map(a=>a.area);
+    $('areaSel').innerHTML='<option value="All">All Area</option>'+areas.map(a=>`<option${a===st.area?' selected':''}>${esc(a)}</option>`).join('');
+  }
+
+  // ---- KPIs ----
+  function renderKPIs(shops){
+    const T=shops.reduce((a,s)=>a+tg(s),0), A=shops.reduce((a,s)=>a+ac(s),0);
+    const pcs=shops.filter(s=>s.pc&&s.t>0), pass=pcs.filter(s=>s.status==='pass').length, track=pcs.filter(s=>s.status==='track').length;
+    const inc=shops.reduce((a,s)=>a+s.inc,0), incRR=shops.reduce((a,s)=>a+s.incRR,0);
+    const npcUnits=shops.filter(s=>!s.pc).reduce((a,s)=>a+s.a,0);
+    const k=(l,v,s,c)=>`<div class="gp-kpi" style="--c:${c}"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`;
+    $('kpis').innerHTML =
+      k('Target NOV', fmt(T), `80% = ${fmt(T*TH)} เครื่อง`, '#13203F')+
+      k('Actual (Sell-out)', fmt(A), `ข้อมูลถึง ${+lastDate.slice(8,10)} พ.ย. · วันที่ ${ELAPSED}/${DAYS}`, '#0B8F55')+
+      k('%Achieve', `<span class="${achCls(T?A/T:null)}">${pctTxt(T?A/T:null)}</span>`, `RR สิ้นเดือน ${fmt(rr(A))} เครื่อง (${pctTxt(T?rr(A)/T:null)})`, '#1E6FD9')+
+      k('PC Shop ผ่าน 80%', `${pass} <small style="font-size:14px;color:#7a8196">/ ${pcs.length}</small>`, `On track (RR ≥ 80%) อีก ${track} สาขา`, '#E08A00')+
+      k('Incentive (Voucher)', '฿'+fmt(inc), `คาดการณ์สิ้นเดือน ฿${fmt(incRR)} · Non-PC ${fmt(npcUnits)} เครื่อง`, '#6C5CE7');
+  }
+  // ---- series cards ----
+  function renderSeries(shops){
+    $('series').innerHTML = ['a7','reno'].filter(k=>st.series==='all'||st.series===k).map(k=>{
+      const T=shops.reduce((a,s)=>a+(k==='a7'?s.tA7:s.tReno),0), A=shops.reduce((a,s)=>a+(k==='a7'?s.aA7:s.aReno),0), R=rr(A), mx=Math.max(T,R,1)*1.05;
+      return `<div class="gp-scard"><h3>${SERIES[k].label}<small>Target ${fmt(T)} · 80% = ${fmt(T*TH)}</small></h3>
+        <div class="gp-prog"><i class="rr" style="width:${Math.min(100,R/mx*100)}%"></i><i class="ac" style="width:${Math.min(100,A/mx*100)}%;background:${SERIES[k].color}"></i><span class="mark" style="left:${T*TH/mx*100}%"></span></div>
+        <div class="gp-snums"><div><span>Actual</span><b>${fmt(A)}</b></div><div><span>%Achieve</span><b class="${achCls(T?A/T:null)}">${pctTxt(T?A/T:null)}</b></div><div><span>RR สิ้นเดือน</span><b>${fmt(R)}</b></div><div><span>RR %Ach</span><b class="${achCls(T?R/T:null)}">${pctTxt(T?R/T:null)}</b></div></div></div>`; }).join('');
+  }
+  // ---- daily + model mix ----
+  function renderDaily(fr){
+    const svg=$('daily'), tip=$('dailyTip'), days=Array.from({length:DAYS},(_,i)=>i+1), by={a7:{},reno:{}};
+    fr.forEach(r=>{ const d=+r.date.slice(8,10); by[r.s][d]=(by[r.s][d]||0)+r.qty; });
+    const W=Math.max(420,svg.parentElement.clientWidth), H=240, mL=34, mR=10, mT=24, mB=26, pW=W-mL-mR, pH=H-mT-mB, band=pW/DAYS, bw=Math.max(4,Math.min(18,band*0.6));
+    const tot=d=>(by.a7[d]||0)+(by.reno[d]||0), mx=Math.max(5,...days.map(tot)), mag=Math.pow(10,Math.floor(Math.log10(mx))), nice=[1,2,2.5,5,10].map(f=>f*mag).find(v=>v>=mx), ys=v=>mT+pH-v/nice*pH, P=[];
+    for(let i=0;i<=4;i++){ const v=Math.round(nice*i/4), y=ys(v); P.push(`<line x1="${mL}" x2="${W-mR}" y1="${y}" y2="${y}" stroke="#E6E9F0"/><text x="${mL-6}" y="${y+3}" text-anchor="end">${v}</text>`); }
+    P.push(`<rect x="${mL}" y="4" width="9" height="9" fill="${SERIES.a7.color}"/><text x="${mL+13}" y="12">A7 Pro</text><rect x="${mL+70}" y="4" width="9" height="9" fill="${SERIES.reno.color}"/><text x="${mL+83}" y="12">Reno 16</text>`);
+    days.forEach((d,i)=>{ const cx=mL+band*i+band/2, a=by.a7[d]||0, r=by.reno[d]||0, y0=ys(0), ya=ys(a), yr=ys(a+r), fut=d>ELAPSED;
+      P.push(`<g class="gpd" data-d="${d}" data-a="${a}" data-r="${r}"><rect x="${cx-band/2}" y="${mT}" width="${band}" height="${pH}" fill="${fut?'#FAFBFC':'transparent'}"/>
+        <rect x="${cx-bw/2}" y="${ya}" width="${bw}" height="${y0-ya}" fill="${SERIES.a7.color}"/><rect x="${cx-bw/2}" y="${yr}" width="${bw}" height="${ya-yr}" fill="${SERIES.reno.color}"/>
+        ${a+r>0?`<text x="${cx}" y="${yr-4}" text-anchor="middle" style="font-weight:800;fill:#13203F">${a+r}</text>`:''}
+        ${(d===1||d%5===0)?`<text x="${cx}" y="${H-8}" text-anchor="middle">${d}</text>`:''}</g>`); });
+    svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('width',W); svg.innerHTML=P.join('');
+    const card=svg.closest('.gp-card');
+    svg.querySelectorAll('.gpd').forEach(g=>{ g.onmousemove=e=>{ const rc=card.getBoundingClientRect(); tip.style.display='block'; tip.style.left=Math.min(e.clientX-rc.left+12,rc.width-150)+'px'; tip.style.top=(e.clientY-rc.top-10)+'px'; tip.innerHTML=`<b>${g.dataset.d} พ.ย.</b><br>A7 Pro: ${g.dataset.a}<br>Reno 16: ${g.dataset.r}`; }; g.onmouseleave=()=>tip.style.display='none'; });
+    const mm={}; fr.forEach(r=>{ const k=r.subModel||r.model; (mm[k]=mm[k]||{q:0,s:r.s}).q+=r.qty; });
+    const list=Object.entries(mm).sort((a,b)=>b[1].q-a[1].q), top=Math.max(1,...list.map(x=>x[1].q));
+    $('models').innerHTML=list.length?list.map(([m,v])=>`<div class="gp-mrow"><span title="${esc(m)}" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(m.replace(/^OPPO /,''))}</span><div class="tr"><i style="width:${v.q/top*100}%;background:${SERIES[v.s].color}"></i></div><b>${v.q}</b></div>`).join(''):'<div class="gp-count">ยังไม่มียอดขายในตัวกรองนี้</div>';
+  }
+  // ---- area table ----
+  function renderArea(){
+    const shops=ALL.filter(s=>okShop(s,{area:true})), by=new Map();
+    shops.forEach(s=>{ let a=by.get(s.area); if(!a){ a={area:s.area,rrh:s.rrh,am:s.am,tA7:0,tReno:0,aA7:0,aReno:0,pc:0,pass:0,inc:0,incRR:0}; by.set(s.area,a); }
+      a.tA7+=s.tA7; a.tReno+=s.tReno; a.aA7+=s.aA7; a.aReno+=s.aReno; if(s.pc&&s.t>0){ a.pc++; if(s.status==='pass') a.pass++; } a.inc+=s.inc; a.incRR+=s.incRR; });
+    const order=G.areas.map(a=>a.area), list=[...by.values()].filter(a=>a.tA7+a.tReno+a.aA7+a.aReno>0).sort((a,b)=>{ const x=order.indexOf(a.area), y=order.indexOf(b.area); return (x<0?99:x)-(y<0?99:y); });
+    const row=(a,tot)=>{ const t=a.tA7+a.tReno, q=a.aA7+a.aReno;
+      return `${tot?'<td class="t" colspan="3">Total</td>':`<td class="t">${esc(a.rrh)}</td><td class="t">${esc(a.am)}</td><td class="t">${esc(a.area)}</td>`}
+        <td class="sep">${fmt(a.tA7)}</td><td>${fmt(a.aA7)}</td><td class="${achCls(a.tA7?a.aA7/a.tA7:null)}">${pctTxt(a.tA7?a.aA7/a.tA7:null)}</td>
+        <td class="sep">${fmt(a.tReno)}</td><td>${fmt(a.aReno)}</td><td class="${achCls(a.tReno?a.aReno/a.tReno:null)}">${pctTxt(a.tReno?a.aReno/a.tReno:null)}</td>
+        <td class="sep">${fmt(t)}</td><td>${fmt(q)}</td><td class="${achCls(t?q/t:null)}">${pctTxt(t?q/t:null)}</td><td class="${achCls(t?rr(q)/t:null)}">${pctTxt(t?rr(q)/t:null)}</td>
+        <td class="sep">${a.pass} / ${a.pc}</td><td>฿${fmt(a.inc)}</td><td>฿${fmt(a.incRR)}</td>`; };
+    const T=list.reduce((x,a)=>{ ['tA7','tReno','aA7','aReno','pc','pass','inc','incRR'].forEach(k=>x[k]+=a[k]); return x; },{tA7:0,tReno:0,aA7:0,aReno:0,pc:0,pass:0,inc:0,incRR:0});
+    $('areaTable').innerHTML=`<thead><tr><th class="t grp" colspan="3"></th><th class="grp sep" colspan="3">A7 Pro Series</th><th class="grp sep" colspan="3">Reno 16 Series</th><th class="grp sep" colspan="4">รวม (Target by Shop)</th><th class="grp sep" colspan="3">Incentive</th></tr>
+      <tr><th class="t">RRH</th><th class="t">AM</th><th class="t">Area WW</th><th class="sep">Target</th><th>Actual</th><th>%Ach</th><th class="sep">Target</th><th>Actual</th><th>%Ach</th><th class="sep">Target</th><th>Actual</th><th>%Ach</th><th>RR %Ach</th><th class="sep">PC ผ่าน 80%</th><th>ปัจจุบัน</th><th>คาดการณ์</th></tr></thead>
+      <tbody>${list.map(a=>`<tr data-a="${esc(a.area)}" class="${st.area===a.area?'on':''}" style="cursor:pointer">${row(a)}</tr>`).join('')}</tbody><tfoot><tr>${row(T,true)}</tr></tfoot>`;
+    $('areaTable').querySelectorAll('tbody tr').forEach(tr=>tr.onclick=()=>{ st.area = st.area===tr.dataset.a?'All':tr.dataset.a; renderAll(); });
+  }
+  // ---- shop table ----
+  const COLS=[['name','Shop',1],['area','Area WW',1],['pc','PC',1],['tA7','Target A7',0],['aA7','Actual A7',0],['tReno','Target Reno',0],['aReno','Actual Reno',0],['t','Target รวม',0],['a','Actual รวม',0],['ach','%Ach',0],['rrAch','RR %Ach',0],['need80','ขาดอีก ถึง 80%',0],['status','สถานะ',1],['inc','Incentive ปัจจุบัน',0],['incRR','คาดการณ์',0]];
+  let lastShops=[];
+  function renderShops(){
+    let shops=ALL.filter(s=>okShop(s)).filter(s=>s.t>0||s.a>0);
+    const cnt={}; shops.forEach(s=>cnt[s.status]=(cnt[s.status]||0)+1);
+    $('statChips').innerHTML=['pass','track','low','npc','none'].filter(k=>cnt[k]).map(k=>`<span class="badge ${STATUS[k].c}${st.status===k?' on':''}" data-k="${k}">${STATUS[k].l} (${cnt[k]})</span>`).join('');
+    $('statChips').querySelectorAll('.badge').forEach(b=>b.onclick=()=>{ st.status=st.status===b.dataset.k?null:b.dataset.k; renderShops(); });
+    if(st.status) shops=shops.filter(s=>s.status===st.status);
+    const k=st.sortK; shops.sort((a,b)=>{ let x=a[k], y=b[k]; if(k==='pc'){x=+x;y=+y;} const c=(typeof x==='string')?String(x).localeCompare(String(y),'th'):((x??-1)-(y??-1)); return st.sortAsc?c:-c; });
+    lastShops=shops;
+    $('shopCount').textContent=`${shops.length} สาขา`;
+    $('shopTable').innerHTML='<thead><tr>'+COLS.map(([k,l,t])=>`<th data-k="${k}" class="${t?'t':''}${['tA7','tReno','t','inc','status'].includes(k)?' sep':''}">${l}<span class="sa">${st.sortK===k?(st.sortAsc?'▲':'▼'):''}</span></th>`).join('')+'</tr></thead><tbody>'+
+      shops.map(s=>`<tr><td class="t">${esc(s.name)}</td><td class="t">${esc(s.area)}</td><td class="t"><span class="pc-tag${s.pc?'':' n'}">${s.pc?'PC':'Non-PC'}</span></td>
+        <td class="sep">${s.tA7}</td><td>${s.aA7}</td><td class="sep">${s.tReno}</td><td>${s.aReno}</td>
+        <td class="sep"><b>${s.t}</b></td><td><b>${s.a}</b></td><td class="${s.pc?achCls(s.ach):''}">${pctTxt(s.ach)}</td><td class="${s.pc?achCls(s.rrAch):''}">${pctTxt(s.rrAch)}</td>
+        <td>${s.pc&&s.t>0?(s.need80>0?s.need80:'✓'):'—'}</td><td class="t sep"><span class="badge ${STATUS[s.status].c}" title="${STATUS[s.status].l}">${STATUS[s.status].s}</span></td>
+        <td class="sep">${s.inc?'฿'+fmt(s.inc):'—'}</td><td>${s.incRR?'฿'+fmt(s.incRR):'—'}</td></tr>`).join('')+'</tbody>';
+    $('shopTable').querySelectorAll('thead th').forEach(th=>th.onclick=()=>{ const k=th.dataset.k; if(st.sortK===k) st.sortAsc=!st.sortAsc; else { st.sortK=k; st.sortAsc=['name','area','status'].includes(k); } renderShops(); });
+  }
+
+  function renderAll(){
+    renderFilters();
+    const shops=ALL.filter(s=>okShop(s)), fr=rows.filter(okRow);
+    $('scopePill').innerHTML=`Game Plan OPPO · 1–30 พ.ย. 2569 · ข้อมูลขายถึง <b>${+lastDate.slice(8,10)} พ.ย.</b> (วันที่ ${ELAPSED} จาก ${DAYS}) · ${shops.length} สาขา · Target จาก ${esc(G.source)} · Actual จาก Refresh TSM`;
+    renderKPIs(shops); renderSeries(shops); renderDaily(fr); renderArea(); renderShops();
+  }
+  $('areaSel').onchange=e=>{ st.area=e.target.value; renderAll(); };
+  $('shopSearch').oninput=e=>{ st.q=e.target.value; renderAll(); };
+  $('reset').onclick=()=>{ Object.assign(st,{series:'all',pc:'all',rrh:'All',area:'All',q:'',status:null}); $('shopSearch').value=''; renderAll(); };
+  $('csv').onclick=()=>{ const q=v=>{ const s=v==null?'':String(v); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+    const L=[['Shop Code','Shop','Area WW','RRH','AM','PC','Target A7','Actual A7','Target Reno','Actual Reno','Target รวม','Actual รวม','%Ach','RR %Ach','ขาดอีกถึง 80%','สถานะ','Incentive ปัจจุบัน','Incentive คาดการณ์'].join(',')];
+    lastShops.forEach(s=>L.push([s.code,s.name,s.area,s.rrh,s.am,s.pc?'PC':'Non-PC',s.tA7,s.aA7,s.tReno,s.aReno,s.t,s.a,s.ach==null?'':(s.ach*100).toFixed(1),s.rrAch==null?'':(s.rrAch*100).toFixed(1),s.pc&&s.t>0?s.need80:'',STATUS[s.status].l,s.inc,s.incRR].map(q).join(',')));
+    const url=URL.createObjectURL(new Blob(['﻿'+L.join('\r\n')],{type:'text/csv;charset=utf-8;'})); const a=document.createElement('a'); a.href=url; a.download='GamePlan_OPPO_'+lastDate+'.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); };
+  let rt=null; window.addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(document.getElementById('page-oppogp').classList.contains('active')) renderDaily(rows.filter(okRow)); },150); });
+  return { renderAll };
+}
+
+let oppoGpPage = null;
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     const page = btn.dataset.page;
@@ -9775,6 +10100,10 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
         shopsMaster: SHOPS_MASTER
       });
       suplifeAttachPage.renderAll();
+    }
+    if(page==='oppogp' && !oppoGpPage){
+      oppoGpPage = createOppoGamePlanPage(OPPO_GP, HANDSET_DATA, SHOPS_MASTER);
+      oppoGpPage.renderAll();
     }
     if(page==='entrymodel' && !entryModelPage){
       entryModelPage = createEntryModelPage({
