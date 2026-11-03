@@ -1157,7 +1157,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
   #page-sp #sp-table td:nth-child(2){min-width:150px;}
   #page-sp #sp-table tfoot td{padding:6px 2px;font-size:9.5px;}
 }
-@media (max-width:900px){ #page-sp .sp-card > .sp-scroll{overflow-x:auto;} }
+@media (max-width:640px){ #page-sp .sp-card > .sp-scroll{overflow-x:auto;} }
 </style>
 <style>
 /* ===================== Game Plan OPPO (scoped #page-oppogp) ===================== */
@@ -1261,6 +1261,40 @@ table.mom-table td.col-trend{padding:4px 10px;}
 #page-oppogp #gp-areaTable td.t:nth-child(2){white-space:normal;min-width:110px;}
 @media(max-width:1300px){ #page-oppogp #gp-areaTable td.t:nth-child(3){white-space:normal;} #page-oppogp #gp-shopTable td.t:nth-child(2){white-space:normal;min-width:90px;} }
 </style>
+<style>
+/* group summary tables: fit to page width */
+#page-sp .sp-grp .sp-grp-scroll{overflow-x:hidden;}
+#page-sp .sp-grp .sp-table{table-layout:auto;width:100%;}
+#page-sp .sp-grp .sp-table th{white-space:normal;line-height:1.2;vertical-align:bottom;}
+#page-sp .sp-grp .sp-table td.t{white-space:normal;}
+@media (max-width:1400px){
+  #page-sp .sp-grp .sp-table{font-size:11px;}
+  #page-sp .sp-grp .sp-table th{padding:6px 4px;font-size:10.5px;}
+  #page-sp .sp-grp .sp-table td,#page-sp .sp-grp .sp-table tfoot td{padding:4px 4px;}
+}
+@media (max-width:1100px){
+  #page-sp .sp-grp .sp-table{font-size:10px;}
+  #page-sp .sp-grp .sp-table th{padding:5px 2px;font-size:9.5px;}
+  #page-sp .sp-grp .sp-table td,#page-sp .sp-grp .sp-table tfoot td{padding:3px 2px;}
+  #page-sp .sp-grp{padding:8px 6px 4px;}
+}
+@media (max-width:640px){ #page-sp .sp-grp .sp-grp-scroll{overflow-x:auto;} }
+</style>
+<style>
+@media (max-width:1100px){
+  #page-sp #sp-table{font-size:9.5px;}
+  #page-sp #sp-table th{padding:5px 2px;font-size:9px;}
+  #page-sp #sp-table td,#page-sp #sp-table tfoot td{padding:3px 2px;font-size:9.5px;}
+  #page-sp #sp-table td:nth-child(2){min-width:90px;}
+  #page-sp .sp-card{padding:8px 6px 4px;}
+}
+</style>
+<style>
+/* compact single-line top header */
+.content-header{padding:10px 32px;}
+.content-header-title{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 14px;font-size:18px;line-height:1.3;white-space:normal;}
+.content-header-title .content-header-eyebrow{margin:0;font-size:10.5px;font-weight:500;}
+</style>
 </head>
 <body>
 <div class="app-shell">
@@ -1290,8 +1324,7 @@ table.mom-table td.col-trend{padding:4px 10px;}
 
   <main class="main-content">
   <div class="content-header">
-    <p class="content-header-eyebrow">TSM · Retail Performance</p>
-    <h1 class="content-header-title">Retail Sales<br>Performance<br>Dashboard</h1>
+    <h1 class="content-header-title"><span class="content-header-eyebrow">TSM · Retail Performance</span>Retail Sales Performance Dashboard</h1>
   </div>
   <div class="wrap">
 
@@ -8611,7 +8644,7 @@ function createSalePerformancePage(cfg){
     const tg=s(7),net=s(8),rr=s(9),tgq=s(12),qty=s(13),rrq=s(14),pn=prev(9,11),pq=prev(14,16);
     return {tg,net,rr,ach:tg?rr/tg:null,mom:pn?rr/pn-1:null,tgq,qty,rrq,achq:tgq?rrq/tgq:null,momq:pq?rrq/pq-1:null,n:new Set(rows.map(r=>r[1])).size};
   }
-  const GCOLS=[['label','',1],['n','Shops',0],['tg','TG_Net Amount',0],['net','NET_AMOUNT',0],['rr','RR_Net Amount',0],['ach','%Ach Net',0],['mom','MOM Net',0],['tgq','TG_QTY',2],['qty','QTY',0],['rrq','RR_QTY',0],['achq','%Ach QTY',0],['momq','MOM QTY',0]];
+  const GCOLS=[['label','',1],['n','Shops',0],['tg','TG_<wbr>Net Amount',0],['net','NET_<wbr>AMOUNT',0],['rr','RR_<wbr>Net Amount',0],['ach','%Ach Net',0],['mom','MOM Net',0],['tgq','TG_<wbr>QTY',2],['qty','QTY',0],['rrq','RR_<wbr>QTY',0],['achq','%Ach QTY',0],['momq','MOM QTY',0]];
   function grpRow(a){ return `<td class="t">${a.label}</td><td>${a.n}</td><td>${fmtN(a.tg)}</td><td>${fmtN(a.net)}</td><td>${fmtN(a.rr)}</td><td class="${achCls(a.ach)}">${fmtP(a.ach)}</td><td class="${momCls(a.mom)}">${fmtP(a.mom)}</td>`+
     `<td class="grp-sep">${fmtN(a.tgq)}</td><td>${fmtN(a.qty)}</td><td>${fmtN(a.rrq)}</td><td class="${achCls(a.achq)}">${fmtP(a.achq)}</td><td class="${momCls(a.momq)}">${fmtP(a.momq)}</td>`; }
   function renderGroups(){
