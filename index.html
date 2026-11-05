@@ -3941,7 +3941,7 @@ table.fitx4 td{padding:3px 2px !important;white-space:normal !important;overflow
     <div id="pdt-view-prod">
       <div class="pdt-section pdt-sec6-head">
         <div class="pdt-section-title"><span class="n">6</span>AVG Productivity — ผลิตภาพเฉลี่ยต่อคน (ACTUAL-RR / ACTUAL)</div>
-        <div class="pdt-hint">ใช้ตัวกรองเดียวกับทั้งหน้า (Product / Metric / Shop / Region / Shop Type / Position / Area / Flag Emp) · คลิก Region, Shop Type, Area, Position หรือสาขา เพื่อกรองทั้งหน้า — คลิกซ้ำเพื่อยกเลิก</div>
+        <div class="pdt-hint">ใช้ตัวกรองเดียวกับทั้งหน้า (Product / Metric / Shop / Region / Shop Type / Position / Area) · คลิก Region, Shop Type, Area, Position หรือสาขา เพื่อกรองทั้งหน้า — คลิกซ้ำเพื่อยกเลิก</div>
       </div>
       <div class="pdt-section">
         <div class="pdt-section-title"><span class="n sub">6.1</span>Average Productivity — Region × Shop Type</div>
@@ -9695,7 +9695,7 @@ function createPdtPage(D){
   let RAW = [];
   const FILTER_KEYS = [
     { key:'shop', label:'Shop Name' }, { key:'region', label:'Region' }, { key:'shopType', label:'Shop Type' },
-    { key:'position', label:'Position' }, { key:'area', label:'Area' }, { key:'flag', label:'Flag Emp' },
+    { key:'position', label:'Position' }, { key:'area', label:'Area' },
   ];
   const filterState = {}; FILTER_KEYS.forEach(f=>filterState[f.key]=new Set());
   let bucketDrill = null, sortKey='ach', sortDir='asc', currentPage=1, searchText='', lastTableRows=[];
@@ -9859,7 +9859,7 @@ function createPdtPage(D){
     const n=rows.length, pages=Math.max(1,Math.ceil(n/PAGE_SIZE)); if(currentPage>pages) currentPage=pages;
     const start=(currentPage-1)*PAGE_SIZE, pr=rows.slice(start,start+PAGE_SIZE);
     $('tableBody').innerHTML = pr.length ? pr.map(r=>`<tr class="${r.bucket==='no_sales'?'no-sales-row':''}">
-        <td>${esc(r.name)}<span class="pdt-flag">${esc(r.flag)}</span></td><td>${esc(r.position)}</td><td>${esc(r.shop)}</td><td>${esc(r.area)}</td>
+        <td>${esc(r.name)}</td><td>${esc(r.position)}</td><td>${esc(r.shop)}</td><td>${esc(r.area)}</td>
         <td class="num">${fmtV(r.target)}</td><td class="num">${fmtV(r.actual)}</td><td class="num">${fmtV(r.actualRR)}</td>
         <td class="num ach-cell" style="color:${BUCKET_MAP[r.bucket].text}">${r.achPct.toFixed(1)}%</td></tr>`).join('')
       : `<tr><td colspan="8"><div class="pdt-empty">No staff match the current filters.</div></td></tr>`;
@@ -10052,8 +10052,8 @@ function createPdtPage(D){
   document.querySelector('#pdt-prodShopTable thead').addEventListener('click',e=>{ const th=e.target.closest('th'); if(!th) return; const k=th.dataset.key; if(prodShopSortKey===k) prodShopSortDir=prodShopSortDir==='asc'?'desc':'asc'; else { prodShopSortKey=k; prodShopSortDir=(k==='shop'||k==='area'||k==='shopType')?'asc':'desc'; } renderProdShop(getFiltered()); });
   $('prodShopSearch').addEventListener('input',e=>{ prodShopSearch=e.target.value; renderProdShop(getFiltered()); });
   $('exportStaff').addEventListener('click',()=>downloadCsv(`PDT_Staff_Performance_${stamp()}.csv`,
-    ['ID EMP','NAME - SURNAME','FLAG EMP','POSITION','SHOP CODE','SHOP NAME','AREA','REGION','SHOP TYPE','PRODUCT','METRIC','TARGET','ACTUAL','ACTUAL-RR','% RR ACH','BUCKET'],
-    lastTableRows.map(r=>[r.id,r.name,r.flag,r.position,r.code,r.shop,r.area,r.region,r.shopType,r.product,r.metric,r.target,r.actual,r.actualRR,r.achPct.toFixed(1),BUCKET_MAP[r.bucket].label])));
+    ['ID EMP','NAME - SURNAME','POSITION','SHOP CODE','SHOP NAME','AREA','REGION','SHOP TYPE','PRODUCT','METRIC','TARGET','ACTUAL','ACTUAL-RR','% RR ACH','BUCKET'],
+    lastTableRows.map(r=>[r.id,r.name,r.position,r.code,r.shop,r.area,r.region,r.shopType,r.product,r.metric,r.target,r.actual,r.actualRR,r.achPct.toFixed(1),BUCKET_MAP[r.bucket].label])));
   $('exportShop').addEventListener('click',()=>downloadCsv(`PDT_AvgProductivity_byShop_${stamp()}.csv`,
     ['SHOP NAME','AREA','SHOP TYPE','STAFF','AVG ACTUAL','AVG ACTUAL-RR'],
     lastProdShopRows.map(r=>[r.shop,r.area,r.shopType,r.count,r.avgActual.toFixed(2),r.avgActualRR.toFixed(2)])));
