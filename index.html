@@ -1713,7 +1713,10 @@ table.mom-table td.col-trend{padding:4px 10px;}
 #page-sheep .sht-k .row>*{min-width:0;}
 @media(max-width:1280px){#page-sheep .sht-kpis{grid-template-columns:1fr;}}
 @media(max-width:700px){#page-sheep .sht-k .row{grid-template-columns:repeat(3,1fr);}}
-.page .fit-stack{grid-template-columns:minmax(0,1fr) !important;}
+.page .fit-stack,.page .fit-stack-area{grid-template-columns:minmax(0,1fr) !important;}
+.page .area-noscroll{max-height:none !important;overflow-y:visible !important;height:auto !important;}
+.page .area-noscroll thead th{position:static !important;}
+.page table.area-tbl td:first-child,.page table.area-tbl td.t:first-of-type{white-space:nowrap;}
 /* level 1: wrap headers, tighter cells */
 table.fitx1 th{white-space:normal !important;padding-left:6px !important;padding-right:6px !important;line-height:1.25;}
 table.fitx1 td{padding-left:6px !important;padding-right:6px !important;}
@@ -1764,7 +1767,28 @@ document.addEventListener('click',e=>{ const b=e.target.closest('[data-png]'); i
     for(var i=0;i<LV.length&&over(t,b);i++){ t.classList.add(LV[i]); }
   }
   function lvl(t){ for(var i=LV.length-1;i>=0;i--) if(t.classList.contains(LV[i])) return i+1; return 0; }
-  function fitAll(){ var pg=document.querySelector('.page.active')||document;
+  // Region / Area level tables: show every row (no vertical scroll); stack side-by-side panels if area names wrap
+  function isAreaTable(t){
+    var tr=t.querySelector('thead tr:last-child'); if(!tr) return false;
+    var hs=[].slice.call(tr.children).map(function(x){return (x.textContent||'').trim();}).filter(function(x){return x&&x!=='#';}).slice(0,2);
+    if(!hs.length) return false;
+    var key=/^(region|area|regional|rrh)/i.test(hs[0]) && (!hs[1]||/^(area|am\b|area manager|shops?|handset|target|actual|trade|tg|qty|sl|net|score|churn|budget|#|transactions)/i.test(hs[1])||/^area/i.test(hs[0]));
+    return key && t.tBodies[0] && t.tBodies[0].rows.length<=40;
+  }
+  function unscrollAreas(pg){
+    pg.querySelectorAll('.fit-stack-area').forEach(function(g){ g.classList.remove('fit-stack-area'); });
+    pg.querySelectorAll('table').forEach(function(t){
+      if(!t.offsetParent||!isAreaTable(t)) return;
+      t.classList.add('area-tbl');
+      var e=t.parentElement; while(e&&e!==pg){ var cs=getComputedStyle(e); if(/auto|scroll/.test(cs.overflowY)||(cs.maxHeight&&cs.maxHeight!=='none')) e.classList.add('area-noscroll'); e=e.parentElement; }
+    });
+    pg.querySelectorAll('table.area-tbl').forEach(function(t){
+      var rows=[].slice.call(t.tBodies[0].rows); if(rows.length<3) return;
+      var hs=rows.map(function(r){return r.offsetHeight;}).sort(function(a,b){return a-b;}); var base=hs[0]||1;
+      if(hs[hs.length-1]>base*1.6){ var g=t.parentElement; while(g&&g!==pg){ var cs=getComputedStyle(g); if(cs.display==='grid'&&cs.gridTemplateColumns.split(' ').length>1){ g.classList.add('fit-stack-area'); break; } g=g.parentElement; } }
+    });
+  }
+  function fitAll(){ var pg=document.querySelector('.page.active')||document; unscrollAreas(pg);
     pg.querySelectorAll('.fit-stack').forEach(function(g){ g.classList.remove('fit-stack'); });
     var ts=[].slice.call(pg.querySelectorAll('table')); ts.forEach(fitTable);
     // a table squeezed to level>=3 inside a multi-column grid -> stack that grid into one column, then refit
