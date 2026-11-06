@@ -1691,6 +1691,13 @@ table.mom-table td.col-trend{padding:4px 10px;}
 #page-sl .lb-scroll.sl-noscroll thead th{position:static;}
 .png-busy{opacity:.6;pointer-events:none;}
 </style>
+<style>
+#page-tradein .ti-org-stack{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;}
+#page-tradein .ti-org-stack>*{min-width:0;}
+.page .lb-scroll.no-vscroll{max-height:none !important;overflow-y:visible !important;}
+.page .lb-scroll.no-vscroll thead th{position:static;}
+#page-tradein .ti-area-full td:first-child{white-space:nowrap;}
+</style>
 <style id="fitpage-css">
 /* ===== Global Fit-To-Page (no horizontal scroll) ===== */
 .page .grid-2>*,.page .grid-2b>*,.page .grid-3>*,.page [class*="grid"]>*,.page [class*="-two"]>*{min-width:0;}
@@ -3503,16 +3510,16 @@ document.addEventListener('click',e=>{ const b=e.target.closest('[data-png]'); i
     </div>
 
     <div class="section-title-row"><span class="section-title-eyebrow">📍 Level Region · Area · Shop · Sale Name</span></div>
-    <div class="grid-2">
+    <div class="ti-org-stack">
       <div class="panel trend-table-panel">
         <div class="panel-head"><span class="panel-title">Level Region</span><span class="panel-hint">Click a row to filter</span></div>
         <div class="lb-scroll"><table class="lb org-table">
           <thead><tr><th>Region</th><th class="num">Handset</th><th class="num">Trade-in</th><th class="num">Rate</th><th class="num">Runrate Trade-in</th><th class="num" id="tradein-prevHdrR">Last Mo.</th><th class="num">Δ pp</th></tr></thead>
           <tbody id="tradein-regionBody"></tbody></table></div>
       </div>
-      <div class="panel trend-table-panel">
+      <div class="panel trend-table-panel ti-area-full">
         <div class="panel-head"><span class="panel-title">Level Area</span><span class="panel-hint">Click a row to filter</span></div>
-        <div class="lb-scroll"><table class="lb org-table">
+        <div class="lb-scroll no-vscroll"><table class="lb org-table">
           <thead><tr><th>Area</th><th class="num">Handset</th><th class="num">Trade-in</th><th class="num">Rate</th><th class="num">Runrate Trade-in</th><th class="num" id="tradein-prevHdrA">Last Mo.</th><th class="num">Δ pp</th></tr></thead>
           <tbody id="tradein-areaBody"></tbody></table></div>
       </div>
